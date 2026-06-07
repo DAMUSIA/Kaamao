@@ -127,6 +127,7 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
+export default function Home() {
   return (
     <div
       className="min-h-screen font-[Manrope,sans-serif] text-[#0d1b5e]"
@@ -694,7 +695,6 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </footer>
 
       <WaitlistModal
         isOpen={isModalOpen}

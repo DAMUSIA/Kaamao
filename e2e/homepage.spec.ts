@@ -28,14 +28,12 @@ test.describe("LocalSkill Connect Landing Page E2E Tests", () => {
     await expect(ctaButton).toBeVisible();
     await ctaButton.click();
 
-    // Verify modal overlay heading is visible
-    const modalHeading = page.locator('h3:has-text("Get Early Access")');
-    await expect(modalHeading).toBeVisible();
+    // Verify redirection to /login
+    await expect(page).toHaveURL(/.*\/login/);
 
-    // Verify form fields are visible inside the modal
-    await expect(page.locator('label[for="name"]')).toBeVisible();
-    await expect(page.locator('label[for="phone"]')).toBeVisible();
-    await expect(page.locator('label[for="dob"]')).toBeVisible();
+    // Verify login page header is visible
+    const loginHeader = page.locator('h2:has-text("Login")');
+    await expect(loginHeader).toBeVisible();
   });
 });
 
