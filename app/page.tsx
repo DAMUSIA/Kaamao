@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import WaitlistModal from "../components/WaitlistModal";
 
 /* ─── Icon helper ─────────────────────────────────────────── */
@@ -102,10 +103,26 @@ export default function Home() {
   const [carouselIndex, setCarouselIndex] = useState(0);
 
   const SLIDES = [
-    { src: "/assets/hero-slide-1.png", label: "Freelancers working flexibly", tag: "Earn from home" },
-    { src: "/assets/hero-slide-2.png", label: "Tutors teaching locally", tag: "Trusted tutors" },
-    { src: "/assets/hero-slide-3.png", label: "Home chefs sharing skills", tag: "Home chefs" },
-    { src: "/assets/hero-slide-4.png", label: "Community connections", tag: "Community trust" },
+    {
+      src: "/assets/hero-slide-1.png",
+      label: "Freelancers working flexibly",
+      tag: "Earn from home",
+    },
+    {
+      src: "/assets/hero-slide-2.png",
+      label: "Tutors teaching locally",
+      tag: "Trusted tutors",
+    },
+    {
+      src: "/assets/hero-slide-3.png",
+      label: "Home chefs sharing skills",
+      tag: "Home chefs",
+    },
+    {
+      src: "/assets/hero-slide-4.png",
+      label: "Community connections",
+      tag: "Community trust",
+    },
   ];
 
   useEffect(() => {
@@ -117,7 +134,7 @@ export default function Home() {
   // Auto-play carousel
   useEffect(() => {
     const timer = setInterval(() => {
-      setCarouselIndex(prev => (prev + 1) % 4);
+      setCarouselIndex((prev) => (prev + 1) % 4);
     }, 3800);
     return () => clearInterval(timer);
   }, []);
@@ -127,7 +144,6 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
-export default function Home() {
   return (
     <div
       className="min-h-screen font-[Manrope,sans-serif] text-[#0d1b5e]"
@@ -135,13 +151,14 @@ export default function Home() {
     >
       {/* ══════ NAVBAR ══════════════════════════════════════════ */}
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-200 ${scrolled ? "shadow-sm" : ""
-          }`}
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-200 ${
+          scrolled ? "shadow-sm" : ""
+        }`}
         style={{ backgroundColor: "#ffffff" }}
       >
         <nav className="mx-auto flex h-[64px] max-w-[1140px] items-center justify-between px-6">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div
               className="flex h-8 w-8 items-center justify-center rounded-full"
               style={{ backgroundColor: "#1e2b8f" }}
@@ -151,7 +168,7 @@ export default function Home() {
             <span className="text-[15px] font-bold text-[#1e2b8f]">
               LocalSkill
             </span>
-          </a>
+          </Link>
 
           {/* Nav links */}
           <div className="hidden md:flex items-center gap-8">
@@ -177,12 +194,12 @@ export default function Home() {
 
           {/* Actions */}
           <div className="flex items-center gap-4">
-            <button
-              onClick={openModal}
+            <Link
+              href="/login"
               className="hidden sm:block text-sm font-semibold text-[#1e2b8f] hover:opacity-70 transition-opacity"
             >
               Sign In
-            </button>
+            </Link>
             <button
               onClick={openModal}
               className="text-sm font-bold text-white px-5 py-2.5 rounded-full transition-opacity hover:opacity-90 active:scale-95"
@@ -313,10 +330,11 @@ export default function Home() {
                     <button
                       key={i}
                       onClick={() => setCarouselIndex(i)}
-                      className={`rounded-full transition-all duration-300 ${carouselIndex === i
+                      className={`rounded-full transition-all duration-300 ${
+                        carouselIndex === i
                           ? "w-6 h-2 bg-white"
                           : "w-2 h-2 bg-white/50 hover:bg-white/80"
-                        }`}
+                      }`}
                     />
                   ))}
                 </div>
@@ -328,22 +346,35 @@ export default function Home() {
                   className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                   style={{ backgroundColor: "#eef1ff" }}
                 >
-                  <Icon name="payments" fill className="text-lg text-[#1e2b8f]" />
+                  <Icon
+                    name="payments"
+                    fill
+                    className="text-lg text-[#1e2b8f]"
+                  />
                 </div>
                 <div>
-                  <p className="text-xs font-extrabold text-[#1e2b8f]">15+ Methods</p>
-                  <p className="text-[10px] text-slate-400 font-medium">Secure local payments</p>
+                  <p className="text-xs font-extrabold text-[#1e2b8f]">
+                    15+ Methods
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    Secure local payments
+                  </p>
                 </div>
               </div>
 
               {/* Floating chip — bottom right (outside carousel) */}
               <div className="absolute -right-4 bottom-10 z-20 bg-white rounded-2xl shadow-xl px-4 py-3 w-[170px]">
-                <p className="text-[10px] text-slate-400 font-semibold mb-1.5">200k+ Active Tasks</p>
+                <p className="text-[10px] text-slate-400 font-semibold mb-1.5">
+                  200k+ Active Tasks
+                </p>
                 <div className="flex items-end gap-1 h-8">
                   {[35, 55, 45, 70, 60, 85].map((h, i) => (
                     <div
                       key={i}
-                      style={{ height: `${h}%`, backgroundColor: i === 5 ? "#1e2b8f" : "#c7d0f5" }}
+                      style={{
+                        height: `${h}%`,
+                        backgroundColor: i === 5 ? "#1e2b8f" : "#c7d0f5",
+                      }}
                       className="flex-1 rounded-sm"
                     />
                   ))}
@@ -484,10 +515,7 @@ export default function Home() {
               <div>
                 <div className="flex items-center gap-3 mb-7">
                   <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                    <Icon
-                      name="person_search"
-                      className="text-xl text-white"
-                    />
+                    <Icon name="person_search" className="text-xl text-white" />
                   </div>
                   <h3 className="text-lg font-extrabold text-white">
                     For Customers
@@ -585,7 +613,11 @@ export default function Home() {
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
                       style={{ backgroundColor: "#1e2b8f" }}
                     >
-                      <Icon name="check" fill className="text-[11px] text-white" />
+                      <Icon
+                        name="check"
+                        fill
+                        className="text-[11px] text-white"
+                      />
                     </div>
                     <span className="text-sm font-semibold text-[#1e2b8f]">
                       {item}
@@ -695,6 +727,7 @@ export default function Home() {
             </button>
           </div>
         </div>
+      </footer>
 
       <WaitlistModal
         isOpen={isModalOpen}

@@ -17,7 +17,7 @@ const config: Config = {
         "primary-fixed": "#dde1ff",
         "primary-fixed-dim": "#b8c4ff",
         "inverse-primary": "#b8c4ff",
-        
+
         secondary: "#0060ac",
         "secondary-container": "#64a8fe",
         "secondary-fixed": "#d4e3ff",
@@ -26,7 +26,7 @@ const config: Config = {
         "on-secondary-container": "#003c70",
         "on-secondary-fixed": "#001c39",
         "on-secondary-fixed-variant": "#004883",
-        
+
         tertiary: "#4c2e00",
         "tertiary-container": "#6b4200",
         "tertiary-fixed": "#ffddb8",
@@ -35,7 +35,7 @@ const config: Config = {
         "on-tertiary-container": "#ffa929",
         "on-tertiary-fixed": "#2a1700",
         "on-tertiary-fixed-variant": "#653e00",
-        
+
         background: "#f9f9ff",
         surface: "#f9f9ff",
         "surface-dim": "#d3daea",
@@ -48,22 +48,31 @@ const config: Config = {
         "surface-tint": "#3755c3",
         "inverse-surface": "#2a313d",
         "inverse-on-surface": "#ebf1ff",
-        
+
         "on-surface": "#151c27",
         "on-surface-variant": "#444653",
-        "outline": "#757684",
+        outline: "#757684",
         "outline-variant": "#c4c5d5",
-        
+
         error: "#ba1a1a",
         "error-container": "#ffdad6",
         "on-error": "#ffffff",
         "on-error-container": "#93000a",
       },
       fontSize: {
-        "headline-xl": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "800" }],
-        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "700" }],
+        "headline-xl": [
+          "48px",
+          { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "800" },
+        ],
+        "headline-lg": [
+          "32px",
+          { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "700" },
+        ],
         "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
-        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "700" }],
+        "headline-lg-mobile": [
+          "28px",
+          { lineHeight: "36px", fontWeight: "700" },
+        ],
         "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
         "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
         "label-md": ["14px", { lineHeight: "20px", fontWeight: "600" }],
@@ -102,7 +111,7 @@ const config: Config = {
         full: "9999px",
       },
       boxShadow: {
-        "brand": "0px 4px 20px rgba(30, 64, 175, 0.05)",
+        brand: "0px 4px 20px rgba(30, 64, 175, 0.05)",
       },
     },
   },
