@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn, isSupabaseConfigured } from "@/lib/supabase";
+import { signIn, isSupabaseConfigured, getCurrentUser } from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +14,20 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
 
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const { user } = await getCurrentUser();
+        if (user) {
+          router.push("/dashboard");
+        }
+      } catch (err) {
+        console.error("Session check error on login page:", err);
+      }
+    }
+    checkSession();
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -21,7 +35,7 @@ export default function LoginPage() {
 
     if (!isSupabaseConfigured) {
       setError(
-        "Supabase is not configured. Please check your environment variables."
+        "Supabase is not configured. Please check your environment variables.",
       );
       setIsLoading(false);
       return;
@@ -192,7 +206,9 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? (
                       <svg
@@ -242,9 +258,14 @@ export default function LoginPage() {
                     className="w-4 h-4 rounded border-gray-300 focus:ring-brand-primary"
                     style={{ accentColor: primaryColor }}
                   />
-                  <span className="text-sm text-gray-600">Keep me logged in</span>
+                  <span className="text-sm text-gray-600">
+                    Keep me logged in
+                  </span>
                 </label>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-700">
+                <a
+                  href="#"
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
                   Forgot Password?
                 </a>
               </div>

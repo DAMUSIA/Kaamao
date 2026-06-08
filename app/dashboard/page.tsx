@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getCurrentUser, supabase, UserProfile, signOut } from "@/lib/supabase";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 import {
   LayoutDashboard,
   Briefcase,
@@ -13,6 +15,7 @@ import {
   Bell,
   ChevronLeft,
   Plus,
+  LogOut,
 } from "lucide-react";
 import Image from "next/image";
 import { getCurrentUser, getUserProfile } from "@/lib/supabase";
@@ -32,7 +35,18 @@ const Sidebar: React.FC<{
   onSelect: (id: string) => void;
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
-}> = ({ menuItems, onSelect, collapsed, setCollapsed }) => {
+  profileName: string;
+  profileEmail: string;
+  onLogout: () => void;
+}> = ({
+  menuItems,
+  onSelect,
+  collapsed,
+  setCollapsed,
+  profileName,
+  profileEmail,
+  onLogout,
+}) => {
   return (
     <aside
       className={`fixed left-0 top-0 h-full bg-gradient-to-b from-brand-primary-dark via-brand-primary to-brand-primary-muted text-white transition-all duration-300 z-20 shadow-2xl ${
@@ -117,7 +131,7 @@ const Sidebar: React.FC<{
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/10 flex flex-col gap-2">
           <div
             className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}
           >
@@ -125,12 +139,31 @@ const Sidebar: React.FC<{
               <User className="h-4 w-4" />
             </div>
             {!collapsed && (
-              <div className="text-left">
-                <p className="text-xs font-medium">Alex Morgan</p>
-                <p className="text-[10px] text-white/60">Premium Pro</p>
+              <div className="text-left max-w-[150px] overflow-hidden">
+                <p className="text-xs font-medium truncate" title={profileName}>
+                  {profileName}
+                </p>
+                <p
+                  className="text-[10px] text-white/60 truncate"
+                  title={profileEmail}
+                >
+                  {profileEmail}
+                </p>
               </div>
             )}
           </div>
+
+          <button
+            type="button"
+            onClick={onLogout}
+            className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-all duration-200 text-white/70 hover:bg-red-500/20 hover:text-red-200 group ${
+              collapsed ? "justify-center" : ""
+            }`}
+            title="Log Out"
+          >
+            <LogOut className="h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
+            {!collapsed && <span className="text-sm font-medium">Log Out</span>}
+          </button>
         </div>
       </div>
     </aside>
@@ -177,6 +210,9 @@ const FloatingActionButton: React.FC<{ onClick: () => void }> = ({
 // --- Main App Component ---
 export default function Home() {
   const router = useRouter();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<SupabaseUserProfile | null>(null);
@@ -230,6 +266,94 @@ export default function Home() {
       setCurrentPage(id);
     }
   };
+
+  useEffect(() => {
+    async function checkAuthAndProfile() {
+      try {
+        const { user: authUser } = await getCurrentUser();
+        if (!authUser) {
+          router.push("/login");
+          return;
+        }
+
+        const authUserObj = authUser as SupabaseUser;
+        setUser(authUserObj);
+
+        if (supabase) {
+          // Check if profile exists in public.users
+          const { data: userProfile } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", authUserObj.id)
+            .maybeSingle();
+
+          if (userProfile) {
+            setProfile(userProfile as UserProfile);
+          } else {
+            // Profile doesn't exist (e.g. third-party login or failed insert during signup)
+            // Save user details safely via the backend API using JWT
+            const fullName =
+              authUserObj.user_metadata?.full_name ||
+              authUserObj.user_metadata?.name ||
+              authUserObj.email?.split("@")[0] ||
+              "User";
+            const email = authUserObj.email || "";
+            const phoneNo =
+              authUserObj.user_metadata?.phone_no ||
+              `google_${authUserObj.id.slice(0, 8)}`;
+
+            // Get session token for authentication
+            const { data: sessionData } = await supabase.auth.getSession();
+            const token = sessionData?.session?.access_token;
+
+            if (token) {
+              const response = await fetch("/api/auth/sync-profile", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  id: authUserObj.id,
+                  fullName,
+                  email,
+                  phoneNo,
+                }),
+              });
+
+              const result = await response.json();
+              if (response.ok && result.success) {
+                // Fetch the newly created profile
+                const { data: newProfile } = await supabase
+                  .from("users")
+                  .select("*")
+                  .eq("id", authUserObj.id)
+                  .maybeSingle();
+                if (newProfile) {
+                  setProfile(newProfile as UserProfile);
+                }
+              } else {
+                console.error(
+                  "Failed to automatically save profile in database via API:",
+                  result.error || result,
+                );
+              }
+            } else {
+              console.error(
+                "No active session JWT token found to sync profile.",
+              );
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Auth and profile loading failed:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    checkAuthAndProfile();
+  }, [router]);
 
   const menuItems: MenuItem[] = [
     {
@@ -297,6 +421,44 @@ export default function Home() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const result = await signOut();
+      if (result.success) {
+        router.push("/login");
+      } else {
+        console.error("Signout failed:", result.error);
+      }
+    } catch (err) {
+      console.error("Logout exception:", err);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-bg-light flex flex-col items-center justify-center p-4">
+        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-gray-600 font-medium animate-pulse">
+          Loading dashboard...
+        </p>
+      </div>
+    );
+  }
+
+  const pName =
+    profile?.full_name ||
+    user?.user_metadata?.full_name ||
+    user?.email?.split("@")[0] ||
+    "User";
+  const pEmail = user?.email || "";
+  const initials =
+    pName
+      .split(" ")
+      .map((n: string) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "US";
+
   return (
     <div className="min-h-screen bg-brand-bg-light font-sans antialiased">
       {/* Sidebar */}
@@ -305,6 +467,9 @@ export default function Home() {
         onSelect={handleMenuSelect}
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
+        profileName={pName}
+        profileEmail={pEmail}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area */}
@@ -339,8 +504,11 @@ export default function Home() {
                   aria-hidden="true"
                 ></span>
               </button>
-              <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-brand-primary to-brand-teal shadow-md flex items-center justify-center text-white font-medium text-sm">
-                {userInitials}
+              <div
+                className="h-9 w-9 rounded-full bg-gradient-to-tr from-brand-primary to-brand-teal shadow-md flex items-center justify-center text-white font-medium"
+                title={pName}
+              >
+                {initials}
               </div>
             </div>
           </div>

@@ -24,7 +24,8 @@ if (
 const globalForSupabase = globalThis as unknown as {
   supabaseClient: SupabaseClient | null;
 };
-let supabaseClient: SupabaseClient | null = globalForSupabase.supabaseClient || null;
+let supabaseClient: SupabaseClient | null =
+  globalForSupabase.supabaseClient || null;
 
 if (!supabaseClient) {
   try {
@@ -565,7 +566,8 @@ export async function signupWithAPI(
     }
   } catch (err) {
     console.error("Signup API error:", err);
-    const errorMessage = err instanceof Error ? err.message : "Network error. Please try again.";
+    const errorMessage =
+      err instanceof Error ? err.message : "Network error. Please try again.";
     return {
       success: false,
       error: errorMessage,
