@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn, isSupabaseConfigured } from "@/lib/supabase";
+import { signIn, isSupabaseConfigured, getCurrentUser } from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,6 +13,20 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const { user } = await getCurrentUser();
+        if (user) {
+          router.push("/dashboard");
+        }
+      } catch (err) {
+        console.error("Session check error on login page:", err);
+      }
+    }
+    checkSession();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

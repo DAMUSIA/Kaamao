@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getCurrentUser } from "@/lib/supabase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -28,6 +29,20 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const { user } = await getCurrentUser();
+        if (user) {
+          router.push("/dashboard");
+        }
+      } catch (err) {
+        console.error("Session check error on register page:", err);
+      }
+    }
+    checkSession();
+  }, [router]);
 
   const [step1Data, setStep1Data] = useState<Step1Data>({
     fullName: "",

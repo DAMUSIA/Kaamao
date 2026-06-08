@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCurrentUser, supabase, UserProfile } from "@/lib/supabase";
+import { getCurrentUser, supabase, UserProfile, signOut } from "@/lib/supabase";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import {
   LayoutDashboard,
@@ -15,6 +15,7 @@ import {
   Bell,
   ChevronLeft,
   Plus,
+  LogOut,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -34,6 +35,7 @@ const Sidebar: React.FC<{
   setCollapsed: (collapsed: boolean) => void;
   profileName: string;
   profileEmail: string;
+  onLogout: () => void;
 }> = ({
   menuItems,
   onSelect,
@@ -41,6 +43,7 @@ const Sidebar: React.FC<{
   setCollapsed,
   profileName,
   profileEmail,
+  onLogout,
 }) => {
   return (
     <aside
@@ -126,7 +129,7 @@ const Sidebar: React.FC<{
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/10 flex flex-col gap-2">
           <div
             className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}
           >
@@ -147,6 +150,18 @@ const Sidebar: React.FC<{
               </div>
             )}
           </div>
+
+          <button
+            type="button"
+            onClick={onLogout}
+            className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-all duration-200 text-white/70 hover:bg-red-500/20 hover:text-red-200 group ${
+              collapsed ? "justify-center" : ""
+            }`}
+            title="Log Out"
+          >
+            <LogOut className="h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
+            {!collapsed && <span className="text-sm font-medium">Log Out</span>}
+          </button>
         </div>
       </div>
     </aside>
@@ -223,7 +238,7 @@ export default function Home() {
             setProfile(userProfile as UserProfile);
           } else {
             // Profile doesn't exist (e.g. third-party login or failed insert during signup)
-            // Save user login details properly in the database
+            // Save user details safely via the backend API using JWT
             const fullName =
               authUserObj.user_metadata?.full_name ||
               authUserObj.user_metadata?.name ||
@@ -234,28 +249,45 @@ export default function Home() {
               authUserObj.user_metadata?.phone_no ||
               `google_${authUserObj.id.slice(0, 8)}`;
 
-            const newProfile: UserProfile = {
-              id: authUserObj.id,
-              full_name: fullName,
-              email: email,
-              phone_no: phoneNo,
-              dob: "2000-01-01", // Default date required by NOT NULL constraint
-              location_city: "Unknown", // Default city required by NOT NULL constraint
-              neighborhood: null,
-              pincode: "000000", // Default pincode required by NOT NULL constraint
-              created_at: new Date().toISOString(),
-            };
+            // Get session token for authentication
+            const { data: sessionData } = await supabase.auth.getSession();
+            const token = sessionData?.session?.access_token;
 
-            const { error: insertError } = await supabase
-              .from("users")
-              .insert(newProfile);
+            if (token) {
+              const response = await fetch("/api/auth/sync-profile", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  id: authUserObj.id,
+                  fullName,
+                  email,
+                  phoneNo,
+                }),
+              });
 
-            if (!insertError) {
-              setProfile(newProfile);
+              const result = await response.json();
+              if (response.ok && result.success) {
+                // Fetch the newly created profile
+                const { data: newProfile } = await supabase
+                  .from("users")
+                  .select("*")
+                  .eq("id", authUserObj.id)
+                  .maybeSingle();
+                if (newProfile) {
+                  setProfile(newProfile as UserProfile);
+                }
+              } else {
+                console.error(
+                  "Failed to automatically save profile in database via API:",
+                  result.error || result,
+                );
+              }
             } else {
               console.error(
-                "Failed to automatically save profile in database:",
-                insertError,
+                "No active session JWT token found to sync profile.",
               );
             }
           }
@@ -336,6 +368,19 @@ export default function Home() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const result = await signOut();
+      if (result.success) {
+        router.push("/login");
+      } else {
+        console.error("Signout failed:", result.error);
+      }
+    } catch (err) {
+      console.error("Logout exception:", err);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-brand-bg-light flex flex-col items-center justify-center p-4">
@@ -371,6 +416,7 @@ export default function Home() {
         setCollapsed={setSidebarCollapsed}
         profileName={pName}
         profileEmail={pEmail}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area */}
