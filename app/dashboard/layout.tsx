@@ -30,29 +30,64 @@ interface User {
 }
 
 // Simple Sidebar Component
-function Sidebar({ 
-  collapsed, 
-  setCollapsed, 
+function Sidebar({
+  collapsed,
+  setCollapsed,
   currentPath,
   onLogout,
   profileName,
-  profileEmail 
-}: { 
-  collapsed: boolean; 
-  setCollapsed: (val: boolean) => void; 
+  profileEmail,
+}: {
+  collapsed: boolean;
+  setCollapsed: (val: boolean) => void;
   currentPath: string;
   onLogout: () => void;
   profileName: string;
   profileEmail: string;
 }) {
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-    { id: "create-service", label: "Create Service", icon: Briefcase, href: "/dashboard/create-service" },
-    { id: "find-services", label: "Find Services", icon: Search, href: "/dashboard/find-service" },
-    { id: "nearby", label: "Nearby Providers", icon: MapPin, href: "/dashboard/nearby-service" },
-    { id: "analytics", label: "Analytics", icon: BarChart3, href: "/dashboard/analytics" },
-    { id: "profile", label: "My Profile", icon: User, href: "/dashboard/profile" },
-    { id: "settings", label: "Settings", icon: SettingsIcon, href: "/dashboard/setting" },
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/dashboard",
+    },
+    {
+      id: "create-service",
+      label: "Create Service",
+      icon: Briefcase,
+      href: "/dashboard/create-service",
+    },
+    {
+      id: "find-services",
+      label: "Find Services",
+      icon: Search,
+      href: "/dashboard/find-service",
+    },
+    {
+      id: "nearby",
+      label: "Nearby Providers",
+      icon: MapPin,
+      href: "/dashboard/nearby-service",
+    },
+    {
+      id: "analytics",
+      label: "Analytics",
+      icon: BarChart3,
+      href: "/dashboard/analytics",
+    },
+    {
+      id: "profile",
+      label: "My Profile",
+      icon: User,
+      href: "/dashboard/profile",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: SettingsIcon,
+      href: "/dashboard/setting",
+    },
   ];
 
   return (
@@ -93,7 +128,9 @@ function Sidebar({
         <nav className="flex-1 py-8 px-3 space-y-1.5 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const isActive = currentPath === item.href || currentPath?.startsWith(item.href + '/');
+            const isActive =
+              currentPath === item.href ||
+              currentPath?.startsWith(item.href + "/");
             return (
               <Link
                 key={item.id}
@@ -108,8 +145,12 @@ function Sidebar({
                   ${collapsed ? "justify-center" : ""}
                 `}
               >
-                <Icon className={`h-5 w-5 flex-shrink-0 ${isActive ? "text-white" : ""}`} />
-                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                <Icon
+                  className={`h-5 w-5 flex-shrink-0 ${isActive ? "text-white" : ""}`}
+                />
+                {!collapsed && (
+                  <span className="text-sm font-medium">{item.label}</span>
+                )}
               </Link>
             );
           })}
@@ -117,14 +158,18 @@ function Sidebar({
 
         {/* Footer */}
         <div className="p-4 border-t border-white/10 flex flex-col gap-2">
-          <div className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}>
+          <div
+            className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}
+          >
             <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
               <User className="h-4 w-4" />
             </div>
             {!collapsed && (
               <div className="text-left overflow-hidden flex-1">
                 <p className="text-xs font-medium truncate">{profileName}</p>
-                <p className="text-[10px] text-white/60 truncate">{profileEmail}</p>
+                <p className="text-[10px] text-white/60 truncate">
+                  {profileEmail}
+                </p>
               </div>
             )}
           </div>
@@ -163,17 +208,18 @@ export default function DashboardLayout({
         const { getCurrentUser } = await import("@/lib/supabase");
         const result = await getCurrentUser();
         const user = result.user as User | null;
-        
+
         if (!user) {
           router.push("/login");
           return;
         }
-        
-        const name = user.user_metadata?.full_name || 
-                    (user.email ? user.email.split("@")[0] : null) || 
-                    "User";
+
+        const name =
+          user.user_metadata?.full_name ||
+          (user.email ? user.email.split("@")[0] : null) ||
+          "User";
         const email = user.email || "";
-        
+
         setProfileName(name);
         setProfileEmail(email);
       } catch (error) {
@@ -183,7 +229,7 @@ export default function DashboardLayout({
         setIsLoading(false);
       }
     };
-    
+
     checkAuth();
   }, [router]);
 
@@ -247,9 +293,7 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        <div className="p-4 sm:p-6 lg:p-8">
-          {children}
-        </div>
+        <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </main>
     </div>
   );
