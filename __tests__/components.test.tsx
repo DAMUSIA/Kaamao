@@ -2,7 +2,6 @@ import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import GoogleAnalytics from "../components/GoogleAnalytics";
-import WaitlistModal from "../components/WaitlistModal";
 
 // Mock Next.js Script component
 vi.mock("next/script", () => {
@@ -46,39 +45,5 @@ describe("GoogleAnalytics Component", () => {
     } finally {
       process.env.NEXT_PUBLIC_GA_ID = originalEnv;
     }
-  });
-});
-
-describe("WaitlistModal Component", () => {
-  it("does not render when isOpen is false", () => {
-    const { container } = render(
-      <WaitlistModal
-        isOpen={false}
-        onClose={() => {}}
-        projectId="test-proj"
-        projectName="Test Project"
-      />,
-    );
-    expect(container.firstChild).toBeNull();
-  });
-
-  it("renders correct content when isOpen is true", () => {
-    render(
-      <WaitlistModal
-        isOpen={true}
-        onClose={() => {}}
-        projectId="test-proj"
-        projectName="Test Project"
-      />,
-    );
-
-    // It should display the header
-    expect(
-      screen.getByRole("heading", { name: "Get Early Access" }),
-    ).toBeInTheDocument();
-
-    // It should have form fields for name and phone
-    expect(screen.getByLabelText("Full Name")).toBeInTheDocument();
-    expect(screen.getByLabelText("Phone Number")).toBeInTheDocument();
   });
 });

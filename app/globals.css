@@ -4,27 +4,39 @@
 @config "../tailwind.config.ts";
 
 @theme {
-  --color-brand-primary: #1e2b8f;
-  --color-brand-primary-light: #c7d0f5;
-  --color-brand-primary-dark: #0d1b5e;
-  --color-brand-bg-light: #eef1ff;
-  --color-brand-teal: #0d9488;
-  --color-brand-white-translucent: rgba(255, 255, 255, 0.1);
-  --color-brand-bg-hover: #e0e5ff;
-  --color-brand-primary-muted: #a0b0e8;
+  --color-brand-primary: #2563eb;
+  --color-brand-primary-light: #dbeafe;
+  --color-brand-primary-dark: #1d4ed8;
+  --color-brand-bg-light: #f0f7ff;
+  --color-brand-teal: #0ea5e9;
+  --color-brand-white-translucent: rgba(255, 255, 255, 0.15);
+  --color-brand-bg-hover: #eff6ff;
+  --color-brand-primary-muted: #93c5fd;
   --color-brand-white: #ffffff;
 }
 
 :root {
-  --color-brand-primary: #1e2b8f;
-  --color-brand-primary-light: #c7d0f5;
-  --color-brand-primary-dark: #0d1b5e;
-  --color-brand-bg-light: #eef1ff;
-  --color-brand-teal: #0d9488;
-  --color-brand-white-translucent: rgba(255, 255, 255, 0.1);
-  --color-brand-bg-hover: #e0e5ff;
-  --color-brand-primary-muted: #a0b0e8;
+  --color-brand-primary: #2563eb;
+  --color-brand-primary-light: #dbeafe;
+  --color-brand-primary-dark: #1d4ed8;
+  --color-brand-bg-light: #f0f7ff;
+  --color-brand-teal: #0ea5e9;
+  --color-brand-white-translucent: rgba(255, 255, 255, 0.15);
+  --color-brand-bg-hover: #eff6ff;
+  --color-brand-primary-muted: #93c5fd;
   --color-brand-white: #ffffff;
+}
+
+.dark {
+  --color-brand-primary: #3b82f6;
+  --color-brand-primary-light: #1e293b;
+  --color-brand-primary-dark: #60a5fa;
+  --color-brand-bg-light: #0f172a;
+  --color-brand-teal: #38bdf8;
+  --color-brand-white-translucent: rgba(255, 255, 255, 0.05);
+  --color-brand-bg-hover: #1e293b;
+  --color-brand-primary-muted: #1d4ed8;
+  --color-brand-white: #1e293b;
 }
 
 .bg-brand-primary {

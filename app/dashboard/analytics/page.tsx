@@ -223,7 +223,7 @@ const analyticsData: {
     activeServices: 2,
     pausedServices: 1,
     completedJobs: 18,
-    memberSince: "May 2024",
+    memberSince: "May 2026",
   },
 
   bestPerformingService: {
@@ -256,7 +256,8 @@ const lineChartOptions: ChartOptions<"line"> = {
       borderWidth: 1,
       padding: 10,
       callbacks: {
-        label: function (context) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        label: function (context: any) {
           return `${context.dataset.label}: ${context.parsed.y}`;
         },
       },
@@ -335,7 +336,8 @@ const pieChartOptions: ChartOptions<"pie"> = {
     },
     tooltip: {
       callbacks: {
-        label: function (context) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        label: function (context: any) {
           const label = context.label || "";
           const value = context.parsed as number;
           const total = (context.dataset.data as number[]).reduce(
@@ -365,7 +367,8 @@ const doughnutChartOptions: ChartOptions<"doughnut"> = {
     },
     tooltip: {
       callbacks: {
-        label: function (context) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        label: function (context: any) {
           const label = context.label || "";
           const value = context.parsed as number;
           const total = (context.dataset.data as number[]).reduce(

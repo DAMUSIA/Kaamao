@@ -128,7 +128,7 @@ export default function ProfilePage() {
     name: "Divya Sharma",
     location: "Andheri West, Mumbai",
     age: "22",
-    joined: "May 2024",
+    joined: "May 2026",
     about:
       "I am a passionate tutor with 2+ years of experience teaching Mathematics and Science to students of classes 6-10. My teaching methodology focuses on concept clarity with regular practice sessions and doubt clearing.",
   });

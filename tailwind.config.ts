@@ -9,14 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#00288e",
-        "primary-container": "#1e40af",
+        primary: "#2563eb",
+        "primary-container": "#1d4ed8",
         "on-primary": "#ffffff",
-        "on-primary-fixed": "#001453",
-        "on-primary-fixed-variant": "#173bab",
-        "primary-fixed": "#dde1ff",
-        "primary-fixed-dim": "#b8c4ff",
-        "inverse-primary": "#b8c4ff",
+        "on-primary-fixed": "#1e3a8a",
+        "on-primary-fixed-variant": "#2563eb",
+        "primary-fixed": "#dbeafe",
+        "primary-fixed-dim": "#93c5fd",
+        "inverse-primary": "#93c5fd",
 
         secondary: "#0060ac",
         "secondary-container": "#64a8fe",

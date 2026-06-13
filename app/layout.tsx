@@ -6,14 +6,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   ),
-  title: "LocalSkill Connect | Empower Your Skills, Earn Locally",
+  title: "Kaamao | Empower Your Skills, Connect Locally",
   description:
-    "Connect with your neighbors and turn your everyday expertise into local opportunities. LocalSkill Connect is the hyperlocal service marketplace for your community.",
+    "Connect with your neighbors and turn your everyday expertise into local opportunities. Kaamao is the hyperlocal service discovery platform for your community.",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "LocalSkill Connect | Empower Your Skills, Earn Locally",
+    title: "Kaamao | Empower Your Skills, Connect Locally",
     description:
       "Connect with your neighbors. Turn your skills into local opportunities. Find services near you or offer your expertise.",
     images: [{ url: "/og-image.png" }],

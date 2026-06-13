@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("LocalSkill Connect Landing Page E2E Tests", () => {
+test.describe("Kaamao Landing Page E2E Tests", () => {
   test("should load the homepage and check main content", async ({ page }) => {
     // Navigate to homepage
     await page.goto("/");
@@ -8,8 +8,8 @@ test.describe("LocalSkill Connect Landing Page E2E Tests", () => {
     // Verify main title is visible and contains expected text
     const heading = page.locator("h1");
     await expect(heading).toBeVisible();
-    await expect(heading).toContainText("Empower Your Skills");
-    await expect(heading).toContainText("Earn Locally");
+    await expect(heading).toContainText("Find Trusted Local");
+    await expect(heading).toContainText("Skilled Workers");
 
     // Verify the rating rating section is present
     await expect(page.locator("text=Community Rating")).toBeVisible();
