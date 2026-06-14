@@ -10,7 +10,12 @@ interface AvailabilityProps {
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function Availability({ formData, WEEKDAYS, onDayToggle, onInputChange }: AvailabilityProps) {
+export default function Availability({
+  formData,
+  WEEKDAYS,
+  onDayToggle,
+  onInputChange,
+}: AvailabilityProps) {
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6 hover:shadow-2xl transition-all duration-300">
       <h2 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent mb-2 font-sans">
@@ -36,7 +41,9 @@ export default function Availability({ formData, WEEKDAYS, onDayToggle, onInputC
                     ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
-                aria-pressed={formData.selectedDays.includes(day) ? "true" : "false"}
+                aria-pressed={
+                  formData.selectedDays.includes(day) ? "true" : "false"
+                }
               >
                 {day}
               </button>
@@ -47,7 +54,10 @@ export default function Availability({ formData, WEEKDAYS, onDayToggle, onInputC
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label htmlFor="fromTime" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="fromTime"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             From
           </label>
           <input
@@ -60,7 +70,10 @@ export default function Availability({ formData, WEEKDAYS, onDayToggle, onInputC
           />
         </div>
         <div>
-          <label htmlFor="toTime" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="toTime"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             To
           </label>
           <input

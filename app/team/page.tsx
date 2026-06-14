@@ -12,7 +12,7 @@ const TEAM_MEMBERS = [
     role: "Founder & CEO",
     bio: "Akshat is the visionary founder of Kaamao, leading corporate strategy, business development, and key growth partnerships. He is focused on bridging the gap between local talent and economic opportunities.",
     initials: "AS",
-    image: "/assets/teams/akshat.jpeg",
+    image: "/assets/teams/Akshat.png",
     skills: [
       "Corporate Strategy",
       "Venture Capital",
@@ -52,7 +52,7 @@ const TEAM_MEMBERS = [
     role: "Co-Founder & Product Lead",
     bio: "Monish leads the product strategy and user experience design at Kaamao. With a background in user research and agile growth, he ensures the platform remains incredibly intuitive for all community members.",
     initials: "MS",
-    image: "/assets/teams/monish.jpeg",
+    image: "/assets/teams/Monish.png",
     skills: [
       "Product Strategy",
       "UX Design",
@@ -72,7 +72,7 @@ const TEAM_MEMBERS = [
     role: "Marketing & Operations",
     bio: "Shashank manages marketing strategy, public relations, and operational workflows. He focuses on scaling user acquisition, building community trust, and running localized outreach campaigns.",
     initials: "SS",
-    image: "/assets/teams/shashank.jpeg",
+    image: "/assets/teams/Shashank.png",
     skills: [
       "Growth Marketing",
       "Public Relations",
@@ -92,7 +92,7 @@ const TEAM_MEMBERS = [
     role: "Software Developer",
     bio: "Utkarsh is a software developer focusing on frontend features, interactive user interfaces, and state management. He ensures a smooth, highly responsive, and accessible user experience across all devices.",
     initials: "UP",
-    image: "/assets/teams/utkarsh.jpeg",
+    image: "/assets/teams/Utkarsh.png",
     skills: [
       "React",
       "Tailwind CSS",
@@ -109,7 +109,7 @@ const TEAM_MEMBERS = [
   },
   {
     name: "Sharma Divya Gurudev",
-    role: "Software Developer",
+    role: "Developer & Community Lead",
     bio: "Divya specializes in backend services, API integrations, and database performance. Divya works on optimizing search algorithms and queries to keep local discoverability fast and reliable.",
     initials: "DS",
     image: "/assets/teams/divya.png",
@@ -132,7 +132,7 @@ const TEAM_MEMBERS = [
     role: "Software Developer",
     bio: "Ankita is a software developer focused on frontend implementation, API integrations, and quality assurance. Ankita ensures code reliability and consistent UI across core flows.",
     initials: "AR",
-    image: "/assets/teams/ankita.jpeg",
+    image: "/assets/teams/Ankita.png",
     skills: [
       "React",
       "TypeScript",

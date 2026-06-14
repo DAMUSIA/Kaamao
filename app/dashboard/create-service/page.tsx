@@ -32,7 +32,12 @@ const CATEGORIES = [
   {
     value: "Tutor",
     label: "Tutor",
-    subCategories: ["Math Tutor", "Science Tutor", "English Tutor", "Language Tutor"],
+    subCategories: [
+      "Math Tutor",
+      "Science Tutor",
+      "English Tutor",
+      "Language Tutor",
+    ],
   },
   {
     value: "Tailor",
@@ -79,7 +84,9 @@ export default function CreateServicePage() {
   });
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev: ServiceFormData) => ({ ...prev, [name]: value }));
@@ -113,7 +120,8 @@ export default function CreateServicePage() {
             Create Service
           </h1>
           <p className="text-gray-600 mt-2 font-sans">
-            Fill in the details below to list your service and reach more customers.
+            Fill in the details below to list your service and reach more
+            customers.
           </p>
         </div>
 
@@ -131,10 +139,7 @@ export default function CreateServicePage() {
             onInputChange={handleInputChange}
           />
 
-          <Location
-            formData={formData}
-            onInputChange={handleInputChange}
-          />
+          <Location formData={formData} onInputChange={handleInputChange} />
 
           <Availability
             formData={formData}

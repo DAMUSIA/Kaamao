@@ -5,10 +5,15 @@ import { ServiceFormData } from "@/lib/service.types";
 
 interface AdditionalDetailsProps {
   formData: ServiceFormData;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
 }
 
-export default function AdditionalDetails({ formData, onInputChange }: AdditionalDetailsProps) {
+export default function AdditionalDetails({
+  formData,
+  onInputChange,
+}: AdditionalDetailsProps) {
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6 hover:shadow-2xl transition-all duration-300">
       <h2 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent mb-2 font-sans">
@@ -20,7 +25,10 @@ export default function AdditionalDetails({ formData, onInputChange }: Additiona
 
       <div className="space-y-5">
         <div>
-          <label htmlFor="languages" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="languages"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Languages Known
           </label>
           <input
@@ -35,7 +43,10 @@ export default function AdditionalDetails({ formData, onInputChange }: Additiona
         </div>
 
         <div>
-          <label htmlFor="qualifications" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="qualifications"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Qualifications / Certifications
           </label>
           <input
@@ -50,7 +61,10 @@ export default function AdditionalDetails({ formData, onInputChange }: Additiona
         </div>
 
         <div>
-          <label htmlFor="shortBio" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="shortBio"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Short Bio
           </label>
           <textarea

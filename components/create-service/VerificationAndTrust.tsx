@@ -8,7 +8,9 @@ interface VerificationAndTrustProps {
   formData: ServiceFormData;
 }
 
-export default function VerificationAndTrust({ formData }: VerificationAndTrustProps) {
+export default function VerificationAndTrust({
+  formData,
+}: VerificationAndTrustProps) {
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6 hover:shadow-2xl transition-all duration-300">
       <h2 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent mb-2 font-sans">
@@ -32,7 +34,7 @@ export default function VerificationAndTrust({ formData }: VerificationAndTrustP
             <AlertCircle size={20} className="text-amber-500" />
           )}
         </div>
-        
+
         <div className="flex items-center justify-between py-3 px-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
           <div className="flex items-center gap-3">
             <svg
@@ -58,7 +60,7 @@ export default function VerificationAndTrust({ formData }: VerificationAndTrustP
             <AlertCircle size={20} className="text-amber-500" />
           )}
         </div>
-        
+
         <div className="flex items-center justify-between py-3 px-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl">
           <div className="flex items-center gap-3">
             <Award size={18} className="text-gray-500" />
