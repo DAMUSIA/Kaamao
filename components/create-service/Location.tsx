@@ -20,7 +20,10 @@ export default function Location({ formData, onInputChange }: LocationProps) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div>
-          <label htmlFor="city" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="city"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             City
           </label>
           <input
@@ -33,7 +36,10 @@ export default function Location({ formData, onInputChange }: LocationProps) {
           />
         </div>
         <div>
-          <label htmlFor="locality" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="locality"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Area / Locality
           </label>
           <input
@@ -47,7 +53,10 @@ export default function Location({ formData, onInputChange }: LocationProps) {
           />
         </div>
         <div>
-          <label htmlFor="pincode" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="pincode"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Pincode
           </label>
           <input

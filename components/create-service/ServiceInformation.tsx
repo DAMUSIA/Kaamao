@@ -13,14 +13,18 @@ interface ServiceInformationProps {
   formData: ServiceFormData;
   CATEGORIES: Category[];
   EXPERIENCE_OPTIONS: string[];
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onInputChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => void;
 }
 
-export default function ServiceInformation({ 
-  formData, 
-  CATEGORIES, 
-  EXPERIENCE_OPTIONS, 
-  onInputChange 
+export default function ServiceInformation({
+  formData,
+  CATEGORIES,
+  EXPERIENCE_OPTIONS,
+  onInputChange,
 }: ServiceInformationProps) {
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6 hover:shadow-2xl transition-all duration-300">
@@ -33,7 +37,10 @@ export default function ServiceInformation({
 
       <div className="space-y-5">
         <div>
-          <label htmlFor="category" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="category"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Service Category
           </label>
           <select
@@ -52,7 +59,10 @@ export default function ServiceInformation({
         </div>
 
         <div>
-          <label htmlFor="subCategory" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="subCategory"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Sub-category
           </label>
           <select
@@ -63,7 +73,9 @@ export default function ServiceInformation({
             className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 font-sans bg-white"
           >
             <option value="">Select a sub-category</option>
-            {CATEGORIES.find((c) => c.value === formData.category)?.subCategories.map((sub) => (
+            {CATEGORIES.find(
+              (c) => c.value === formData.category,
+            )?.subCategories.map((sub) => (
               <option key={sub} value={sub}>
                 {sub}
               </option>
@@ -72,7 +84,10 @@ export default function ServiceInformation({
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="description"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Description
           </label>
           <textarea
@@ -87,7 +102,10 @@ export default function ServiceInformation({
         </div>
 
         <div>
-          <label htmlFor="experience" className="block text-sm font-semibold text-gray-700 mb-2 font-sans">
+          <label
+            htmlFor="experience"
+            className="block text-sm font-semibold text-gray-700 mb-2 font-sans"
+          >
             Experience
           </label>
           <select
