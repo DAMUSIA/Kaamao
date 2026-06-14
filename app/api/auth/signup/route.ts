@@ -23,38 +23,32 @@ export async function POST(request: Request) {
       fullName,
       phoneNo,
       dob,
-      locationCity,
-      neighborhood,
-      pincode,
+      location,
     } = body;
 
-    if (
-      !email ||
-      !password ||
-      !fullName ||
-      !phoneNo ||
-      !dob ||
-      !locationCity ||
-      !pincode
-    ) {
+    // Only Name, Phone Number, and Password are strictly required now
+    if (!fullName || !phoneNo || !password) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Missing required fields. Name, Phone Number, and Password are required." },
         { status: 400 },
       );
     }
+
+    const phoneDigits = phoneNo.replace(/\D/g, "");
+    if (phoneDigits.length < 10) {
+      return NextResponse.json(
+        { error: "Please enter a valid phone number (at least 10 digits)" },
+        { status: 400 },
+      );
+    }
+
+    // Generate unique pseudo-email if email is not provided (allows normal email/pass login in Supabase)
+    const finalEmail = email || `phone_${phoneDigits}@kaamao.com`;
 
     const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(finalEmail)) {
       return NextResponse.json(
         { error: "Please enter a valid email address" },
-        { status: 400 },
-      );
-    }
-
-    const phoneRegex = /^\d{10}$/;
-    if (!phoneRegex.test(phoneNo.replace(/\D/g, ""))) {
-      return NextResponse.json(
-        { error: "Please enter a valid 10-digit phone number" },
         { status: 400 },
       );
     }
@@ -68,7 +62,7 @@ export async function POST(request: Request) {
 
     const { data: authData, error: authError } =
       await supabaseAdmin.auth.admin.createUser({
-        email,
+        email: finalEmail,
         password,
         email_confirm: true,
         user_metadata: {
@@ -80,9 +74,9 @@ export async function POST(request: Request) {
     if (authError) {
       console.error("Auth error:", authError);
 
-      if (authError.message.includes("User already registered")) {
+      if (authError.message.includes("User already registered") || authError.message.includes("email already exists")) {
         return NextResponse.json(
-          { error: "This email is already registered. Please login instead." },
+          { error: "This phone number or email is already registered. Please login instead." },
           { status: 400 },
         );
       }
@@ -97,15 +91,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const { error: insertError } = await supabaseAdmin.from("users").insert({
+    const { error: insertError } = await supabaseAdmin.from("users").upsert({
       id: authData.user.id,
       full_name: fullName,
-      email: email,
+      email: null,
       phone_no: phoneNo,
-      dob: dob,
-      location_city: locationCity,
-      neighborhood: neighborhood || null,
-      pincode: pincode,
+      dob: dob || null,
+      location: location || null,
+      about: null,
       created_at: new Date().toISOString(),
     });
 
@@ -140,6 +133,12 @@ export async function POST(request: Request) {
           errorMessage =
             "This email is already registered. Please login instead.";
         }
+      } else if (
+        insertError.message?.toLowerCase().includes("not-null") ||
+        insertError.message?.toLowerCase().includes("not_null") ||
+        insertError.code === "23502"
+      ) {
+        errorMessage = `Database constraint error: ${insertError.message}. Please run the SQL migration queries in supabase_schema.sql in your Supabase SQL Editor.`;
       }
 
       return NextResponse.json({ error: errorMessage }, { status: 400 });

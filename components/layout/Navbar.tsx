@@ -90,9 +90,9 @@ export default function Navbar({ darkMode, onToggleDarkMode }: NavbarProps) {
 
           <Link
             href="/register"
-            className="text-sm font-bold text-white px-5 py-2.5 rounded-full bg-brand-primary shadow-lg shadow-blue-500/20 hover:shadow-blue-500/35 hover:opacity-95 hover:-translate-y-0.5 transition-all active:scale-95 text-center inline-block"
+            className="hidden sm:inline-block text-sm font-bold text-white px-5 py-2.5 rounded-full bg-brand-primary shadow-lg shadow-blue-500/20 hover:shadow-blue-500/35 hover:opacity-95 hover:-translate-y-0.5 transition-all active:scale-95 text-center"
           >
-            Join as Provider
+            Register Now
           </Link>
 
           {/* Mobile Hamburg Navigator */}
@@ -161,7 +161,7 @@ export default function Navbar({ darkMode, onToggleDarkMode }: NavbarProps) {
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full text-center text-sm font-bold text-white py-2.5 rounded-xl bg-brand-primary hover:opacity-95 transition-opacity shadow-md shadow-blue-500/10"
                 >
-                  Join as Provider
+                  Register Now
                 </Link>
               </div>
             </div>

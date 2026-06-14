@@ -20,7 +20,6 @@ vi.mock("next/script", () => {
 // Mock Supabase lib
 vi.mock("../lib/supabase", () => {
   return {
-    submitWaitlist: vi.fn(() => Promise.resolve({ success: true })),
     isSupabaseConfigured: true,
   };
 });

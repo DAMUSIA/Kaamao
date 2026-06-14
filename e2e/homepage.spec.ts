@@ -15,13 +15,13 @@ test.describe("Kaamao Landing Page E2E Tests", () => {
     await expect(page.locator("text=Community Rating")).toBeVisible();
   });
 
-  test("should navigate to register page when clicking Join as Provider", async ({
+  test("should navigate to register page when clicking Register Now", async ({
     page,
   }) => {
     await page.goto("/");
 
-    // Locate the 'Join as Provider' CTA link and click it
-    const ctaButton = page.locator('a:has-text("Join as Provider")').first();
+    // Locate the 'Register Now' CTA link and click it
+    const ctaButton = page.locator('a:has-text("Register Now")').first();
     await expect(ctaButton).toBeVisible();
     await ctaButton.click();
 

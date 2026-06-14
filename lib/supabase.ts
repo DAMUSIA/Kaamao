@@ -41,13 +41,11 @@ if (!supabaseClient) {
 // Types
 export interface UserRegistrationData {
   fullName: string;
-  email: string;
   phoneNo: string;
   password: string;
-  dob: string;
-  locationCity: string;
-  neighborhood?: string;
-  pincode: string;
+  email?: string;
+  dob?: string;
+  location?: string;
 }
 
 export interface UserLoginData {
@@ -58,21 +56,15 @@ export interface UserLoginData {
 export interface UserProfile {
   id: string;
   full_name: string;
-  email: string;
-  phone_no: string;
-  dob: string;
-  location_city: string;
-  neighborhood: string | null;
-  pincode: string;
+  email: string | null;
+  phone_no: string | null;
+  dob: string | null;
+  gender?: string | null;
+  location: string | null;
+  about: string | null;
   created_at: string;
 }
 
-export interface UserSubmission {
-  name: string;
-  phone: string;
-  gender: string;
-  dob: string;
-}
 
 export interface SignUpResponse {
   success: boolean;
@@ -123,7 +115,10 @@ export async function signUp(
     };
   }
 
-  const rateLimit = checkRateLimit(userData.email);
+  const cleanPhone = userData.phoneNo.replace(/\D/g, "");
+  const finalEmail = userData.email || `phone_${cleanPhone}@kaamao.com`;
+
+  const rateLimit = checkRateLimit(finalEmail);
   if (!rateLimit.allowed) {
     return {
       success: false,
@@ -135,7 +130,7 @@ export async function signUp(
   try {
     const { data: authData, error: authError } =
       await supabaseClient.auth.signUp({
-        email: userData.email,
+        email: finalEmail,
         password: userData.password,
         options: {
           data: {
@@ -157,10 +152,10 @@ export async function signUp(
         };
       }
 
-      if (authError.message.includes("User already registered")) {
+      if (authError.message.includes("User already registered") || authError.message.includes("email already exists")) {
         return {
           success: false,
-          error: "This email is already registered. Please login instead.",
+          error: "This phone number or email is already registered. Please login instead.",
         };
       }
 
@@ -181,15 +176,14 @@ export async function signUp(
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const { error: profileError } = await supabaseClient.from("users").insert({
+    const { error: profileError } = await supabaseClient.from("users").upsert({
       id: userId,
       full_name: userData.fullName,
-      email: userData.email,
+      email: null,
       phone_no: userData.phoneNo,
-      dob: userData.dob,
-      location_city: userData.locationCity,
-      neighborhood: userData.neighborhood || null,
-      pincode: userData.pincode,
+      dob: userData.dob || null,
+      location: userData.location || null,
+      about: null,
       created_at: new Date().toISOString(),
     });
 
@@ -342,145 +336,6 @@ export async function getUserProfile(userId: string): Promise<{
   }
 }
 
-// ==================== WAITLIST FUNCTIONS ====================
-
-async function ensureProjectExists(
-  registrationNumber: string,
-  projectName: string,
-): Promise<number | null> {
-  if (!isSupabaseConfigured || !supabaseClient) {
-    console.warn("Supabase not configured, cannot ensure project exists");
-    return null;
-  }
-
-  try {
-    const { data: project } = await supabaseClient
-      .from("projects")
-      .select("project_id")
-      .eq("registration_number", registrationNumber)
-      .maybeSingle();
-
-    if (project) {
-      return project.project_id;
-    }
-
-    console.log("Project not found, creating new project...");
-    const { data: newProject, error: insertError } = await supabaseClient
-      .from("projects")
-      .insert([
-        {
-          registration_number: registrationNumber,
-          project_name: projectName,
-          registered_people_count: 0,
-        },
-      ])
-      .select("project_id")
-      .maybeSingle();
-
-    if (insertError) {
-      console.error("Error creating project:", insertError);
-      return null;
-    }
-
-    return newProject?.project_id || null;
-  } catch (err) {
-    console.error("Exception in ensureProjectExists:", err);
-    return null;
-  }
-}
-
-export async function submitWaitlist(
-  data: UserSubmission,
-  projectId: string,
-): Promise<{ success: boolean; error?: string }> {
-  if (!isSupabaseConfigured || !supabaseClient) {
-    return {
-      success: false,
-      error:
-        "Supabase is not configured. Please set your environment variables.",
-    };
-  }
-
-  try {
-    const numericProjectId = await ensureProjectExists(
-      projectId,
-      projectId === "damusia" ? "Damusia" : projectId,
-    );
-
-    if (!numericProjectId) {
-      return {
-        success: false,
-        error: "Unable to create or find project.",
-      };
-    }
-
-    const { data: existingUsers, error: checkError } = await supabaseClient
-      .from("interested_users")
-      .select("id")
-      .eq("project_id", numericProjectId)
-      .eq("phone_number", data.phone.trim())
-      .limit(1);
-
-    if (checkError) {
-      console.error("Supabase check error:", checkError);
-      return {
-        success: false,
-        error: "Database verification failed. Please try again.",
-      };
-    }
-
-    if (existingUsers && existingUsers.length > 0) {
-      return {
-        success: false,
-        error: "This phone number has already shown interest.",
-      };
-    }
-
-    const { error: insertError } = await supabaseClient
-      .from("interested_users")
-      .insert([
-        {
-          project_id: numericProjectId,
-          full_name: data.name.trim(),
-          phone_number: data.phone.trim(),
-          gender: data.gender,
-          date_of_birth: data.dob,
-        },
-      ]);
-
-    if (insertError) {
-      console.error("Supabase insertion error:", insertError);
-      if (insertError.code === "23505") {
-        return {
-          success: false,
-          error: "This phone number has already shown interest.",
-        };
-      }
-      return { success: false, error: insertError.message };
-    }
-
-    const { data: projectData } = await supabaseClient
-      .from("projects")
-      .select("registered_people_count")
-      .eq("project_id", numericProjectId)
-      .single();
-
-    if (projectData) {
-      const newCount = (projectData.registered_people_count || 0) + 1;
-      await supabaseClient
-        .from("projects")
-        .update({ registered_people_count: newCount })
-        .eq("project_id", numericProjectId);
-    }
-
-    return { success: true };
-  } catch (err) {
-    console.error("Supabase connection exception:", err);
-    const message =
-      err instanceof Error ? err.message : "Database connection failed";
-    return { success: false, error: message };
-  }
-}
 
 export async function logClick(
   visitorId: string,
@@ -505,28 +360,6 @@ export async function logClick(
   }
 }
 
-export async function getInterestCount(projectId: string): Promise<number> {
-  if (!isSupabaseConfigured || !supabaseClient) {
-    return 428;
-  }
-
-  try {
-    const { data: projectData, error: projectError } = await supabaseClient
-      .from("projects")
-      .select("project_id, registered_people_count")
-      .eq("registration_number", projectId)
-      .maybeSingle();
-
-    if (projectError || !projectData) {
-      return 0;
-    }
-
-    return projectData.registered_people_count || 0;
-  } catch (err) {
-    console.error("Count exception:", err);
-    return 0;
-  }
-}
 
 // ==================== API-BASED SIGNUP (Bypasses Rate Limits) ====================
 
@@ -545,9 +378,7 @@ export async function signupWithAPI(
         fullName: userData.fullName,
         phoneNo: userData.phoneNo,
         dob: userData.dob,
-        locationCity: userData.locationCity,
-        neighborhood: userData.neighborhood,
-        pincode: userData.pincode,
+        location: userData.location,
       }),
     });
 
@@ -590,4 +421,30 @@ export async function getUserMetadata(): Promise<unknown | null> {
     return (user as { user_metadata: unknown }).user_metadata;
   }
   return null;
+}
+
+export async function updateUserProfile(
+  userId: string,
+  profileData: Partial<UserProfile>,
+): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured || !supabaseClient) {
+    return { success: false, error: "Supabase not configured" };
+  }
+
+  try {
+    const { error } = await supabaseClient
+      .from("users")
+      .update(profileData)
+      .eq("id", userId);
+
+    if (error) {
+      console.error("Update profile error:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("Update profile exception:", err);
+    return { success: false, error: "Failed to update profile" };
+  }
 }

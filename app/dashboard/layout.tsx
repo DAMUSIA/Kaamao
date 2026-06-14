@@ -235,6 +235,7 @@ export default function DashboardLayout({
         const { getCurrentUser } = await import("@/lib/supabase");
         const result = await getCurrentUser();
         const user = result.user as User | null;
+        const session = result.session as any;
 
         if (!user) {
           router.push("/login");
@@ -249,6 +250,28 @@ export default function DashboardLayout({
 
         setProfileName(name);
         setProfileEmail(email);
+
+        // Sync profile to public.users if token is available
+        const token = session?.access_token;
+        if (user.id && token) {
+          try {
+            await fetch("/api/auth/sync-profile", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                id: user.id,
+                fullName: name,
+                email: email,
+                phoneNo: user.user_metadata?.phone_no || "",
+              }),
+            });
+          } catch (syncError) {
+            console.error("Failed to sync profile:", syncError);
+          }
+        }
       } catch (error) {
         console.error("Auth check failed:", error);
         router.push("/login");

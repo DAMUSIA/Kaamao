@@ -24,9 +24,9 @@ export async function POST(request: Request) {
     const token = authHeader.split(" ")[1];
 
     const body = await request.json();
-    const { id, fullName, email, phoneNo, dob, locationCity, pincode } = body;
+    const { id, fullName, email, phoneNo, dob, location } = body;
 
-    if (!id || !fullName || !email) {
+    if (!id || !fullName) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
@@ -58,15 +58,18 @@ export async function POST(request: Request) {
       });
     }
 
+    const isPseudoEmail = email && email.startsWith("phone_") && email.endsWith("@kaamao.com");
+    const dbEmail = isPseudoEmail ? null : (email || null);
+
     // Insert new profile using service role (bypasses RLS)
     const { error: insertError } = await supabaseAdmin.from("users").insert({
       id,
       full_name: fullName,
-      email,
-      phone_no: phoneNo || `google_${id.slice(0, 8)}`,
-      dob: dob || "2000-01-01",
-      location_city: locationCity || "Unknown",
-      pincode: pincode || "000000",
+      email: dbEmail,
+      phone_no: phoneNo || null,
+      dob: dob || null,
+      location: location || null,
+      about: null,
       created_at: new Date().toISOString(),
     });
 
