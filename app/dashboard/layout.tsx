@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,8 +17,8 @@ import {
   Menu,
   Sparkles,
   X,
-  Search,
 } from "lucide-react";
+import { createPortal } from "react-dom";
 
 // ============================================
 // Types
@@ -81,28 +81,10 @@ function useMediaQuery(query: string): boolean {
 // ============================================
 // Animation Variants
 // ============================================
-const fadeInOut = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 },
-};
-
-const slideInLeft = {
-  initial: { x: -SIDEBAR_WIDTH, opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-  exit: { x: -SIDEBAR_WIDTH, opacity: 0 },
-};
-
 const modalVariants = {
   initial: { opacity: 0, scale: 0.95, y: 20 },
   animate: { opacity: 1, scale: 1, y: 0 },
   exit: { opacity: 0, scale: 0.95, y: 20 },
-};
-
-const pageTransition = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
 };
 
 // ============================================
@@ -134,7 +116,7 @@ function DesktopSidebar({
       <div className="flex items-center h-20 px-4 border-b border-white/5 flex-shrink-0">
         <div className="flex items-center gap-2.5 overflow-hidden flex-1">
           <AnimatePresence mode="wait">
-            {!collapsed && (
+            {!collapsed ? (
               <motion.div
                 key="logo-expanded"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -150,10 +132,7 @@ function DesktopSidebar({
                   Kaamao
                 </span>
               </motion.div>
-            )}
-          </AnimatePresence>
-          <AnimatePresence mode="wait">
-            {collapsed && (
+            ) : (
               <motion.div
                 key="logo-collapsed"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -433,8 +412,68 @@ function MobileSidebar({
 }
 
 // ============================================
-// Logout Modal Component
+// Logout Modal Component - PORTAL RENDERED
 // ============================================
+function LogoutModalContent({
+  onClose,
+  onConfirm,
+}: {
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+      />
+
+      <motion.div
+        variants={modalVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="logout-title"
+      >
+        <div className="p-6 text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-red-50 to-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/10">
+            <LogOut className="h-7 w-7" />
+          </div>
+
+          <h3 id="logout-title" className="text-xl font-bold text-slate-800 mb-2">
+            Logout?
+          </h3>
+          <p className="text-sm text-slate-500 leading-relaxed">
+            Are you sure you want to logout? You'll need to login again to access your dashboard.
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 px-6 pb-6">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-medium text-sm hover:bg-slate-50 active:scale-95 transition-all focus:ring-2 focus:ring-slate-300 focus:outline-none cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-red-500 text-white font-medium text-sm hover:shadow-lg hover:shadow-red-500/30 active:scale-95 transition-all focus:ring-2 focus:ring-red-400 focus:outline-none cursor-pointer"
+          >
+            Logout
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 function LogoutModal({
   isOpen,
   onClose,
@@ -444,104 +483,22 @@ function LogoutModal({
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
     <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-          />
-
-          <motion.div
-            variants={modalVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-[440px] mx-4 overflow-hidden"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="logout-title"
-          >
-            <div className="p-6 text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-red-50 to-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/10">
-                <LogOut className="h-7 w-7" />
-              </div>
-
-              <h3 id="logout-title" className="text-xl font-bold text-slate-800 mb-2">
-                Logout?
-              </h3>
-              <p className="text-sm text-slate-500 leading-relaxed max-w mx-auto">
-                Are you sure you want to logout? You'll need to login again to access your dashboard.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 px-6 pb-6">
-              <button
-                onClick={onClose}
-                className="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-medium text-sm hover:bg-slate-50 active:scale-95 transition-all focus:ring-2 focus:ring-slate-300 focus:outline-none"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={onConfirm}
-                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-red-500 text-white font-medium text-sm hover:shadow-lg hover:shadow-red-500/30 active:scale-95 transition-all focus:ring-2 focus:ring-red-400 focus:outline-none"
-              >
-                Logout
-              </button>
-            </div>
-          </motion.div>
-        </div>
+      {isOpen && createPortal(
+        <LogoutModalContent onClose={onClose} onConfirm={onConfirm} />,
+        document.body
       )}
     </AnimatePresence>
-  );
-}
-
-// ============================================
-// Page Content Wrapper with Transitions
-// ============================================
-function PageContent({ children, pathname }: { children: React.ReactNode; pathname: string }) {
-  const getPageTitle = () => {
-    switch (pathname) {
-      case "/dashboard":
-        return { title: "Dashboard", subtitle: "Welcome back!" };
-      case "/dashboard/create-service":
-        return { title: "Create Service", subtitle: "List your teaching service" };
-      case "/dashboard/nearby-service":
-        return { title: "Nearby Providers", subtitle: "Find tutors and services near you" };
-      case "/dashboard/analytics":
-        return { title: "Analytics", subtitle: "Track your performance" };
-      case "/dashboard/profile":
-        return { title: "My Profile", subtitle: "Manage your personal information" };
-      case "/dashboard/setting":
-        return { title: "Settings", subtitle: "Manage your preferences" };
-      default:
-        return { title: "Dashboard", subtitle: "" };
-    }
-  };
-
-  const { title, subtitle } = getPageTitle();
-
-  return (
-    <motion.div
-      key={pathname}
-      variants={pageTransition}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="space-y-6"
-    >
-      <div>
-        <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
-        {subtitle && <p className="text-sm text-slate-500">{subtitle}</p>}
-      </div>
-      {children}
-    </motion.div>
   );
 }
 
@@ -649,6 +606,26 @@ export default function DashboardLayout({
     }
   };
 
+  // Get page title based on pathname
+  const getPageTitle = () => {
+    switch (pathname) {
+      case "/dashboard":
+        return "Dashboard";
+      case "/dashboard/create-service":
+        return "Create Service";
+      case "/dashboard/nearby-service":
+        return "Nearby Providers";
+      case "/dashboard/analytics":
+        return "Analytics";
+      case "/dashboard/profile":
+        return "My Profile";
+      case "/dashboard/setting":
+        return "Settings";
+      default:
+        return "";
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -702,77 +679,31 @@ export default function DashboardLayout({
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden p-2 rounded-xl hover:bg-white/50 text-slate-600 transition active:scale-95 flex-shrink-0 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="md:hidden p-2 rounded-xl hover:bg-white/50 text-slate-600 transition active:scale-95 flex-shrink-0 focus:ring-2 focus:ring-blue-400 focus:outline-none cursor-pointer"
               aria-label="Open sidebar"
             >
               <Menu className="h-6 w-6" />
             </motion.button>
 
             {/* Page Title */}
-            <div className="flex-1 min-w-0">
-              <motion.div
-                key={pathname}
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-              >
-                {pathname === "/dashboard" && (
-                  <>
-                    <h1 className="text-xl font-bold text-slate-800 truncate">Dashboard</h1>
-                    <p className="text-sm text-slate-500 hidden sm:block truncate">
-                      Welcome back, {profileName}!
-                    </p>
-                  </>
-                )}
-                {pathname === "/dashboard/create-service" && (
-                  <>
-                    <h1 className="text-xl font-bold text-slate-800 truncate">Create Service</h1>
-                    <p className="text-sm text-slate-500 hidden sm:block truncate">
-                      List your teaching service
-                    </p>
-                  </>
-                )}
-                {pathname === "/dashboard/nearby-service" && (
-                  <>
-                    <h1 className="text-xl font-bold text-slate-800 truncate">Nearby Providers</h1>
-                    <p className="text-sm text-slate-500 hidden sm:block truncate">
-                      Find tutors and services near you
-                    </p>
-                  </>
-                )}
-                {pathname === "/dashboard/analytics" && (
-                  <>
-                    <h1 className="text-xl font-bold text-slate-800 truncate">Analytics</h1>
-                    <p className="text-sm text-slate-500 hidden sm:block truncate">
-                      Track your performance
-                    </p>
-                  </>
-                )}
-                {pathname === "/dashboard/profile" && (
-                  <>
-                    <h1 className="text-xl font-bold text-slate-800 truncate">My Profile</h1>
-                    <p className="text-sm text-slate-500 hidden sm:block truncate">
-                      Manage your personal information
-                    </p>
-                  </>
-                )}
-                {pathname === "/dashboard/setting" && (
-                  <>
-                    <h1 className="text-xl font-bold text-slate-800 truncate">Settings</h1>
-                    <p className="text-sm text-slate-500 hidden sm:block truncate">
-                      Manage your preferences
-                    </p>
-                  </>
-                )}
-              </motion.div>
-            </div>
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="flex-1"
+            >
+              <h1 className="text-xl font-bold text-slate-800 truncate">
+                {getPageTitle()}
+              </h1>
+            </motion.div>
 
             {/* Right Side */}
             <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative p-2 rounded-xl hover:bg-white/50 transition focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                className="relative p-2 rounded-xl hover:bg-white/50 transition focus:ring-2 focus:ring-blue-400 focus:outline-none cursor-pointer"
                 aria-label="Notifications"
               >
                 <Bell className="h-5 w-5 text-slate-600" />
@@ -780,7 +711,8 @@ export default function DashboardLayout({
               </motion.button>
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+                className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 cursor-pointer"
+                onClick={() => router.push("/dashboard/profile")}
               >
                 {profileName.charAt(0).toUpperCase()}
               </motion.div>
@@ -788,17 +720,13 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* Page Content with Transition */}
+        {/* Page Content */}
         <div className="p-4 sm:p-6 lg:p-8">
-          <AnimatePresence mode="wait">
-            <PageContent key={pathname} pathname={pathname || "/dashboard"}>
-              {children}
-            </PageContent>
-          </AnimatePresence>
+          {children}
         </div>
       </motion.main>
 
-      {/* Logout Modal */}
+      {/* Logout Modal - Portal Rendered */}
       <LogoutModal
         isOpen={showLogoutConfirm}
         onClose={() => setShowLogoutConfirm(false)}
