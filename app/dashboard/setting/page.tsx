@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   getCurrentUser,
   getUserProfile,
-  updateUserProfile,
   UserProfile,
   supabase,
 } from "@/lib/supabase";
@@ -29,7 +28,6 @@ export default function SettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
 
   // States
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -69,7 +67,6 @@ export default function SettingsPage() {
           return;
         }
 
-        setUserId(user.id);
         const { success, profile: dbProfile } = await getUserProfile(user.id);
         
         if (success && dbProfile) {
@@ -129,9 +126,10 @@ export default function SettingsPage() {
         newPassword: "",
         confirmPassword: "",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to change password:", err);
-      alert(err.message || "Failed to change password. Please try again.");
+      const errorObj = err as { message?: string } | null;
+      alert(errorObj?.message || "Failed to change password. Please try again.");
     } finally {
       setIsUpdatingPassword(false);
     }
@@ -166,9 +164,10 @@ export default function SettingsPage() {
 
       router.push("/login");
       router.refresh();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to logout:", err);
-      alert(err.message || "Failed to logout. Please try again.");
+      const errorObj = err as { message?: string } | null;
+      alert(errorObj?.message || "Failed to logout. Please try again.");
     } finally {
       setIsLoggingOut(false);
       setShowLogoutConfirm(false);

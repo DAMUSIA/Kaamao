@@ -10,7 +10,6 @@ import {
   ChevronDown,
   ChevronUp,
   Award,
-  Calendar,
 } from "lucide-react";
 import { UserProfile } from "@/lib/supabase";
 

@@ -113,6 +113,7 @@ export default function TrustSection({
           <button
             onClick={() => onShowToast("Safety guidelines coming soon...")}
             className="text-sm font-bold text-brand-primary border border-brand-primary-light bg-brand-bg-light hover:bg-brand-bg-hover rounded-xl px-7 py-3.5 transition-all active:scale-95 cursor-pointer hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:text-blue-400 dark:hover:bg-slate-750"
+            suppressHydrationWarning
           >
             Learn About Our Safety Standards
           </button>

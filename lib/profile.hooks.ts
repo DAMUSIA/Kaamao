@@ -13,9 +13,6 @@ import { useState, useEffect, useCallback } from "react";
 import type {
   ExtendedUserProfile,
   StatisticsData,
-  PersonalInfo,
-  ProfessionalInfo,
-  LocationInfo,
   VerificationStatus,
   ProfileUpdatePayload,
   FormErrors,
@@ -37,6 +34,7 @@ import type {
  * const { profile, loading, error, refetch } = useProfile(userId);
  */
 export function useProfile(userId?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [profile, setProfile] = useState<ExtendedUserProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, MessageCircle, Share2, Check, Copy } from "lucide-react";
+import { Phone, MessageCircle, Share2, Check } from "lucide-react";
 
 interface PortfolioContactProps {
   contactNumbers: string[];

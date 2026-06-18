@@ -5,9 +5,6 @@ import React from "react";
 export default function PortfolioLoading() {
   return (
     <div className="min-h-screen bg-slate-50/50 pb-16 animate-pulse">
-      {/* Navbar skeleton */}
-      <div className="bg-white border-b border-slate-100 h-16 w-full" />
-
       {/* Content wrapper skeleton */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Hero Card Skeleton */}

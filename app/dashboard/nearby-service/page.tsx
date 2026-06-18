@@ -382,9 +382,10 @@ export default function NearbyServicePage() {
       loadReviews(selectedService.id);
       setUserComment("");
       setUserRating(0);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to submit review:", err);
-      let errMsg = err?.message || (err instanceof Error ? err.message : String(err));
+      const errorObj = err as { message?: string } | null;
+      let errMsg = errorObj?.message || (err instanceof Error ? err.message : String(err));
       // User-friendly translation for common Supabase schema unique constraint violation error
       if (errMsg && errMsg.includes("service_ratings_user_service_unique")) {
         errMsg = "You have already submitted a review for this tutor/service.";

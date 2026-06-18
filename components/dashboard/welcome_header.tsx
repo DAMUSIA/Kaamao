@@ -34,7 +34,7 @@ export function WelcomeHeader({ userName, onAddService }: WelcomeHeaderProps) {
             Welcome back, <span className="text-blue-100">{userName}</span>! 
           </h1>
           <p className="text-blue-100/70 mt-1 text-sm">
-            Here's what's happening with your teaching services.
+            Here&apos;s what&apos;s happening with your teaching services.
           </p>
         </div>
 

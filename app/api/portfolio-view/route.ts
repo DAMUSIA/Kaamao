@@ -26,10 +26,24 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if the analytics record exists
+    // 1. Increment views_count on services table
+    const { data: serviceRow } = await supabaseAdmin
+      .from("services")
+      .select("views_count")
+      .eq("id", serviceId)
+      .single();
+
+    if (serviceRow) {
+      await supabaseAdmin
+        .from("services")
+        .update({ views_count: (serviceRow.views_count || 0) + 1 })
+        .eq("id", serviceId);
+    }
+
+    // 2. Increment total_views and portfolio_views in service_analytics table
     const { data: analyticsRow, error: fetchError } = await supabaseAdmin
       .from("service_analytics")
-      .select("portfolio_views")
+      .select("total_views, portfolio_views")
       .eq("service_id", serviceId)
       .maybeSingle();
 
@@ -39,11 +53,13 @@ export async function POST(request: Request) {
     }
 
     if (analyticsRow) {
-      const currentViews = analyticsRow.portfolio_views || 0;
+      const currentTotalViews = analyticsRow.total_views || 0;
+      const currentPortViews = analyticsRow.portfolio_views || 0;
       const { error: updateError } = await supabaseAdmin
         .from("service_analytics")
         .update({
-          portfolio_views: currentViews + 1,
+          total_views: currentTotalViews + 1,
+          portfolio_views: currentPortViews + 1,
           updated_at: new Date().toISOString()
         })
         .eq("service_id", serviceId);
@@ -57,6 +73,7 @@ export async function POST(request: Request) {
         .from("service_analytics")
         .insert({
           service_id: serviceId,
+          total_views: 1,
           portfolio_views: 1,
           updated_at: new Date().toISOString()
         });
@@ -71,10 +88,11 @@ export async function POST(request: Request) {
       success: true,
       message: "Portfolio view logged successfully"
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("API portfolio view error:", error);
+    const err = error as { message?: string } | null;
     return NextResponse.json(
-      { error: error?.message || "Internal server error" },
+      { error: err?.message || "Internal server error" },
       { status: 500 }
     );
   }
