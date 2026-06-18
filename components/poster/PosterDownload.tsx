@@ -182,7 +182,7 @@ export default function PosterDownload({
         portfolioUrl
       )}`;
 
-      await new Promise<void>((resolve, reject) => {
+      await new Promise<void>((resolve) => {
         const qrImage = new Image();
         qrImage.crossOrigin = "anonymous"; // Essential to avoid "tainted canvas" error
         qrImage.src = qrCodeUrl;

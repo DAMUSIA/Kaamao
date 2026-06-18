@@ -44,7 +44,7 @@ export function RecentReviews({ reviews }: RecentReviewsProps) {
                   {review.users?.full_name}
                 </span>
                 <span className="text-[10px] text-slate-400 font-semibold">
-                  on "{review.services?.title}"
+                  on &ldquo;{review.services?.title}&rdquo;
                 </span>
               </div>
               <span className="text-[10px] font-semibold text-slate-400">

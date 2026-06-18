@@ -44,6 +44,7 @@ export default function Footer({ onShowToast }: FooterProps) {
               key={l}
               onClick={() => onShowToast("Coming soon...")}
               className="text-[12px] text-slate-500 dark:text-slate-400 hover:text-brand-primary dark:hover:text-brand-primary transition-colors cursor-pointer"
+              suppressHydrationWarning
             >
               {l}
             </button>
@@ -62,6 +63,7 @@ export default function Footer({ onShowToast }: FooterProps) {
             onClick={() => onShowToast("Share coming soon...")}
             className="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-brand-primary hover:border-brand-primary-light transition-all cursor-pointer"
             aria-label="Share"
+            suppressHydrationWarning
           >
             <Icon
               name="share"
@@ -72,6 +74,7 @@ export default function Footer({ onShowToast }: FooterProps) {
             onClick={() => onShowToast("Language settings coming soon...")}
             className="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-brand-primary hover:border-brand-primary-light transition-all cursor-pointer"
             aria-label="Select Language"
+            suppressHydrationWarning
           >
             <Icon
               name="language"

@@ -19,7 +19,6 @@ import {
   X,
   Globe,
 } from "lucide-react";
-import { createPortal } from "react-dom";
 import { supabase } from "@/lib/supabase"; // Import supabase directly
 
 // ============================================
@@ -69,6 +68,7 @@ function useMediaQuery(query: string): boolean {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const media = window.matchMedia(query);
     setMatches(media.matches);
@@ -84,11 +84,11 @@ function useMediaQuery(query: string): boolean {
 // ============================================
 // Animation Variants
 // ============================================
-const modalVariants = {
-  initial: { opacity: 0, scale: 0.95, y: 20 },
-  animate: { opacity: 1, scale: 1, y: 0 },
-  exit: { opacity: 0, scale: 0.95, y: 20 },
-};
+// const modalVariants = {
+//   initial: { opacity: 0, scale: 0.95, y: 20 },
+//   animate: { opacity: 1, scale: 1, y: 0 },
+//   exit: { opacity: 0, scale: 0.95, y: 20 },
+// };
 
 // ============================================
 // Desktop Sidebar Component
@@ -435,6 +435,7 @@ export default function DashboardLayout({
   const [profileName, setProfileName] = useState("User");
   const [profileEmail, setProfileEmail] = useState("");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const isMobile = useMediaQuery("(max-width: 767px)");
@@ -495,10 +496,11 @@ export default function DashboardLayout({
 
   // Close mobile sidebar on route change
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile && mobileSidebarOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMobileSidebarOpen(false);
     }
-  }, [pathname, isMobile]);
+  }, [pathname, isMobile, mobileSidebarOpen]);
 
   // Handle escape key
   useEffect(() => {

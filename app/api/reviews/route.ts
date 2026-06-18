@@ -140,10 +140,11 @@ export async function POST(request: Request) {
       totalReviews,
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("API reviews error:", error);
+    const err = error as { message?: string } | null;
     return NextResponse.json(
-      { error: error?.message || "Internal server error" },
+      { error: err?.message || "Internal server error" },
       { status: 500 },
     );
   }

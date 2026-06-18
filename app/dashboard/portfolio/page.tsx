@@ -17,7 +17,6 @@ import {
   FileImage,
 } from "lucide-react";
 import { getCurrentUser, supabase } from "@/lib/supabase";
-import PosterPreview from "@/components/poster/PosterPreview";
 
 interface ServiceItem {
   id: string;
@@ -46,7 +45,6 @@ export default function DashboardPortfolioPage() {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [selectedServiceId, setSelectedServiceId] = useState<string>("");
   const [copied, setCopied] = useState(false);
-  const [isPosterModalOpen, setIsPosterModalOpen] = useState(false);
 
   useEffect(() => {
     async function loadPortfolioServices() {
@@ -69,7 +67,7 @@ export default function DashboardPortfolioPage() {
 
         if (fetchError) throw fetchError;
 
-        const formatted = (data || []).map((s: any) => {
+        const formatted = (data as Record<string, unknown>[] || []).map((s) => {
           // Normalize service_analytics if it returned as an array or object
           let analytics = null;
           if (s.service_analytics) {
@@ -80,15 +78,15 @@ export default function DashboardPortfolioPage() {
           return {
             ...s,
             service_analytics: analytics,
-          };
+          } as ServiceItem;
         });
 
-        setServices(formatted as ServiceItem[]);
+        setServices(formatted);
 
         if (formatted.length > 0) {
           setSelectedServiceId(formatted[0].id);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Dashboard portfolio loading error:", err);
         setError("Failed to load your services. Please refresh the page.");
       } finally {
@@ -262,7 +260,7 @@ export default function DashboardPortfolioPage() {
               </div>
 
               <button
-                onClick={() => setIsPosterModalOpen(true)}
+                onClick={() => router.push(`/dashboard/portfolio/poster/${activeService.id}`)}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 bg-blue-600 hover:bg-blue-750 text-white text-xs font-extrabold rounded-2xl transition cursor-pointer active:scale-95 shrink-0 shadow-md shadow-blue-500/10"
               >
                 <FileImage className="h-4 w-4" />
@@ -359,15 +357,6 @@ export default function DashboardPortfolioPage() {
         </div>
       )}
 
-      {/* Poster Generator Modal */}
-      {activeService && (
-        <PosterPreview
-          isOpen={isPosterModalOpen}
-          onClose={() => setIsPosterModalOpen(false)}
-          service={activeService}
-          portfolioUrl={portfolioUrl}
-        />
-      )}
     </div>
   );
 }

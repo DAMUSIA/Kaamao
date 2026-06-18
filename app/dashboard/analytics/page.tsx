@@ -8,7 +8,6 @@ import {
   Heart,
   Star,
   MessageSquare,
-  Briefcase,
   Plus,
   Loader2,
   AlertCircle,
@@ -42,6 +41,7 @@ interface ServiceItem {
   created_at: string;
   service_analytics?: {
     portfolio_views: number;
+    total_views?: number;
     total_contacts: number;
   } | null;
 }
@@ -78,12 +78,12 @@ export default function AnalyticsPage() {
 
         const { data, error: servicesError } = await supabase
           .from("services")
-          .select("id, title, category, views_count, likes_count, reviews_count, rating_average, created_at, service_analytics(portfolio_views, total_contacts)")
+          .select("id, title, category, views_count, likes_count, reviews_count, rating_average, created_at, service_analytics(total_views, portfolio_views, total_contacts)")
           .eq("user_id", user.id);
 
         if (servicesError) throw servicesError;
 
-        const formatted = (data || []).map((s: any) => {
+        const formatted = (data as Record<string, unknown>[] || []).map((s) => {
           let analytics = null;
           if (s.service_analytics) {
             analytics = Array.isArray(s.service_analytics)
@@ -198,12 +198,13 @@ export default function AnalyticsPage() {
   }
 
   // ── Stats summary ──────────────────────────────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const totalServices = services.length;
   const totalViews = services.reduce((sum, s) => sum + (s.views_count || 0), 0);
   const totalLikes = services.reduce((sum, s) => sum + (s.likes_count || 0), 0);
   const totalReviews = services.reduce((sum, s) => sum + (s.reviews_count || 0), 0);
   const totalPortfolioViews = services.reduce(
-    (sum, s) => sum + (s.service_analytics?.portfolio_views || 0),
+    (sum, s) => sum + (s.service_analytics?.total_views || s.service_analytics?.portfolio_views || 0),
     0
   );
   const totalContacts = services.reduce(
@@ -537,7 +538,7 @@ export default function AnalyticsPage() {
                     <td className="px-6 py-4 font-bold text-slate-800">{service.title}</td>
                     <td className="px-6 py-4">{service.category}</td>
                     <td className="px-6 py-4 text-center">{service.views_count || 0}</td>
-                    <td className="px-6 py-4 text-center">{service.service_analytics?.portfolio_views || 0}</td>
+                    <td className="px-6 py-4 text-center">{service.service_analytics?.total_views || service.service_analytics?.portfolio_views || 0}</td>
                     <td className="px-6 py-4 text-center">{service.likes_count || 0}</td>
                     <td className="px-6 py-4 text-center">{service.reviews_count || 0}</td>
                     <td className="px-6 py-4 text-center">{service.service_analytics?.total_contacts || 0}</td>

@@ -13,6 +13,12 @@
   --color-brand-bg-hover: #eff6ff;
   --color-brand-primary-muted: #93c5fd;
   --color-brand-white: #ffffff;
+
+  /* Custom colors used in dashboard, portfolio, and poster templates */
+  --color-blue-650: #1d4ed8;
+  --color-slate-750: #293548;
+  --color-slate-850: #162235;
+  --color-slate-105: #ebf0f5;
 }
 
 :root {
@@ -25,6 +31,10 @@
   --color-brand-bg-hover: #eff6ff;
   --color-brand-primary-muted: #93c5fd;
   --color-brand-white: #ffffff;
+  --color-blue-650: #1d4ed8;
+  --color-slate-750: #293548;
+  --color-slate-850: #162235;
+  --color-slate-105: #ebf0f5;
 }
 
 .dark {
@@ -37,6 +47,10 @@
   --color-brand-bg-hover: #1e293b;
   --color-brand-primary-muted: #1d4ed8;
   --color-brand-white: #1e293b;
+  --color-blue-650: #60a5fa;
+  --color-slate-750: #1e293b;
+  --color-slate-850: #0f172a;
+  --color-slate-105: #1e293b;
 }
 
 .bg-brand-primary {

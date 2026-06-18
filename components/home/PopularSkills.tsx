@@ -54,6 +54,7 @@ export default function PopularSkills({
           <button
             onClick={() => onShowToast("Categories directory coming soon...")}
             className="flex items-center gap-1.5 text-sm font-bold text-brand-primary dark:text-blue-400 hover:opacity-85 transition-opacity whitespace-nowrap shrink-0 cursor-pointer text-left"
+            suppressHydrationWarning
           >
             <span>View All Categories</span>
             <Icon name="arrow_forward" className="text-base" />
@@ -66,6 +67,7 @@ export default function PopularSkills({
             <motion.button
               key={s.title}
               onClick={() => onShowToast("Skill listings coming soon...")}
+              suppressHydrationWarning
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

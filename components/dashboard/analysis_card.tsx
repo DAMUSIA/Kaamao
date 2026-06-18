@@ -17,6 +17,7 @@ export function AnalyticsCard({
   totalViews,
   totalLikes,
   averageRating,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   totalReviews,
 }: AnalyticsCardProps) {
   const stats = [

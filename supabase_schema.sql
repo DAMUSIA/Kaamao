@@ -150,3 +150,9 @@ CREATE POLICY "Allow public insert to service_analytics" ON public.service_analy
 
 CREATE POLICY "Allow public update to service_analytics" ON public.service_analytics 
   FOR UPDATE USING (true) WITH CHECK (true);
+
+
+-- 6. Add social links jsonb to public.users
+ALTER TABLE public.users
+ADD COLUMN IF NOT EXISTS social_links jsonb DEFAULT '{}'::jsonb;
+

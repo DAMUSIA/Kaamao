@@ -74,6 +74,7 @@ export default function Navbar({ darkMode, onToggleDarkMode }: NavbarProps) {
             onClick={onToggleDarkMode}
             className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-brand-primary transition-all active:scale-90"
             aria-label="Toggle Theme"
+            suppressHydrationWarning
           >
             <Icon
               name={darkMode ? "light_mode" : "dark_mode"}
@@ -100,6 +101,7 @@ export default function Navbar({ darkMode, onToggleDarkMode }: NavbarProps) {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95"
             aria-label="Toggle Menu"
+            suppressHydrationWarning
           >
             <Icon
               name={mobileMenuOpen ? "close" : "menu"}

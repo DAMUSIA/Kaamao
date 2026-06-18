@@ -99,6 +99,7 @@ export default function Hero({ onShowToast }: HeroProps) {
                 onChange={(e) => setSkill(e.target.value)}
                 placeholder="What skill do you need?"
                 className="w-full bg-transparent outline-none text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                suppressHydrationWarning
               />
             </div>
             <div className="flex flex-1 items-center gap-2 px-3 py-2.5">
@@ -111,11 +112,13 @@ export default function Hero({ onShowToast }: HeroProps) {
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Near your neighborhood"
                 className="w-full bg-transparent outline-none text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                suppressHydrationWarning
               />
             </div>
             <button
               onClick={() => onShowToast("Search functionality coming soon...")}
               className="shrink-0 text-white bg-brand-primary font-bold text-sm px-8 py-3 sm:py-0 rounded-xl hover:opacity-95 active:scale-95 transition-all cursor-pointer shadow-lg shadow-blue-500/20"
+              suppressHydrationWarning
             >
               Search
             </button>
@@ -135,6 +138,7 @@ export default function Hero({ onShowToast }: HeroProps) {
                 element?.scrollIntoView({ behavior: "smooth" });
               }}
               className="px-6 py-3.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-750 hover:bg-slate-50 dark:hover:bg-slate-750 hover:-translate-y-0.5 transition-all active:scale-95 text-center cursor-pointer"
+              suppressHydrationWarning
             >
               Find Services
             </button>
@@ -216,6 +220,7 @@ export default function Hero({ onShowToast }: HeroProps) {
                       : "w-2 h-2 bg-white/50 hover:bg-white"
                   }`}
                   aria-label={`Slide ${i + 1}`}
+                  suppressHydrationWarning
                 />
               ))}
             </div>
