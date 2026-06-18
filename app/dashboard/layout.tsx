@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { createPortal } from "react-dom";
+import { supabase } from "@/lib/supabase"; // Import supabase directly
 
 // ============================================
 // Types
@@ -518,6 +519,7 @@ export default function DashboardLayout({
   const [profileName, setProfileName] = useState("User");
   const [profileEmail, setProfileEmail] = useState("");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const isMobile = useMediaQuery("(max-width: 767px)");
 
@@ -594,15 +596,34 @@ export default function DashboardLayout({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [showLogoutConfirm, mobileSidebarOpen]);
 
+  // Fixed logout handler
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
-      const { signOut } = await import("@/lib/supabase");
-      const result = await signOut();
-      if (result.success) {
-        router.push("/login");
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error("Logout error:", error);
+        alert(error.message || "Failed to logout. Please try again.");
+        setIsLoggingOut(false);
+        return;
       }
+
+      // Clear any stored data
+      if (typeof window !== "undefined") {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+
+      // Close modal and redirect
+      setShowLogoutConfirm(false);
+      router.push("/login");
+      router.refresh();
     } catch (err) {
       console.error("Logout failed:", err);
+      alert("Failed to logout. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -730,10 +751,7 @@ export default function DashboardLayout({
       <LogoutModal
         isOpen={showLogoutConfirm}
         onClose={() => setShowLogoutConfirm(false)}
-        onConfirm={() => {
-          setShowLogoutConfirm(false);
-          handleLogout();
-        }}
+        onConfirm={handleLogout}
       />
     </div>
   );

@@ -571,12 +571,12 @@ export default function NearbyServicePage() {
 
         {/* Empty State */}
         {!loading && !error && filteredServices.length === 0 && (
-          <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl p-8 shadow-xs max-w-xl mx-auto">
+          <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl p-8 shadow-xs max-w mx-auto">
             <div className="w-16 h-16 bg-blue-50/50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100/50">
               <Search className="h-6 w-6" />
             </div>
             <h3 className="text-lg font-extrabold text-slate-800">No Services Found</h3>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1 leading-relaxed">
+            <p className="text-xs text-slate-400 max-w mx-auto mt-1 leading-relaxed">
               We couldn&apos;t find any services matching &quot;{searchQuery}&quot; under &quot;{selectedCategory}&quot;. Try adjusting your search query or chips.
             </p>
           </div>
