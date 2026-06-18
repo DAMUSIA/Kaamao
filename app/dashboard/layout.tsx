@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
   Briefcase,
-  Search,
   MapPin,
   BarChart3,
   User,
@@ -15,9 +14,14 @@ import {
   Bell,
   ChevronLeft,
   LogOut,
+  Menu,
+  Sparkles,
+  X,
 } from "lucide-react";
 
-// Define proper types
+// ============================================
+// Types
+// ============================================
 interface UserMetadata {
   full_name?: string;
   avatar_url?: string;
@@ -30,16 +34,59 @@ interface User {
   user_metadata?: UserMetadata;
 }
 
-// Simple Sidebar Component
-function Sidebar({
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: React.ElementType;
+  href: string;
+}
+
+// ============================================
+// Constants
+// ============================================
+const MENU_ITEMS: MenuItem[] = [
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { id: "create-service", label: "Create Service", icon: Briefcase, href: "/dashboard/create-service" },
+  { id: "nearby", label: "Nearby Providers", icon: MapPin, href: "/dashboard/nearby-service" },
+  { id: "analytics", label: "Analytics", icon: BarChart3, href: "/dashboard/analytics" },
+  { id: "profile", label: "My Profile", icon: User, href: "/dashboard/profile" },
+  { id: "settings", label: "Settings", icon: SettingsIcon, href: "/dashboard/setting" },
+];
+
+const SIDEBAR_WIDTH = 280;
+const SIDEBAR_COLLAPSED_WIDTH = 72;
+
+// ============================================
+// Custom Hook: useMediaQuery
+// ============================================
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const media = window.matchMedia(query);
+    setMatches(media.matches);
+
+    const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, [query]);
+
+  // Return false during SSR to avoid hydration mismatch
+  return mounted ? matches : false;
+}
+
+// ============================================
+// Desktop Sidebar Component
+// ============================================
+function DesktopSidebar({
   collapsed,
   setCollapsed,
   currentPath,
   onLogout,
   profileName,
   profileEmail,
-  onCloseMobile,
-  mobileOpen,
 }: {
   collapsed: boolean;
   setCollapsed: (val: boolean) => void;
@@ -47,168 +94,367 @@ function Sidebar({
   onLogout: () => void;
   profileName: string;
   profileEmail: string;
-  onCloseMobile: () => void;
-  mobileOpen: boolean;
 }) {
-  const menuItems = [
-    {
-      id: "dashboard",
-      label: "Dashboard",
-      icon: LayoutDashboard,
-      href: "/dashboard",
-    },
-    {
-      id: "create-service",
-      label: "Create Service",
-      icon: Briefcase,
-      href: "/dashboard/create-service",
-    },
-    {
-      id: "nearby",
-      label: "Nearby Providers",
-      icon: MapPin,
-      href: "/dashboard/nearby-service",
-    },
-    {
-      id: "analytics",
-      label: "Analytics",
-      icon: BarChart3,
-      href: "/dashboard/analytics",
-    },
-    {
-      id: "profile",
-      label: "My Profile",
-      icon: User,
-      href: "/dashboard/profile",
-    },
-    {
-      id: "settings",
-      label: "Settings",
-      icon: SettingsIcon,
-      href: "/dashboard/setting",
-    },
-  ];
+  const width = collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
 
   return (
-    <aside
-      className={`fixed left-0 top-0 h-full bg-brand-primary text-white transition-all duration-300 z-30 shadow-xl w-64 md:translate-x-0 ${
-        collapsed ? "md:w-20" : "md:w-64"
-      } ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
+    <motion.aside
+      initial={false}
+      animate={{ width }}
+      transition={{
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+      }}
+      className="hidden md:flex fixed left-0 top-0 h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white z-30 shadow-2xl overflow-hidden flex-col"
+      style={{ width }}
     >
-      <div className="flex flex-col h-full">
-        {/* Logo Area */}
-        <div
-          className={`flex items-center h-20 px-6 border-b border-white/10 ${
-            collapsed ? "md:justify-center" : "justify-between"
-          }`}
-        >
-          {(!collapsed || mobileOpen) && (
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">K</span>
-              </div>
-              <span className="font-bold text-xl tracking-tight">Kaamao</span>
-            </div>
-          )}
-          {collapsed && !mobileOpen && (
-            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">K</span>
-            </div>
-          )}
-          <button
-            onClick={() => {
-              if (window.innerWidth < 768) {
-                onCloseMobile();
-              } else {
-                setCollapsed(!collapsed);
-              }
+      {/* Logo Area */}
+      <div className="flex items-center h-20 px-4 border-b border-white/5 flex-shrink-0">
+        <div className="flex items-center gap-2.5 overflow-hidden flex-1">
+          <motion.div
+            className="flex items-center gap-2.5 flex-shrink-0"
+            animate={{
+              opacity: collapsed ? 0 : 1,
+              scale: collapsed ? 0.8 : 1,
             }}
-            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            transition={{ duration: 0.2, ease: "easeInOut" }}
           >
-            <ChevronLeft
-              className={`h-5 w-5 transition-transform duration-300 ${
-                collapsed ? "md:rotate-180" : ""
-              }`}
-            />
-          </button>
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent whitespace-nowrap">
+              Kaamao
+            </span>
+          </motion.div>
         </div>
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="p-1.5 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0 ml-auto"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <motion.div
+            animate={{ rotate: collapsed ? 180 : 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </motion.div>
+        </button>
+      </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 py-8 px-3 space-y-1.5 overflow-y-auto">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive =
-              item.href === "/dashboard"
-                ? currentPath === "/dashboard"
-                : currentPath === item.href ||
-                  currentPath?.startsWith(item.href + "/");
-            return (
+      {/* Navigation */}
+      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        {MENU_ITEMS.map((item, index) => {
+          const Icon = item.icon;
+          const isActive =
+            item.href === "/dashboard"
+              ? currentPath === "/dashboard"
+              : currentPath === item.href ||
+                currentPath?.startsWith(item.href + "/");
+
+          return (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.03, duration: 0.2 }}
+            >
               <Link
-                key={item.id}
                 href={item.href}
-                onClick={onCloseMobile}
                 className={`
-                  w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group
-                  ${
-                    isActive
-                      ? "bg-white/20 shadow-lg text-white"
-                      : "text-white/70 hover:bg-white/10 hover:text-white"
+                  w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group relative
+                  ${isActive
+                    ? "bg-white/15 shadow-lg text-white"
+                    : "text-white/60 hover:bg-white/10 hover:text-white"
                   }
-                  ${collapsed ? "md:justify-center" : ""}
+                  ${collapsed ? "justify-center" : ""}
                 `}
+                aria-current={isActive ? "page" : undefined}
               >
                 <Icon
-                  className={`h-5 w-5 flex-shrink-0 ${isActive ? "text-white" : ""}`}
+                  className={`h-5 w-5 flex-shrink-0 ${
+                    isActive ? "text-white" : "group-hover:text-white"
+                  }`}
                 />
-                {(!collapsed || mobileOpen) && (
-                  <span className="text-sm font-medium">{item.label}</span>
+                <motion.span
+                  animate={{
+                    opacity: collapsed ? 0 : 1,
+                    width: collapsed ? 0 : "auto",
+                  }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="text-sm font-medium overflow-hidden whitespace-nowrap"
+                >
+                  {item.label}
+                </motion.span>
+                {isActive && !collapsed && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="absolute right-2 w-1 h-6 bg-gradient-to-b from-blue-400 to-purple-400 rounded-full"
+                  />
                 )}
               </Link>
-            );
-          })}
-        </nav>
+            </motion.div>
+          );
+        })}
+      </nav>
 
-        {/* Footer */}
-        <div
-          className={`p-4 border-t border-white/10 flex items-center gap-2 ${
-            collapsed ? "md:justify-center" : "justify-between"
+      {/* User Profile & Logout */}
+      <div className="p-3 border-t border-white/5 flex-shrink-0">
+        <motion.div
+          animate={{
+            padding: collapsed ? "8px" : "12px",
+          }}
+          transition={{ duration: 0.2 }}
+          className={`flex items-center gap-3 rounded-xl hover:bg-white/5 transition-colors ${
+            collapsed ? "justify-center" : ""
           }`}
         >
-          {/* Profile Name & Avatar on the left */}
-          {(!collapsed || mobileOpen) && (
-            <div className="flex items-center gap-2 overflow-hidden flex-1 min-w-0">
-              <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-                <User className="h-4 w-4" />
-              </div>
-              <div className="text-left overflow-hidden flex-1 min-w-0">
-                <p className="text-xs font-semibold truncate text-white">
-                  {profileName}
-                </p>
-                <p className="text-[9px] text-white/60 truncate">
-                  {profileEmail}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Logout on the right */}
-          <button
-            onClick={onLogout}
-            title="Log Out"
-            className="flex items-center gap-2 p-2 rounded-xl text-white/70 hover:bg-red-500/20 hover:text-red-200 transition-all active:scale-95 flex-shrink-0"
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg shadow-blue-500/20 flex-shrink-0">
+            {profileName.charAt(0).toUpperCase()}
+          </div>
+          <motion.div
+            animate={{
+              opacity: collapsed ? 0 : 1,
+              width: collapsed ? 0 : "auto",
+            }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="overflow-hidden flex-1 min-w-0"
           >
-            {(!collapsed || mobileOpen) && (
-              <span className="text-xs font-semibold">Log Out</span>
-            )}
-            <LogOut className="h-5 w-5 flex-shrink-0" />
-          </button>
-        </div>
+            <p className="text-sm font-semibold text-white truncate">
+              {profileName}
+            </p>
+            <p className="text-xs text-white/40 truncate">{profileEmail}</p>
+          </motion.div>
+        </motion.div>
+
+        <motion.button
+          onClick={onLogout}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.95 }}
+          className={`w-full mt-2 flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/50 hover:text-red-200 hover:bg-red-500/20 transition-all group ${
+            collapsed ? "justify-center" : ""
+          }`}
+          aria-label="Logout"
+        >
+          <LogOut className="h-5 w-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+          <motion.span
+            animate={{
+              opacity: collapsed ? 0 : 1,
+              width: collapsed ? 0 : "auto",
+            }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="text-sm font-medium overflow-hidden whitespace-nowrap"
+          >
+            Logout
+          </motion.span>
+        </motion.button>
       </div>
-    </aside>
+    </motion.aside>
   );
 }
 
-// Main Layout Export
+// ============================================
+// Mobile Sidebar Component
+// ============================================
+function MobileSidebar({
+  isOpen,
+  onClose,
+  currentPath,
+  onLogout,
+  profileName,
+  profileEmail,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  currentPath: string;
+  onLogout: () => void;
+  profileName: string;
+  profileEmail: string;
+}) {
+  return (
+    <>
+      {/* Backdrop */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm md:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Drawer */}
+      <motion.aside
+        initial={false}
+        animate={{
+          x: isOpen ? 0 : -SIDEBAR_WIDTH,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: [0.4, 0, 0.2, 1],
+        }}
+        className="fixed left-0 top-0 h-full w-[280px] bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white z-50 shadow-2xl md:hidden overflow-hidden"
+      >
+        <div className="flex flex-col h-full w-[280px]">
+          {/* Logo Area */}
+          <div className="flex items-center h-20 px-4 border-b border-white/5 flex-shrink-0">
+            <div className="flex items-center gap-2.5 flex-1">
+              <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent whitespace-nowrap">
+                Kaamao
+              </span>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0"
+              aria-label="Close sidebar"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+            {MENU_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const isActive =
+                item.href === "/dashboard"
+                  ? currentPath === "/dashboard"
+                  : currentPath === item.href ||
+                    currentPath?.startsWith(item.href + "/");
+
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={onClose}
+                  className={`
+                    w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group
+                    ${isActive
+                      ? "bg-white/15 shadow-lg text-white"
+                      : "text-white/60 hover:bg-white/10 hover:text-white"
+                    }
+                  `}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  <Icon
+                    className={`h-5 w-5 flex-shrink-0 ${
+                      isActive ? "text-white" : "group-hover:text-white"
+                    }`}
+                  />
+                  <span className="text-sm font-medium">{item.label}</span>
+                  {isActive && (
+                    <div className="ml-auto w-1 h-6 bg-gradient-to-b from-blue-400 to-purple-400 rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* User Profile & Logout */}
+          <div className="p-3 border-t border-white/5 flex-shrink-0">
+            <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg shadow-blue-500/20 flex-shrink-0">
+                {profileName.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">
+                  {profileName}
+                </p>
+                <p className="text-xs text-white/40 truncate">{profileEmail}</p>
+              </div>
+            </div>
+
+            <button
+              onClick={onLogout}
+              className="w-full mt-2 flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/50 hover:text-red-200 hover:bg-red-500/20 transition-all group"
+            >
+              <LogOut className="h-5 w-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium">Logout</span>
+            </button>
+          </div>
+        </div>
+      </motion.aside>
+    </>
+  );
+}
+
+// ============================================
+// Logout Modal Component
+// ============================================
+function LogoutModal({
+  isOpen,
+  onClose,
+  onConfirm,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logout-title"
+          >
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-red-50 to-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/10">
+                <LogOut className="h-7 w-7" />
+              </div>
+
+              <h3 id="logout-title" className="text-xl font-bold text-slate-800 mb-2">
+                Logout?
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed max-w-sm mx-auto">
+                Are you sure you want to logout? You'll need to login again to access your dashboard.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 px-6 pb-6">
+              <button
+                onClick={onClose}
+                className="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-medium text-sm hover:bg-slate-50 active:scale-95 transition-all focus:ring-2 focus:ring-slate-300 focus:outline-none"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={onConfirm}
+                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-red-500 text-white font-medium text-sm hover:shadow-lg hover:shadow-red-500/30 active:scale-95 transition-all focus:ring-2 focus:ring-red-400 focus:outline-none"
+              >
+                Logout
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ============================================
+// Main Layout
+// ============================================
 export default function DashboardLayout({
   children,
 }: {
@@ -223,6 +469,10 @@ export default function DashboardLayout({
   const [profileEmail, setProfileEmail] = useState("");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+  // Use media query hook for responsive detection
+  const isMobile = useMediaQuery("(max-width: 767px)");
+
+  // Auth check
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -245,7 +495,6 @@ export default function DashboardLayout({
         setProfileName(name);
         setProfileEmail(email);
 
-        // Sync profile to public.users if token is available
         const token = session?.access_token;
         if (user.id && token) {
           try {
@@ -277,6 +526,25 @@ export default function DashboardLayout({
     checkAuth();
   }, [router]);
 
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    if (isMobile) {
+      setMobileSidebarOpen(false);
+    }
+  }, [pathname, isMobile]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showLogoutConfirm) setShowLogoutConfirm(false);
+        if (mobileSidebarOpen) setMobileSidebarOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [showLogoutConfirm, mobileSidebarOpen]);
+
   const handleLogout = async () => {
     try {
       const { signOut } = await import("@/lib/supabase");
@@ -291,7 +559,7 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="relative">
           <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
           <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-purple-600 rounded-full animate-pulse"></div>
@@ -300,137 +568,148 @@ export default function DashboardLayout({
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Mobile Sidebar Overlay Backdrop */}
-      {mobileSidebarOpen && (
-        <div
-          onClick={() => setMobileSidebarOpen(false)}
-          className="fixed inset-0 z-20 bg-slate-950/40 backdrop-blur-xs md:hidden"
-        />
-      )}
+  // Calculate content margin based on sidebar state
+  const contentMarginLeft = isMobile ? 0 : sidebarCollapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
 
-      <Sidebar
+  return (
+    <div className="min-h-screen bg-slate-50">
+      {/* Desktop Sidebar - Only visible on desktop */}
+      <DesktopSidebar
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
         currentPath={pathname || ""}
         onLogout={() => setShowLogoutConfirm(true)}
         profileName={profileName}
         profileEmail={profileEmail}
-        onCloseMobile={() => setMobileSidebarOpen(false)}
-        mobileOpen={mobileSidebarOpen}
       />
 
-      <main
-        className={`transition-all duration-300 min-h-screen ml-0 ${
-          sidebarCollapsed ? "md:ml-20" : "md:ml-64"
-        }`}
+      {/* Mobile Sidebar - Only visible on mobile */}
+      <MobileSidebar
+        isOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
+        currentPath={pathname || ""}
+        onLogout={() => setShowLogoutConfirm(true)}
+        profileName={profileName}
+        profileEmail={profileEmail}
+      />
+
+      {/* Main Content */}
+      <motion.main
+        animate={{
+          marginLeft: contentMarginLeft,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: [0.4, 0, 0.2, 1],
+        }}
+        className="min-h-screen"
       >
-        <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b shadow-sm">
+        {/* Top Navbar */}
+        <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm">
           <div className="px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
-            {/* Hamburger Mobile Menu Toggle Button */}
-            <button
+            {/* Mobile Menu Button */}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden p-2 rounded-xl hover:bg-gray-100 text-gray-600 transition active:scale-95 flex-shrink-0"
+              className="md:hidden p-2 rounded-xl hover:bg-white/50 text-slate-600 transition active:scale-95 flex-shrink-0 focus:ring-2 focus:ring-blue-400 focus:outline-none"
               aria-label="Open sidebar"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
+              <Menu className="h-6 w-6" />
+            </motion.button>
+
+            {/* Page Title */}
+            <div className="flex-1 min-w-0">
+              <motion.div
+                key={pathname}
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
+                {pathname === "/dashboard" && (
+                  <>
+                    <h1 className="text-xl font-bold text-slate-800 truncate">Dashboard</h1>
+                    <p className="text-sm text-slate-500 hidden sm:block truncate">
+                      Welcome back, {profileName}!
+                    </p>
+                  </>
+                )}
+                {pathname === "/dashboard/create-service" && (
+                  <>
+                    <h1 className="text-xl font-bold text-slate-800 truncate">Create Service</h1>
+                    <p className="text-sm text-slate-500 hidden sm:block truncate">
+                      List your teaching service
+                    </p>
+                  </>
+                )}
+                {pathname === "/dashboard/nearby-service" && (
+                  <>
+                    <h1 className="text-xl font-bold text-slate-800 truncate">Nearby Providers</h1>
+                    <p className="text-sm text-slate-500 hidden sm:block truncate">
+                      Find tutors and services near you
+                    </p>
+                  </>
+                )}
+                {pathname === "/dashboard/analytics" && (
+                  <>
+                    <h1 className="text-xl font-bold text-slate-800 truncate">Analytics</h1>
+                    <p className="text-sm text-slate-500 hidden sm:block truncate">
+                      Track your performance
+                    </p>
+                  </>
+                )}
+                {pathname === "/dashboard/profile" && (
+                  <>
+                    <h1 className="text-xl font-bold text-slate-800 truncate">My Profile</h1>
+                    <p className="text-sm text-slate-500 hidden sm:block truncate">
+                      Manage your personal information
+                    </p>
+                  </>
+                )}
+                {pathname === "/dashboard/setting" && (
+                  <>
+                    <h1 className="text-xl font-bold text-slate-800 truncate">Settings</h1>
+                    <p className="text-sm text-slate-500 hidden sm:block truncate">
+                      Manage your preferences
+                    </p>
+                  </>
+                )}
+              </motion.div>
+            </div>
 
-            {pathname !== "/dashboard/create-service" ? (
-              <div className="relative flex-1 max-w-md sm:max-w-2xl">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search services..."
-                  className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-gray-200 focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm"
-                />
-              </div>
-            ) : (
-              <div className="flex-1" />
-            )}
-
-            <div className="flex items-center gap-2 sm:gap-4">
-              <button className="relative p-2 rounded-xl hover:bg-gray-100 transition relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full"></span>
-              </button>
-              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gradient-to-tr from-blue-600 to-blue-400 shadow-md flex items-center justify-center text-white font-medium">
+            {/* Right Side */}
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative p-2 rounded-xl hover:bg-white/50 transition focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                aria-label="Notifications"
+              >
+                <Bell className="h-5 w-5 text-slate-600" />
+                <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 bg-gradient-to-r from-red-500 to-red-400 rounded-full animate-pulse"></span>
+              </motion.button>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+              >
                 {profileName.charAt(0).toUpperCase()}
-              </div>
+              </motion.div>
             </div>
           </div>
         </header>
 
+        {/* Page Content */}
         <div className="p-4 sm:p-6 lg:p-8">{children}</div>
-      </main>
+      </motion.main>
 
-      {/* Logout Confirmation Modal */}
-      <AnimatePresence>
-        {showLogoutConfirm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Glass Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowLogoutConfirm(false)}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-            />
-
-            {/* Modal Dialog */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="w-[90%] max-w-2xl bg-white rounded-3xl p-8 border border-slate-100 shadow-2xl relative z-10 text-center"
-            >
-              <div className="w-14 h-14 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <LogOut className="h-6 w-6" />
-              </div>
-
-              <h2 className="text-xl font-extrabold text-slate-800 mb-2">
-                Log Out of Kaamao?
-              </h2>
-              <p className="text-sm text-slate-500 mb-6 leading-relaxed">
-                Are you sure you want to log out? You will need to enter your
-                email and password to access your dashboard again.
-              </p>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowLogoutConfirm(false)}
-                  className="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 active:scale-95 transition-all"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    setShowLogoutConfirm(false);
-                    handleLogout();
-                  }}
-                  className="flex-1 py-3 px-4 rounded-xl bg-red-600 text-white font-semibold text-sm hover:bg-red-750 hover:shadow-lg hover:shadow-red-500/20 active:scale-95 transition-all"
-                >
-                  Log Out
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {/* Logout Modal */}
+      <LogoutModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={() => {
+          setShowLogoutConfirm(false);
+          handleLogout();
+        }}
+      />
     </div>
   );
 }
