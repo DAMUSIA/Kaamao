@@ -75,7 +75,7 @@ const TEAM_MEMBERS = [
   },
   {
     name: "Pandey Utkarsh Ramesh",
-    role: "Software Developer",
+    role: "Founding Eng. & Developer",
     initials: "UP",
     image: "/assets/teams/Utkarsh.png",
     socials: {
