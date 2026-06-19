@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
 import PortfolioPageClient from "@/components/portfolio/PortfolioPageClient";
+import { getPortfolioUrl, getBaseUrl } from "@/lib/url";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -87,16 +88,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     service.description.substring(0, 150)
   }...`;
 
-  // Host URL detection
-  const hostUrl = process.env.NEXT_PUBLIC_API_BASE_URL
-    ? new URL(process.env.NEXT_PUBLIC_API_BASE_URL).origin
-    : "https://kaamao.com";
-  const pageUrl = `${hostUrl}/p/${id}`;
+  // Use getBaseUrl() for dynamic URL generation
+  const baseUrl = getBaseUrl();
+  const pageUrl = `${baseUrl}/p/${id}`;
 
   return {
     title,
     description,
-    metadataBase: new URL(hostUrl),
+    metadataBase: new URL(baseUrl),
     alternates: {
       canonical: `/p/${id}`,
     },
@@ -149,19 +148,16 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
     );
   }
 
-  // Host URL detection
-  const hostUrl = typeof window !== "undefined"
-    ? window.location.origin
-    : (process.env.NEXT_PUBLIC_API_BASE_URL
-        ? new URL(process.env.NEXT_PUBLIC_API_BASE_URL).origin
-        : "https://kaamao.com");
-  const portfolioUrl = `${hostUrl}/p/${data.service.id}`;
+  // Use the centralized URL utility
+  const baseUrl = getBaseUrl();
+  const portfolioUrl = `${baseUrl}/p/${data.service.id}`;
 
+  // IMPORTANT: Pass portfolioId, not portfolioUrl
   return (
     <PortfolioPageClient
       initialService={data.service}
       initialReviews={data.reviews}
-      portfolioUrl={portfolioUrl}
+      portfolioId={data.service.id} // Pass the ID instead of the URL
     />
   );
 }

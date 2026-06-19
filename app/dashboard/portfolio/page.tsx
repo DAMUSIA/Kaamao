@@ -17,6 +17,7 @@ import {
   FileImage,
 } from "lucide-react";
 import { getCurrentUser, supabase } from "@/lib/supabase";
+import { getPortfolioUrl } from "@/lib/url";
 
 interface ServiceItem {
   id: string;
@@ -58,7 +59,6 @@ export default function DashboardPortfolioPage() {
 
         if (!supabase) throw new Error("Supabase is not configured.");
 
-        // Fetch user services and join with service_analytics
         const { data, error: fetchError } = await supabase
           .from("services")
           .select("*, service_analytics(*)")
@@ -68,7 +68,6 @@ export default function DashboardPortfolioPage() {
         if (fetchError) throw fetchError;
 
         const formatted = (data as Record<string, unknown>[] || []).map((s) => {
-          // Normalize service_analytics if it returned as an array or object
           let analytics = null;
           if (s.service_analytics) {
             analytics = Array.isArray(s.service_analytics)
@@ -99,9 +98,8 @@ export default function DashboardPortfolioPage() {
 
   const activeService = services.find((s) => s.id === selectedServiceId);
 
-  // Fallback host URL
-  const currentHost = typeof window !== "undefined" ? window.location.origin : "https://kaamao.com";
-  const portfolioUrl = activeService ? `${currentHost}/p/${activeService.id}` : "";
+  // Use the centralized URL utility
+  const portfolioUrl = activeService ? getPortfolioUrl(activeService.id) : "";
 
   const handleCopyLink = async () => {
     if (!portfolioUrl) return;
@@ -261,7 +259,7 @@ export default function DashboardPortfolioPage() {
 
               <button
                 onClick={() => router.push(`/dashboard/portfolio/poster/${activeService.id}`)}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 bg-blue-600 hover:bg-blue-750 text-white text-xs font-extrabold rounded-2xl transition cursor-pointer active:scale-95 shrink-0 shadow-md shadow-blue-500/10"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold rounded-2xl transition cursor-pointer active:scale-95 shrink-0 shadow-md shadow-blue-500/10"
               >
                 <FileImage className="h-4 w-4" />
                 <span>Generate Poster</span>
@@ -356,7 +354,6 @@ export default function DashboardPortfolioPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

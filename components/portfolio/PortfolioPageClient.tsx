@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { getBaseUrl, getPortfolioUrl } from "@/lib/url";
 
 interface ReviewItem {
   id: string;
@@ -79,10 +80,10 @@ interface ServiceData {
 interface PortfolioPageClientProps {
   initialService: ServiceData;
   initialReviews: ReviewItem[];
-  portfolioUrl: string;
+  portfolioId: string;
 }
 
-// Helper functions for deterministic formatting to prevent SSR/hydration locale mismatch
+// Helper functions for deterministic formatting
 const formatDate = (dateStr: string) => {
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return "";
@@ -104,9 +105,9 @@ const formatMonthYear = (dateStr?: string) => {
 export default function PortfolioPageClient({
   initialService,
   initialReviews,
-  portfolioUrl
+  portfolioId
 }: PortfolioPageClientProps) {
-  // Theme state: initialized lazily to avoid synchronous setState inside mount effect
+  // Theme state
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("theme");
@@ -144,7 +145,71 @@ export default function PortfolioPageClient({
   const [copiedPhoneIdx, setCopiedPhoneIdx] = useState<number | null>(null);
   const [showShareDropdown, setShowShareDropdown] = useState(false);
 
-  // Apply theme class when darkMode state updates
+  // IMPORTANT: Generate portfolio URL using the ID
+  // This will be the same on both server and client because we're using the ID
+  const portfolioUrl = getPortfolioUrl(portfolioId);
+
+  // Store QR code URL and share text in state to avoid hydration mismatch
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const [shareText, setShareText] = useState("");
+
+  // Generate dynamic content only on client side
+  useEffect(() => {
+    // Set QR code URL
+    setQrCodeUrl(
+      `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(portfolioUrl)}`
+    );
+
+    // Generate share text
+    const activeNumbers = initialService.contact_numbers?.length
+      ? initialService.contact_numbers
+      : (initialService.users?.phone_no ? [initialService.users.phone_no] : []);
+
+    const baseUrl = getBaseUrl();
+    const fullPortfolioUrl = `${baseUrl}/p/${initialService.id}`;
+    
+    const providerName = initialService.users?.full_name || "Verified Provider";
+    const location = [initialService.area, initialService.city].filter(Boolean).join(", ") || "Available online";
+    const price = initialService.starting_price 
+      ? `₹${initialService.starting_price}${initialService.price_unit ? ` / ${initialService.price_unit.toLowerCase()}` : ''}`
+      : "Contact for pricing";
+    const rating = initialService.rating_average ? `${initialService.rating_average.toFixed(1)} ⭐` : "New";
+    const reviewsText = initialService.reviews_count ? `${initialService.reviews_count} reviews` : "No reviews yet";
+    
+    const modes = initialService.service_modes.length > 0 
+      ? `\n📍 Service Modes: ${initialService.service_modes.join(", ")}`
+      : "";
+    
+    const availability = initialService.availability.length > 0
+      ? `\n📅 Availability: ${initialService.availability.join(", ")}`
+      : "";
+    
+    const languages = initialService.languages.length > 0
+      ? `\n🌐 Languages: ${initialService.languages.join(", ")}`
+      : "";
+    
+    const description = initialService.description 
+      ? `\n\n📝 "${initialService.description.substring(0, 120)}${initialService.description.length > 120 ? '...' : ''}"`
+      : "";
+
+    const text = `🔹 *${initialService.title}* 🔹
+━━━━━━━━━━━━━━━━━━━━━━
+👤 Provider: ${providerName}
+📂 Category: ${initialService.category}
+📍 Location: ${location}
+⭐ Rating: ${rating} (${reviewsText})
+💰 Price: ${price}${modes}${availability}${languages}${description}
+━━━━━━━━━━━━━━━━━━━━━━
+📞 Contact: ${activeNumbers.length > 0 ? activeNumbers[0] : "Available on portfolio"}
+🔗 View Full Portfolio:
+${fullPortfolioUrl}
+━━━━━━━━━━━━━━━━━━━━━━
+#${initialService.category.replace(/\s/g, '')} #Kaamao #LocalServices ${initialService.city ? `#${initialService.city.replace(/\s/g, '')}` : ''}`;
+
+    setShareText(text);
+  }, [initialService, portfolioUrl, portfolioId]);
+
+  // Apply theme class
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -165,7 +230,7 @@ export default function PortfolioPageClient({
     }
   };
 
-  // Memoized checking of liked status
+  // Check if liked
   const checkIfLiked = React.useCallback(async (accessToken: string) => {
     try {
       const res = await fetch(`/api/likes?serviceId=${initialService.id}`, {
@@ -205,7 +270,7 @@ export default function PortfolioPageClient({
     return () => subscription.unsubscribe();
   }, [checkIfLiked]);
 
-  // Check user review completion dynamically during rendering
+  // Check user review completion
   const userHasReviewed = !!(
     user &&
     reviews.some(
@@ -215,10 +280,12 @@ export default function PortfolioPageClient({
     )
   );
 
-  // Log View count (Spam protection included)
+  
+
+  // Log View count
   useEffect(() => {
     const key = `portfolio_view_${initialService.id}`;
-    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const today = new Date().toISOString().split("T")[0];
     const lastViewed = localStorage.getItem(key);
 
     if (lastViewed !== today) {
@@ -238,7 +305,7 @@ export default function PortfolioPageClient({
     }
   }, [initialService.id]);
 
-  // Toggle Like Action
+  // Toggle Like
   const handleLikeToggle = async () => {
     if (!user || !token) {
       setAuthModalReason("save this service to your favorites list");
@@ -266,7 +333,6 @@ export default function PortfolioPageClient({
       if (data.success) {
         setLikesCount(data.likesCount);
       } else {
-        // Rollback on fail
         setIsLiked(!nextState);
         setLikesCount((prev) => (!nextState ? prev + 1 : Math.max(0, prev - 1)));
       }
@@ -277,7 +343,7 @@ export default function PortfolioPageClient({
     }
   };
 
-  // Review Form Submit Handler
+  // Review Submit
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !token) {
@@ -315,7 +381,6 @@ export default function PortfolioPageClient({
       setUserComment("");
       setUserRating(0);
 
-      // Reload reviews
       if (supabase) {
         const { data: newReviews } = await supabase
           .from("service_ratings")
@@ -339,13 +404,7 @@ export default function PortfolioPageClient({
 
   const cleanNumber = (num: string) => num.replace(/\D/g, "");
 
-  // Sharing content generators
-  const shareText = `Check out this service on Kaamao: ${initialService.title} by ${
-    initialService.users?.full_name || "Verified Tutor"
-  } located in ${[initialService.area, initialService.city].filter(Boolean).join(", ")}. Starts from ₹${
-    initialService.starting_price ?? "N/A"
-  }.`;
-
+  // Share handlers
   const handleNativeShare = async () => {
     if (navigator.share) {
       try {
@@ -382,7 +441,7 @@ export default function PortfolioPageClient({
     }
   };
 
-  // QR Code Download System
+  // QR Code Download
   const downloadQrCode = () => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -397,15 +456,11 @@ export default function PortfolioPageClient({
       canvas.height = 320;
       if (!ctx) return;
 
-      // Draw background
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, 280, 320);
-
-      // Draw QR Code
       ctx.drawImage(img, 15, 15, 250, 250);
 
-      // Text label at bottom
-      ctx.fillStyle = "#0f172a"; // slate-900
+      ctx.fillStyle = "#0f172a";
       ctx.font = "bold 13px system-ui, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("Scan to View Portfolio on Kaamao", 140, 295);
@@ -417,16 +472,20 @@ export default function PortfolioPageClient({
     };
   };
 
-  // Rating breakdowns calculator
+  // Rating distribution
   const ratingDistribution = [5, 4, 3, 2, 1].map((stars) => {
     const matchCount = reviews.filter((r) => Math.round(r.rating) === stars).length;
     const percentage = reviewsCount > 0 ? (matchCount / reviewsCount) * 100 : 0;
     return { stars, percentage, count: matchCount };
   });
 
+  // Debug log
+  console.log("Portfolio ID:", portfolioId);
+  console.log("Portfolio URL:", portfolioUrl);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 font-sans pb-28">
-      {/* Light/Dark mode floating switcher */}
+      {/* Theme Switcher */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 flex justify-end gap-3 items-center">
         <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3.5 py-1.5 rounded-full shadow-xs">
           Kaamao Service Hub
@@ -442,7 +501,7 @@ export default function PortfolioPageClient({
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 mt-6 space-y-8">
         
-        {/* ================= HERO SECTION ================= */}
+        {/* HERO SECTION */}
         <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-white/5 animate-in fade-in duration-300">
           <div className="absolute -top-12 -right-12 w-48 h-48 bg-blue-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-subtle" />
           <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-purple-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-subtle" />
@@ -478,7 +537,6 @@ export default function PortfolioPageClient({
               </div>
             </div>
 
-            {/* Display Stats Row */}
             <div className="flex flex-wrap items-center gap-4 border-t border-white/10 pt-5 text-[11px] font-bold text-slate-400">
               <span className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
@@ -491,33 +549,29 @@ export default function PortfolioPageClient({
               </span>
             </div>
 
-            {/* Service modes display as pills */}
             {initialService.service_modes.length > 0 && (
               <div className="space-y-2.5 pt-2">
                 <span className="block text-[10px] font-extrabold text-slate-450 uppercase tracking-widest">Available Modes</span>
                 <div className="flex flex-wrap gap-2">
-                  {initialService.service_modes.map((mode) => {
-                    const isOnline = mode.toLowerCase().includes("online") || mode.toLowerCase().includes("video");
-                    return (
-                      <span
-                        key={mode}
-                        className={`px-3 py-1.5 text-xs font-bold rounded-full border transition-all ${
-                          isOnline
-                            ? "bg-sky-500/10 border-sky-400/30 text-sky-300"
-                            : "bg-indigo-500/10 border-indigo-400/30 text-indigo-300"
-                        }`}
-                      >
-                        {mode}
-                      </span>
-                    );
-                  })}
+                  {initialService.service_modes.map((mode) => (
+                    <span
+                      key={mode}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-full border transition-all ${
+                        mode.toLowerCase().includes("online") || mode.toLowerCase().includes("video")
+                          ? "bg-sky-500/10 border-sky-400/30 text-sky-300"
+                          : "bg-indigo-500/10 border-indigo-400/30 text-indigo-300"
+                      }`}
+                    >
+                      {mode}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
           </div>
         </section>
 
-        {/* ================= MAIN COLUMN GRID ================= */}
+        {/* MAIN COLUMN GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
           {/* LEFT 2 COLUMNS */}
@@ -534,7 +588,7 @@ export default function PortfolioPageClient({
               </p>
             </section>
 
-            {/* SERVICE DETAILS GRID */}
+            {/* SERVICE DETAILS */}
             <section className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/40 rounded-3xl p-6 sm:p-8 shadow-md space-y-5">
               <h3 className="text-lg font-extrabold">Service Specifications</h3>
               
@@ -545,7 +599,7 @@ export default function PortfolioPageClient({
                 </div>
 
                 <div className="p-4 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800/20">
-                  <span className="text-[10px] font-extrabold text-slate-405 dark:text-slate-500 uppercase tracking-widest block mb-1">Pricing structure</span>
+                  <span className="text-[10px] font-extrabold text-slate-405 dark:text-slate-500 uppercase tracking-widest block mb-1">Pricing</span>
                   <span className="text-sm font-extrabold text-blue-650 dark:text-blue-400">
                     {initialService.starting_price
                       ? `₹${initialService.starting_price} / ${initialService.price_unit || "hour"}`
@@ -554,7 +608,7 @@ export default function PortfolioPageClient({
                 </div>
 
                 <div className="p-4 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800/20">
-                  <span className="text-[10px] font-extrabold text-slate-405 dark:text-slate-500 uppercase tracking-widest block mb-1">Operation languages</span>
+                  <span className="text-[10px] font-extrabold text-slate-405 dark:text-slate-500 uppercase tracking-widest block mb-1">Languages</span>
                   <span className="text-sm font-bold text-slate-850 dark:text-slate-200">
                     {initialService.languages?.join(", ") || "English"}
                   </span>
@@ -593,7 +647,7 @@ export default function PortfolioPageClient({
                           </div>
                           <div>
                             <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-550 uppercase tracking-widest block">
-                              Phone number {activeNumbers.length > 1 ? `#${idx + 1}` : ""}
+                              Phone {activeNumbers.length > 1 ? `#${idx + 1}` : ""}
                             </span>
                             <span className="text-sm font-extrabold tracking-tight">{number}</span>
                           </div>
@@ -661,12 +715,12 @@ export default function PortfolioPageClient({
               </div>
             </section>
 
-            {/* REVIEWS SYSTEM */}
+            {/* REVIEWS */}
             <section className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/40 rounded-3xl p-6 sm:p-8 shadow-md space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-extrabold flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-blue-600" />
-                  Client Reviews & Feedback
+                  Client Reviews
                 </h3>
                 <span className="text-xs font-bold px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-full">
                   {reviewsCount} total
@@ -681,7 +735,6 @@ export default function PortfolioPageClient({
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Rating Breakdown card */}
                   <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/20 rounded-2xl p-5 flex flex-col justify-center">
                     <div className="text-center pb-4 border-b border-slate-200/60 dark:border-slate-850 mb-4">
                       <span className="text-4xl font-black block">{ratingAverage.toFixed(1)}</span>
@@ -705,7 +758,6 @@ export default function PortfolioPageClient({
                     </div>
                   </div>
 
-                  {/* Reviews list */}
                   <div className="md:col-span-2 space-y-4 max-h-[380px] overflow-y-auto pr-2">
                     {reviews.map((rev) => (
                       <div
@@ -749,7 +801,7 @@ export default function PortfolioPageClient({
                 </div>
               )}
 
-              {/* Leave a review form */}
+              {/* Leave Review Form */}
               <div className="border-t border-slate-100 dark:border-slate-800/60 pt-6 space-y-4">
                 <h4 className="text-sm font-extrabold">Write a Review</h4>
                 {userHasReviewed ? (
@@ -811,7 +863,7 @@ export default function PortfolioPageClient({
           {/* RIGHT COLUMN */}
           <div className="space-y-8">
             
-            {/* PROVIDER PROFILE CARD */}
+            {/* PROVIDER PROFILE */}
             {initialService.users && (
               <section className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/40 rounded-3xl p-6 sm:p-8 shadow-md space-y-5">
                 <h3 className="text-lg font-extrabold flex items-center gap-2">
@@ -845,24 +897,16 @@ export default function PortfolioPageClient({
 
                 <div className="text-[10px] font-bold text-slate-450 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800/60 pt-4 flex justify-between">
                   <span>MEMBER SINCE</span>
-                  <span>
-                    {formatMonthYear(initialService.users.created_at)}
-                  </span>
+                  <span>{formatMonthYear(initialService.users.created_at)}</span>
                 </div>
 
-                {/* Social media links */}
+                {/* Social Links */}
                 {initialService.users.social_links && Object.keys(initialService.users.social_links).length > 0 && (
                   <div className="border-t border-slate-100 dark:border-slate-800/60 pt-4 space-y-2">
                     <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Connect Online</span>
                     <div className="flex flex-wrap gap-2">
                       {initialService.users.social_links.instagram && (
-                        <a
-                          href={initialService.users.social_links.instagram}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-pink-650 hover:bg-pink-500/10 transition cursor-pointer"
-                          title="Instagram"
-                        >
+                        <a href={initialService.users.social_links.instagram} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-pink-650 hover:bg-pink-500/10 transition cursor-pointer" title="Instagram">
                           <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
                             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
@@ -871,26 +915,14 @@ export default function PortfolioPageClient({
                         </a>
                       )}
                       {initialService.users.social_links.facebook && (
-                        <a
-                          href={initialService.users.social_links.facebook}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-blue-650 hover:bg-blue-500/10 transition cursor-pointer"
-                          title="Facebook"
-                        >
+                        <a href={initialService.users.social_links.facebook} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-blue-650 hover:bg-blue-500/10 transition cursor-pointer" title="Facebook">
                           <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                           </svg>
                         </a>
                       )}
                       {initialService.users.social_links.linkedin && (
-                        <a
-                          href={initialService.users.social_links.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-blue-500 hover:bg-blue-400/10 transition cursor-pointer"
-                          title="LinkedIn"
-                        >
+                        <a href={initialService.users.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-blue-500 hover:bg-blue-400/10 transition cursor-pointer" title="LinkedIn">
                           <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
                             <rect width="4" height="12" x="2" y="9"/>
@@ -899,13 +931,7 @@ export default function PortfolioPageClient({
                         </a>
                       )}
                       {initialService.users.social_links.youtube && (
-                        <a
-                          href={initialService.users.social_links.youtube}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-red-650 hover:bg-red-500/10 transition cursor-pointer"
-                          title="YouTube"
-                        >
+                        <a href={initialService.users.social_links.youtube} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-red-650 hover:bg-red-500/10 transition cursor-pointer" title="YouTube">
                           <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17z"/>
                             <polygon points="10 15 15 12 10 9"/>
@@ -913,13 +939,7 @@ export default function PortfolioPageClient({
                         </a>
                       )}
                       {initialService.users.social_links.website && (
-                        <a
-                          href={initialService.users.social_links.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 transition cursor-pointer"
-                          title="Website"
-                        >
+                        <a href={initialService.users.social_links.website} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-500/10 transition cursor-pointer" title="Website">
                           <Globe className="h-4.5 w-4.5" />
                         </a>
                       )}
@@ -945,17 +965,18 @@ export default function PortfolioPageClient({
               </div>
 
               <div className="relative z-10 inline-flex bg-white p-3.5 rounded-2xl shadow-lg border border-slate-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
-                    portfolioUrl
-                  )}`}
-                  alt="QR Code"
-                  width={140}
-                  height={140}
-                  className="rounded-lg bg-white block"
-                  loading="lazy"
-                />
+                {qrCodeUrl ? (
+                  <img
+                    src={qrCodeUrl}
+                    alt="QR Code"
+                    width={140}
+                    height={140}
+                    className="rounded-lg bg-white block"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-[140px] h-[140px] bg-slate-200 dark:bg-slate-700 rounded-lg animate-pulse" />
+                )}
               </div>
 
               <div className="flex gap-2 relative z-10 pt-2">
@@ -969,39 +990,47 @@ export default function PortfolioPageClient({
               </div>
             </section>
 
-            {/* SHARE SYSTEM CARD */}
-            <section className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/40 rounded-3xl p-6 sm:p-8 shadow-md space-y-4">
-              <h3 className="text-sm font-extrabold">Share Portfolio</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Promote this service across social networks</p>
+            {/* SHARE SECTION */}
+            <section className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/40 rounded-3xl p-6 sm:p-8 shadow-md space-y-5">
+              <div>
+                <h3 className="text-sm font-extrabold flex items-center gap-2">
+                  <Share2 className="h-4 w-4 text-blue-600" />
+                  Share Portfolio
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Promote this service across social networks</p>
+              </div>
               
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2.5">
+                {/* WhatsApp - Primary */}
                 <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + "\n" + portfolioUrl)}`}
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-850 hover:bg-emerald-500/5 text-slate-700 dark:text-slate-200 hover:text-emerald-600 rounded-xl text-xs font-bold transition cursor-pointer"
+                  className="group flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 border border-emerald-200/50 dark:border-emerald-800/30 text-emerald-700 dark:text-emerald-300 hover:text-emerald-800 dark:hover:text-emerald-200 rounded-xl text-xs font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <MessageCircle className="h-4 w-4 group-hover:scale-110 transition-transform" />
                   <span>WhatsApp</span>
                 </a>
 
+                {/* Telegram */}
                 <a
                   href={`https://t.me/share/url?url=${encodeURIComponent(portfolioUrl)}&text=${encodeURIComponent(shareText)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-850 hover:bg-blue-500/5 text-slate-700 dark:text-slate-200 hover:text-blue-400 rounded-xl text-xs font-bold transition cursor-pointer"
+                  className="group flex items-center justify-center gap-2 py-2.5 px-3 bg-sky-50 dark:bg-sky-950/30 hover:bg-sky-100 dark:hover:bg-sky-950/50 border border-sky-200/50 dark:border-sky-800/30 text-sky-700 dark:text-sky-300 hover:text-sky-800 dark:hover:text-sky-200 rounded-xl text-xs font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-4 w-4 group-hover:scale-110 transition-transform" />
                   <span>Telegram</span>
                 </a>
 
+                {/* LinkedIn */}
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(portfolioUrl)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-850 hover:bg-blue-500/5 text-slate-700 dark:text-slate-200 hover:text-blue-600 rounded-xl text-xs font-bold transition cursor-pointer"
+                  className="group flex items-center justify-center gap-2 py-2.5 px-3 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-950/50 border border-blue-200/50 dark:border-blue-800/30 text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 rounded-xl text-xs font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="h-4 w-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
                     <rect width="4" height="12" x="2" y="9"/>
                     <circle cx="4" cy="4" r="2"/>
@@ -1009,27 +1038,29 @@ export default function PortfolioPageClient({
                   <span>LinkedIn</span>
                 </a>
 
+                {/* Facebook */}
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(portfolioUrl)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-850 hover:bg-blue-500/5 text-slate-700 dark:text-slate-200 hover:text-blue-700 rounded-xl text-xs font-bold transition cursor-pointer"
+                  className="group flex items-center justify-center gap-2 py-2.5 px-3 bg-indigo-50 dark:bg-indigo-950/30 hover:bg-indigo-100 dark:hover:bg-indigo-950/50 border border-indigo-200/50 dark:border-indigo-800/30 text-indigo-700 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 rounded-xl text-xs font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="h-4 w-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                   </svg>
                   <span>Facebook</span>
                 </a>
               </div>
 
+              {/* Copy Link */}
               <button
                 onClick={copyPortfolioUrl}
-                className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-extrabold rounded-xl transition cursor-pointer active:scale-98"
+                className="w-full inline-flex items-center justify-center gap-2 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-extrabold rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-98 cursor-pointer border border-slate-200/50 dark:border-slate-700/50"
               >
                 {copiedUrl ? (
                   <>
                     <Check className="h-4 w-4 text-green-500" />
-                    <span className="text-green-500">Copied!</span>
+                    <span className="text-green-500">Link Copied!</span>
                   </>
                 ) : (
                   <>
@@ -1038,66 +1069,75 @@ export default function PortfolioPageClient({
                   </>
                 )}
               </button>
+
+              {/* Quick Share Preview */}
+              <div className="pt-3 border-t border-slate-200/50 dark:border-slate-800/50">
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium text-center">
+                  📱 Share your portfolio with clients and grow your business
+                </p>
+              </div>
             </section>
           </div>
         </div>
       </main>
 
-      {/* ================= STICKY ACTION BAR ================= */}
-      {/* Renders at bottom on mobile, and floating on desktop */}
-      <div className="fixed bottom-0 sm:bottom-6 left-0 sm:left-1/2 sm:-translate-x-1/2 w-full sm:w-auto sm:max-w-2xl z-50 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-t sm:border border-slate-200 dark:border-slate-850 p-4 sm:px-6 sm:py-3.5 sm:rounded-full shadow-2xl flex items-center justify-between sm:gap-6 animate-in slide-in-from-bottom duration-300">
+      {/* STICKY ACTION BAR */}
+      <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 w-[95%] sm:w-auto sm:max-w-2xl z-50 bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl backdrop-saturate-150 border border-white/20 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-3 sm:px-5 sm:py-3 rounded-full flex items-center justify-between sm:gap-6 animate-in slide-in-from-bottom duration-300">
         
-        {/* Price Tag Info on Mobile/Tablet */}
-        <div className="flex flex-col text-left shrink-0">
-          <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest">STARTING AT</span>
-          <span className="text-base font-black text-blue-650 dark:text-blue-400">
+        {/* Glassmorphism glow effect - subtle gradient overlay */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-white/5 via-transparent to-white/5 dark:from-white/5 dark:via-transparent dark:to-white/5 pointer-events-none" />
+        
+        {/* Glassmorphism border glow */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-blue-500/5 dark:from-blue-500/10 dark:via-purple-500/10 dark:to-blue-500/10 pointer-events-none blur-sm" />
+
+        <div className="flex flex-col text-left shrink-0 pl-2 sm:pl-0 relative z-10">
+          <span className="text-[8px] sm:text-[9px] font-extrabold text-slate-500/80 dark:text-slate-400/80 uppercase tracking-widest">STARTING AT</span>
+          <span className="text-sm sm:text-base font-black text-blue-600 dark:text-blue-400">
             {initialService.starting_price ? `₹${initialService.starting_price}` : "Enquire"}
             {initialService.starting_price && initialService.price_unit && (
-              <span className="text-[10px] font-normal text-slate-400"> / {initialService.price_unit.replace("per ", "").toLowerCase()}</span>
+              <span className="text-[9px] sm:text-[10px] font-normal text-slate-500/70 dark:text-slate-400/70"> / {initialService.price_unit.replace("per ", "").toLowerCase()}</span>
             )}
           </span>
         </div>
 
-        {/* Action Buttons row */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 relative z-10">
           {/* Like Button */}
           <button
             onClick={handleLikeToggle}
-            className={`p-2.5 border rounded-xl sm:rounded-full transition active:scale-90 cursor-pointer ${
+            className={`p-2 sm:p-2.5 rounded-full transition-all duration-200 active:scale-90 cursor-pointer backdrop-blur-sm ${
               isLiked
-                ? "bg-red-50 border-red-200 text-red-500 dark:bg-red-500/10 dark:border-red-500/25"
-                : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-400 hover:text-red-500"
+                ? "bg-red-500/15 border border-red-500/30 text-red-500 hover:bg-red-500/25 dark:bg-red-500/20 dark:border-red-500/40"
+                : "bg-white/40 dark:bg-slate-800/40 border border-white/30 dark:border-slate-700/50 text-slate-500/70 dark:text-slate-400/70 hover:bg-white/60 dark:hover:bg-slate-700/60 hover:text-red-500 dark:hover:text-red-400"
             }`}
             title="Like this Service"
           >
-            <Heart className={`h-4.5 w-4.5 ${isLiked ? "fill-red-500" : ""}`} />
+            <Heart className={`h-4 w-4 sm:h-4.5 sm:w-4.5 transition-transform duration-200 hover:scale-110 ${isLiked ? "fill-red-500" : ""}`} />
           </button>
 
           {/* Share Button */}
           <button
             onClick={handleNativeShare}
-            className="p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-650 dark:text-slate-350 rounded-xl sm:rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition active:scale-90 cursor-pointer relative"
+            className="p-2 sm:p-2.5 rounded-full transition-all duration-200 active:scale-90 cursor-pointer relative bg-white/40 dark:bg-slate-800/40 border border-white/30 dark:border-slate-700/50 text-slate-500/70 dark:text-slate-400/70 hover:bg-white/60 dark:hover:bg-slate-700/60 hover:text-blue-600 dark:hover:text-blue-400 backdrop-blur-sm"
             title="Share portfolio"
           >
-            <Share2 className="h-4.5 w-4.5" />
+            <Share2 className="h-4 w-4 sm:h-4.5 sm:w-4.5 transition-transform duration-200 hover:scale-110" />
             
-            {/* Share dropdown fallback if Web Share is not supported */}
             {showShareDropdown && (
-              <div className="absolute bottom-12 right-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-2.5 shadow-xl w-48 flex flex-col gap-1 z-50 text-left">
+              <div className="absolute bottom-14 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/20 dark:border-slate-700/50 rounded-2xl p-2.5 shadow-2xl w-48 flex flex-col gap-1 z-50 text-left">
                 <button
                   onClick={() => {
                     copyPortfolioUrl();
                     setShowShareDropdown(false);
                   }}
-                  className="w-full text-xs font-bold text-slate-700 dark:text-slate-300 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-left"
+                  className="w-full text-xs font-bold text-slate-700 dark:text-slate-300 p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-lg text-left transition-colors"
                 >
                   Copy Link
                 </button>
                 <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(portfolioUrl)}`}
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full text-xs font-bold text-slate-700 dark:text-slate-300 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-left"
+                  className="w-full text-xs font-bold text-slate-700 dark:text-slate-300 p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-lg text-left transition-colors"
                 >
                   Share to WhatsApp
                 </a>
@@ -1105,20 +1145,20 @@ export default function PortfolioPageClient({
             )}
           </button>
 
-          {/* Primary CTA Call Button */}
+          {/* Call Button */}
           {activeNumbers.length > 0 && (
             <a
               href={`tel:${cleanNumber(activeNumbers[0])}`}
-              className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-brand-primary hover:bg-brand-primary-dark text-white text-xs font-extrabold rounded-xl sm:rounded-full transition active:scale-95 shadow-md shadow-blue-500/10 cursor-pointer"
+              className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white text-xs font-extrabold rounded-full transition-all duration-200 active:scale-95 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 cursor-pointer backdrop-blur-sm"
             >
-              <Phone className="h-4 w-4" />
-              <span>Call Now</span>
+              <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform duration-200 group-hover:scale-110" />
+              <span className="text-[10px] sm:text-xs">Call Now</span>
             </a>
           )}
         </div>
       </div>
 
-      {/* ================= PREMIUM AUTHENTICATION PROMPT MODAL ================= */}
+      {/* AUTH MODAL */}
       {showAuthModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
