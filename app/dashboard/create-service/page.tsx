@@ -148,9 +148,7 @@ export default function CreateServicePage() {
   };
 
   const handleContactChange = (index: number, value: string) => {
-    // Only allow numbers
     const digitsOnly = value.replace(/\D/g, "");
-    // Limit to 10 digits
     const limitedDigits = digitsOnly.slice(0, 10);
     
     const updated = [...(formData.contact_numbers || [])];
@@ -212,27 +210,28 @@ export default function CreateServicePage() {
     }));
   };
 
-  // Validation Check - Updated to validate phone numbers
+  // ============================================
+  // VALIDATION - Only essential fields required
+  // ============================================
   const isFormValid = () => {
-    // Basic validations
-    if (formData.title.trim().length < 3 || formData.title.trim().length > 80) return false;
+    // ESSENTIAL: Title is required (min 3 chars)
+    if (formData.title.trim().length < 3) return false;
+    
+    // ESSENTIAL: Category is required
     if (formData.category === "") return false;
     if (formData.category === "Other" && (formData.customCategory || "").trim() === "") return false;
-    if (formData.service_modes.length === 0) return false;
-    if (formData.city.trim() === "") return false;
-    if (formData.availability.length === 0) return false;
-    if (formData.description.trim().length < 20 || formData.description.trim().length > 250) return false;
     
-    // Validate contact numbers
+    // ESSENTIAL: At least one contact number with 10 digits
     const cleanContacts = (formData.contact_numbers || [])
       .map((n) => cleanPhoneNumber(n))
       .filter(Boolean);
     
     if (cleanContacts.length === 0) return false;
-    
-    // Check if all contacts are exactly 10 digits
     const allValid = cleanContacts.every((num) => num.length === 10);
-    return allValid;
+    if (!allValid) return false;
+    
+    // OPTIONAL: Everything else is optional
+    return true;
   };
 
   // Handle publishing service
@@ -242,24 +241,10 @@ export default function CreateServicePage() {
     setIsSubmitting(true);
     setDbError(null);
 
-    // Clean and validate contact numbers
+    // Clean contact numbers
     const cleanContacts = (formData.contact_numbers || [])
       .map((n) => cleanPhoneNumber(n))
       .filter(Boolean);
-
-    // Final validation before publish
-    const invalidContacts = cleanContacts.filter((num) => num.length !== 10);
-    if (invalidContacts.length > 0) {
-      alert(`Invalid phone number(s): ${invalidContacts.join(", ")}. Please enter exactly 10 digits.`);
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (cleanContacts.length === 0) {
-      alert("At least one valid contact number is required.");
-      setIsSubmitting(false);
-      return;
-    }
 
     // Compute category
     const finalCategory =
@@ -276,16 +261,16 @@ export default function CreateServicePage() {
       user_id: user.id,
       title: formData.title.trim(),
       category: finalCategory,
-      description: formData.description.trim(),
-      service_modes: formData.service_modes,
-      city: formData.city.trim(),
-      area: formData.area.trim() || null,
-      latitude: formData.latitude,
-      longitude: formData.longitude,
-      availability: formData.availability,
-      languages: formData.languages,
-      starting_price: finalPrice,
-      price_unit: finalPrice ? formData.price_unit : null,
+      description: formData.description.trim() || null, // Optional
+      service_modes: formData.service_modes.length > 0 ? formData.service_modes : null, // Optional
+      city: formData.city.trim() || null, // Optional
+      area: formData.area.trim() || null, // Optional
+      latitude: formData.latitude, // Optional
+      longitude: formData.longitude, // Optional
+      availability: formData.availability.length > 0 ? formData.availability : null, // Optional
+      languages: formData.languages.length > 0 ? formData.languages : ["English"], // Optional
+      starting_price: finalPrice, // Optional
+      price_unit: finalPrice ? formData.price_unit : null, // Optional
       is_active: true,
       views_count: 0,
       contact_numbers: cleanContacts,
@@ -370,6 +355,10 @@ export default function CreateServicePage() {
           <p className="text-slate-500 mt-1.5 text-sm sm:text-base">
             Tell Customers what you teach and start receiving enquiries. Simple, fast, and listing in under 30 seconds.
           </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="text-xs text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">* Required fields</span>
+            <span className="text-xs text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">All other fields are optional</span>
+          </div>
         </div>
 
         {dbError && (
@@ -395,6 +384,7 @@ export default function CreateServicePage() {
                 <h3 className="font-extrabold text-slate-700 text-base">What Do You Teach?</h3>
               </div>
 
+              {/* Category - REQUIRED */}
               <SearchableDropdown
                 label="Teaching Category"
                 required
@@ -406,12 +396,13 @@ export default function CreateServicePage() {
                 placeholder="Choose a category (e.g. Science Tutor, Piano Teacher)"
               />
 
+              {/* Service Title - REQUIRED */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-sm">
                   <label htmlFor="service-title" className="font-semibold text-slate-700">
                     Service Title <span className="text-red-500">*</span>
                   </label>
-                  <span className={`text-[10px] font-semibold ${formData.title.trim().length >= 3 && formData.title.trim().length <= 80 ? "text-slate-400" : "text-amber-500"}`}>
+                  <span className={`text-[10px] font-semibold ${formData.title.trim().length >= 3 ? "text-slate-400" : "text-amber-500"}`}>
                     {formData.title.trim().length} / 80
                   </span>
                 </div>
@@ -425,21 +416,21 @@ export default function CreateServicePage() {
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl shadow-sm text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-800 font-medium"
                 />
                 <p className="text-[10px] text-slate-400">
-                  Suggestive based on category. Minimum 3 characters, maximum 80.
+                  Minimum 3 characters. Suggestive based on category.
                 </p>
               </div>
             </div>
 
-            {/* Section 2 - How Do You Teach? */}
+            {/* Section 2 - How Do You Teach? - OPTIONAL */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0">2</div>
-                <h3 className="font-extrabold text-slate-700 text-base">How Do You Teach?</h3>
+                <h3 className="font-extrabold text-slate-700 text-base">How Do You Teach? <span className="text-xs font-normal text-slate-400 ml-1">(Optional)</span></h3>
               </div>
 
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-slate-700">
-                  Where do you teach? <span className="text-red-500">*</span>
+                  Where do you teach? <span className="text-slate-400 font-normal">(Optional)</span>
                 </label>
                 <div className="flex flex-wrap gap-2.5">
                   {TEACHING_MODES.map((mode) => {
@@ -464,11 +455,11 @@ export default function CreateServicePage() {
               </div>
             </div>
 
-            {/* Section 3 - Location */}
+            {/* Section 3 - Location - OPTIONAL */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0">3</div>
-                <h3 className="font-extrabold text-slate-700 text-base">Location</h3>
+                <h3 className="font-extrabold text-slate-700 text-base">Location <span className="text-xs font-normal text-slate-400 ml-1">(Optional)</span></h3>
               </div>
 
               <LocationSelector
@@ -480,16 +471,16 @@ export default function CreateServicePage() {
               />
             </div>
 
-            {/* Section 4 - Availability */}
+            {/* Section 4 - Availability - OPTIONAL */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0">4</div>
-                <h3 className="font-extrabold text-slate-700 text-base">Availability</h3>
+                <h3 className="font-extrabold text-slate-700 text-base">Availability <span className="text-xs font-normal text-slate-400 ml-1">(Optional)</span></h3>
               </div>
 
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-slate-700">
-                  When are you usually available? <span className="text-red-500">*</span>
+                  When are you usually available? <span className="text-slate-400 font-normal">(Optional)</span>
                 </label>
                 <div className="flex flex-wrap gap-2.5">
                   {AVAILABILITY_OPTIONS.map((option) => {
@@ -514,11 +505,11 @@ export default function CreateServicePage() {
               </div>
             </div>
 
-            {/* Section 5 - Languages Spoken */}
+            {/* Section 5 - Languages Spoken - OPTIONAL */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0">5</div>
-                <h3 className="font-extrabold text-slate-700 text-base">Languages Spoken</h3>
+                <h3 className="font-extrabold text-slate-700 text-base">Languages Spoken <span className="text-xs font-normal text-slate-400 ml-1">(Optional)</span></h3>
               </div>
 
               <LanguageSelector
@@ -527,11 +518,11 @@ export default function CreateServicePage() {
               />
             </div>
 
-            {/* Section 6 - Pricing */}
+            {/* Section 6 - Pricing - OPTIONAL */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0">6</div>
-                <h3 className="font-extrabold text-slate-700 text-base">Pricing</h3>
+                <h3 className="font-extrabold text-slate-700 text-base">Pricing <span className="text-xs font-normal text-slate-400 ml-1">(Optional)</span></h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -563,7 +554,7 @@ export default function CreateServicePage() {
 
                 <div className="space-y-1.5">
                   <label htmlFor="price-unit" className="block text-sm font-semibold text-slate-700">
-                    Price Unit
+                    Price Unit <span className="text-slate-400 font-normal">(Optional)</span>
                   </label>
                   <select
                     id="price-unit"
@@ -582,11 +573,11 @@ export default function CreateServicePage() {
               </div>
             </div>
 
-            {/* Section 7 - Contact Numbers - UPDATED with validation */}
+            {/* Section 7 - Contact Numbers - REQUIRED */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0">7</div>
-                <h3 className="font-extrabold text-slate-700 text-base">Contact Numbers</h3>
+                <h3 className="font-extrabold text-slate-700 text-base">Contact Numbers <span className="text-red-500">*</span></h3>
               </div>
 
               <div className="space-y-3">
@@ -662,34 +653,28 @@ export default function CreateServicePage() {
               </div>
             </div>
 
-            {/* Section 8 - About Your Teaching */}
+            {/* Section 8 - About Your Teaching - OPTIONAL */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0">8</div>
-                <h3 className="font-extrabold text-slate-700 text-base">About Your Teaching</h3>
+                <h3 className="font-extrabold text-slate-700 text-base">About Your Teaching <span className="text-xs font-normal text-slate-400 ml-1">(Optional)</span></h3>
               </div>
 
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-sm">
-                  <label htmlFor="teaching-description" className="font-semibold text-slate-700">
-                    About Your Teaching <span className="text-red-500">*</span>
-                  </label>
-                  <span className={`text-[10px] font-bold ${formData.description.trim().length >= 20 && formData.description.trim().length <= 250 ? "text-slate-400" : "text-amber-500"}`}>
-                    {formData.description.trim().length} / 250
-                  </span>
-                </div>
+                <label htmlFor="teaching-description" className="block text-sm font-semibold text-slate-700">
+                  About Your Teaching <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
                 <textarea
                   id="teaching-description"
                   rows={4}
-                  required
                   value={formData.description}
                   onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                  placeholder="Describe what you teach and who you help. Class ranges, experience, teaching style, exam successes, etc."
+                  placeholder="Describe what you teach and who you help. Class ranges, experience, teaching style, exam successes, etc. (Optional)"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl shadow-sm text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-800 leading-relaxed font-sans resize-none"
                 />
                 <div className="flex items-center justify-between">
                   <p className="text-[10px] text-slate-400">
-                    Provide 20-250 characters. Helpful descriptions prompt Customers/parents to reach out!
+                    Optional: Add details to help Customers/parents understand your teaching style.
                   </p>
                 </div>
               </div>
@@ -707,9 +692,8 @@ export default function CreateServicePage() {
               <ul className="text-xs text-slate-600 space-y-2.5 list-disc pl-5 font-medium leading-relaxed">
                 <li>Pick the closest teaching category to match Customer search phrases.</li>
                 <li>Write a clean, action-oriented Service Title.</li>
-                <li>Add popular languages to attract diverse families.</li>
-                <li>Specify starting price to create clear pricing expectations.</li>
-                <li>Add valid 10-digit contact numbers for Customers to reach you.</li>
+                <li>Add a valid 10-digit contact number for Customers to reach you.</li>
+                <li>Optional details like location, pricing, and description help attract more Customers.</li>
               </ul>
             </div>
             
@@ -747,7 +731,6 @@ export default function CreateServicePage() {
               style={{ width: "min(520px, calc(100vw - 32px))" }}
               className="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 max-h-[calc(100vh-3rem)] overflow-y-auto text-center"
             >
-              {/* Success Badge */}
               <div className="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center shadow-inner relative mx-auto mb-5">
                 <CheckCircle2 className="h-9 w-9" />
                 <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-white animate-ping"></span>
@@ -772,10 +755,12 @@ export default function CreateServicePage() {
                   <span className="text-slate-500">Category:</span>
                   <span className="text-slate-800 break-words">{formData.category === "Other" ? formData.customCategory : formData.category}</span>
                 </div>
-                <div className="grid grid-cols-[88px_minmax(0,1fr)] gap-3">
-                  <span className="text-slate-500">Location:</span>
-                  <span className="text-slate-800 break-words">{[formData.area, formData.city].filter(Boolean).join(", ")}</span>
-                </div>
+                {formData.city && (
+                  <div className="grid grid-cols-[88px_minmax(0,1fr)] gap-3">
+                    <span className="text-slate-500">Location:</span>
+                    <span className="text-slate-800 break-words">{[formData.area, formData.city].filter(Boolean).join(", ")}</span>
+                  </div>
+                )}
                 {formData.starting_price && (
                   <div className="grid grid-cols-[88px_minmax(0,1fr)] gap-3">
                     <span className="text-slate-500">Price:</span>
