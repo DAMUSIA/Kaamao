@@ -1,12 +1,10 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { Share2 } from "lucide-react";
 import {
   FaInstagram,
   FaTwitter,
-  FaYoutube,
   FaLinkedinIn,
 } from "react-icons/fa";
 import Icon from "../Icon";
@@ -98,15 +96,6 @@ export default function Footer({ onShowToast }: FooterProps) {
                 aria-label="Twitter"
               >
                 <FaTwitter className="h-4 w-4" />
-              </a>
-              <a
-                href={SOCIAL_LINKS.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all hover:scale-105 active:scale-95 cursor-pointer flex-shrink-0"
-                aria-label="YouTube"
-              >
-                <FaYoutube className="h-4 w-4" />
               </a>
               <a
                 href={SOCIAL_LINKS.linkedin}
