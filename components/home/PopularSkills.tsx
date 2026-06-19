@@ -10,21 +10,21 @@ const SKILLS = [
     chip: "TUTORING",
     title: "Academic Support",
     desc: "From math wizards to language experts right in your block.",
-    count: "120+ Experts",
+    count: "Experts",
   },
   {
     image: "/assets/cooking.png",
     chip: "COOKING",
     title: "Home Chefs",
     desc: "Healthy, home-cooked meals or culinary lessons from neighbors.",
-    count: "85+ Cooks",
+    count: "Cooks",
   },
   {
     image: "/assets/sewing.png",
     chip: "SEWING",
     title: "Tailoring & Crafts",
     desc: "Quick repairs, custom clothing, or textile workshops nearby.",
-    count: "50+ Tailors",
+    count: "Tailors",
   },
 ];
 
