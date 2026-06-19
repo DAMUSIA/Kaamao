@@ -855,7 +855,7 @@ const handleToggleLike = async (e: React.MouseEvent, service: ServiceItem) => {
               <div className="border-t border-slate-100 pt-6 space-y-6">
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-                    <span>Student Reviews ({selectedService.reviews_count || 0})</span>
+                    <span>Customer Reviews ({selectedService.reviews_count || 0})</span>
                     <span className="inline-flex items-center gap-0.5 text-xs text-amber-500">
                       <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                       {selectedService.rating_average || "0.0"}
@@ -877,7 +877,7 @@ const handleToggleLike = async (e: React.MouseEvent, service: ServiceItem) => {
                       <div key={review.id} className="p-3 bg-slate-50 border border-slate-100 rounded-2xl flex flex-col gap-1 text-xs">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-slate-700">
-                            {review.users?.full_name || "Student Reviewer"}
+                            {review.users?.full_name || "Customer Reviewer"}
                           </span>
                           <span className="text-[10px] font-semibold text-slate-400">
                             {new Date(review.created_at).toLocaleDateString()}
@@ -943,7 +943,7 @@ const handleToggleLike = async (e: React.MouseEvent, service: ServiceItem) => {
                           rows={3}
                           value={userComment}
                           onChange={(e) => setUserComment(e.target.value)}
-                          placeholder="Tell other students about your experience learning with this tutor..."
+                          placeholder="Tell other Customers about your experience learning with this tutor..."
                           className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-800 leading-relaxed font-sans resize-none"
                         />
                       </div>
