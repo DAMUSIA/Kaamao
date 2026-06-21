@@ -19,6 +19,30 @@ interface PosterTemplateProps {
   ctaText: string;
 }
 
+/**
+ * Renders a customizable poster layout for displaying service provider listings.
+ *
+ * Selects and renders one of ten distinct template designs based on the `templateId` prop,
+ * each optimized for different use cases (business cards, social media, flyers, etc.).
+ * The component includes a QR code linking to the provider's portfolio and adapts typography
+ * based on the specified style.
+ *
+ * @param title - The service or provider headline
+ * @param category - The service category
+ * @param description - A brief description of the service
+ * @param startingPrice - The base price for the service
+ * @param priceUnit - The unit for pricing (e.g., "hour", "day")
+ * @param location - The service location
+ * @param contactNumbers - Array of phone numbers; the first is the primary contact, the second (if present) is secondary
+ * @param portfolioUrl - URL to encode in the QR code
+ * @param providerName - Name of the service provider
+ * @param ratingAverage - Numerical rating (typically 0–5)
+ * @param templateId - The layout variant to render (`business`, `local`, `tutor`, `freelancer`, `dark`, `whatsapp`, `instaStory`, `instaPost`, `flyer`, or `minimal`)
+ * @param typography - The typography style to apply (`professional`, `bold`, `minimal`, or `modern`)
+ * @param ctaText - Call-to-action text displayed on the poster
+ *
+ * @returns A React component rendering the selected poster template as a complete card layout
+ */
 export default function PosterTemplate({
   title,
   category,

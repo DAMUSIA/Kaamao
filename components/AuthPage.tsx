@@ -5,6 +5,15 @@ import { signIn, getCurrentUser } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
+/**
+ * Renders a combined login and registration authentication page.
+ *
+ * Supports email/password authentication via Supabase, Google OAuth sign-in, and maintains session state with browser navigation history synchronization.
+ *
+ * @param defaultMode - The initial authentication mode to display
+ *
+ * @beta
+ */
 export default function AuthPage({
   defaultMode,
 }: {

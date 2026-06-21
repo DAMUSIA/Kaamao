@@ -14,6 +14,9 @@ interface PosterTemplateProps {
   portfolioUrl: string;
 }
 
+/**
+ * Renders a poster card displaying service information with contact details and a QR code for booking.
+ */
 export default function PosterTemplate({
   title,
   category,
