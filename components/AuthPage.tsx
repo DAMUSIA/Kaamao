@@ -52,13 +52,12 @@ export default function AuthPage({
     }
   }, []);
 
-  // Load remembered credentials on mount/mode toggle
+  // Load remembered login preference on mount/mode toggle
   useEffect(() => {
     if (mode === "login") {
-      const remembered = localStorage.getItem("rememberedPhone");
-      if (remembered) {
+      const rememberedPreference = localStorage.getItem("rememberLoginPreference");
+      if (rememberedPreference === "true") {
         const timer = setTimeout(() => {
-          setPhoneNo(remembered);
           setKeepLoggedIn(true);
         }, 0);
         return () => clearTimeout(timer);
@@ -208,9 +207,9 @@ export default function AuthPage({
 
         if (result.success) {
           if (keepLoggedIn) {
-            localStorage.setItem("rememberedPhone", phoneNo);
+            localStorage.setItem("rememberLoginPreference", "true");
           } else {
-            localStorage.removeItem("rememberedPhone");
+            localStorage.removeItem("rememberLoginPreference");
           }
           router.push("/dashboard");
         } else {
