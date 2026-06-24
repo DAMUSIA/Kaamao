@@ -1,14 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Eye,
-  Heart,
-  Star,
-  MessageSquare,
-  Phone,
-  Globe,
-} from "lucide-react";
+import { Eye, Heart, Star, MessageSquare, Phone, Globe } from "lucide-react";
 import { StatusCard } from "./status_card";
 
 interface AnalyticsCardProps {
