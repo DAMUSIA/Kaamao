@@ -6,7 +6,7 @@ interface StatusCardProps {
   icon: React.ElementType;
   label: string;
   value: string | number;
-  color: "blue" | "purple" | "red" | "amber" | "green";
+  color: "blue" | "purple" | "red" | "amber" | "green" | "indigo" | "emerald";
 }
 
 const colorMap: Record<
@@ -42,6 +42,18 @@ const colorMap: Record<
     text: "text-green-600",
     border: "border-green-100/20",
     hover: "hover:border-green-200",
+  },
+  indigo: {
+    bg: "bg-indigo-50",
+    text: "text-indigo-600",
+    border: "border-indigo-100/20",
+    hover: "hover:border-indigo-200",
+  },
+  emerald: {
+    bg: "bg-emerald-50",
+    text: "text-emerald-600",
+    border: "border-emerald-100/20",
+    hover: "hover:border-emerald-200",
   },
 };
 
