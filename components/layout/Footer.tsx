@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Share2 } from "lucide-react";
 import { FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
-import Icon from "../Icon";
 
 interface FooterProps {
   onShowToast: (msg: string) => void;
@@ -57,8 +57,14 @@ export default function Footer({ onShowToast }: FooterProps) {
               href="/"
               className="flex items-center justify-center md:justify-start gap-2 mb-4"
             >
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-600 flex-shrink-0">
-                <Icon name="check" fill className="text-xs text-white" />
+              <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+                <Image
+                  src="/logo.png"
+                  alt="Kaamao Logo"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
               </div>
               <span className="text-lg font-bold text-slate-800 dark:text-white">
                 Kaamao
@@ -139,3 +145,4 @@ export default function Footer({ onShowToast }: FooterProps) {
     </footer>
   );
 }
+//added logo

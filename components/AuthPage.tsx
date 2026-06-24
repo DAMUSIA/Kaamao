@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { signIn, getCurrentUser } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -292,16 +293,14 @@ export default function AuthPage({
           </div>
 
           <div className="relative z-10">
-            <div className="w-10 h-10 bg-white/20 rounded-xl backdrop-blur-sm border border-white/30 flex items-center justify-center mb-8">
-              <svg
-                className="w-5 h-5 text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
+            <div className="w-12 h-12 bg-white/20 rounded-xl backdrop-blur-sm border border-white/30 flex items-center justify-center mb-8 overflow-hidden p-1">
+              <Image
+                src="/logo.png"
+                alt="Kaamao Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
 
             <h2 className="font-serif text-3xl md:text-4xl text-white leading-tight">
@@ -312,17 +311,6 @@ export default function AuthPage({
             <p className="text-white/70 text-sm mt-3 leading-relaxed">
               Bridge the gap between local talent and community needs
             </p>
-          </div>
-
-          <div className="relative z-10 flex gap-4 mt-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 text-center">
-              <p className="text-white text-lg font-bold">99%</p>
-              <p className="text-white/60 text-xs">Trust Score</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 text-center">
-              <p className="text-white text-lg font-bold">10K+</p>
-              <p className="text-white/60 text-xs">Active Users</p>
-            </div>
           </div>
         </div>
 

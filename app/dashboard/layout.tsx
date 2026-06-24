@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -15,7 +16,6 @@ import {
   ChevronLeft,
   LogOut,
   Menu,
-  Sparkles,
   X,
   Globe,
   Loader2,
@@ -167,8 +167,14 @@ function DesktopSidebar({
                 transition={{ duration: 0.2 }}
                 className="flex items-center gap-2.5 flex-shrink-0"
               >
-                <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 flex-shrink-0">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/logo.png"
+                    alt="Kaamao Logo"
+                    width={36}
+                    height={36}
+                    className="object-contain"
+                  />
                 </div>
                 <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent whitespace-nowrap">
                   Kaamao
@@ -183,8 +189,14 @@ function DesktopSidebar({
                 transition={{ duration: 0.2 }}
                 className="flex-shrink-0 mx-auto"
               >
-                <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="w-9 h-9 rounded-xl overflow-hidden">
+                  <Image
+                    src="/logo.png"
+                    alt="Kaamao Logo"
+                    width={36}
+                    height={36}
+                    className="object-contain"
+                  />
                 </div>
               </motion.div>
             )}
@@ -381,8 +393,14 @@ function MobileSidebar({
           {/* Logo Area */}
           <div className="flex items-center h-20 px-4 border-b border-white/5 flex-shrink-0">
             <div className="flex items-center gap-2.5 flex-1">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
+                <Image
+                  src="/logo.png"
+                  alt="Kaamao Logo"
+                  width={36}
+                  height={36}
+                  className="object-contain"
+                />
               </div>
               <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent whitespace-nowrap">
                 Kaamao
