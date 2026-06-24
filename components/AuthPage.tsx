@@ -104,7 +104,9 @@ export default function AuthPage({
       const isConfigured = supabaseModule.isSupabaseConfigured;
 
       if (!isConfigured || !supabase) {
-        setError("Supabase is not configured. Please try again later.");
+        setError(
+          "Server temporarily unavailable. Please try again in a few minutes.",
+        );
         setIsGoogleLoading(false);
         return;
       }
