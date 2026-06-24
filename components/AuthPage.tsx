@@ -313,17 +313,6 @@ export default function AuthPage({
               Bridge the gap between local talent and community needs
             </p>
           </div>
-
-          <div className="relative z-10 flex gap-4 mt-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 text-center">
-              <p className="text-white text-lg font-bold">99%</p>
-              <p className="text-white/60 text-xs">Trust Score</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 text-center">
-              <p className="text-white text-lg font-bold">10K+</p>
-              <p className="text-white/60 text-xs">Active Users</p>
-            </div>
-          </div>
         </div>
 
         {/* Right Panel - Exact original layout settings */}
