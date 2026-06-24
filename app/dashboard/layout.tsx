@@ -18,10 +18,8 @@ import {
   Menu,
   X,
   Globe,
-  Loader2,
 } from "lucide-react";
 import { signOut, onAuthStateChange, getCurrentUser } from "@/lib/supabase";
-import { createPortal } from "react-dom";
 
 // ============================================
 // Types
@@ -98,34 +96,32 @@ const SIDEBAR_COLLAPSED_WIDTH = 72;
 const ANIMATION_DURATION = 0.3;
 
 // ============================================
-// Custom Hook: useMediaQuery
+// Custom Hook: useMediaQuery (Fixed)
 // ============================================
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-    const media = window.matchMedia(query);
-    setMatches(media.matches);
+    // Use requestAnimationFrame to avoid synchronous setState
+    const rafId = requestAnimationFrame(() => {
+      setMounted(true);
+      const media = window.matchMedia(query);
+      setMatches(media.matches);
 
-    const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
-    media.addEventListener("change", listener);
-    return () => media.removeEventListener("change", listener);
+      const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
+      media.addEventListener("change", listener);
+
+      return () => {
+        media.removeEventListener("change", listener);
+      };
+    });
+
+    return () => cancelAnimationFrame(rafId);
   }, [query]);
 
   return mounted ? matches : false;
 }
-
-// ============================================
-// Animation Variants
-// ============================================
-const modalVariants = {
-  initial: { opacity: 0, scale: 0.95, y: 20 },
-  animate: { opacity: 1, scale: 1, y: 0 },
-  exit: { opacity: 0, scale: 0.95, y: 20 },
-};
 
 // ============================================
 // Desktop Sidebar Component
@@ -137,7 +133,6 @@ function DesktopSidebar({
   onLogout,
   profileName,
   profileEmail,
-  isLoggingOut,
 }: {
   collapsed: boolean;
   setCollapsed: (val: boolean) => void;
@@ -145,7 +140,6 @@ function DesktopSidebar({
   onLogout: () => void;
   profileName: string;
   profileEmail: string;
-  isLoggingOut: boolean;
 }) {
   return (
     <motion.aside
@@ -278,7 +272,7 @@ function DesktopSidebar({
         })}
       </nav>
 
-      {/* User Profile & Logout */}
+      {/* User Profile & Logout - Instant Logout */}
       <div className="p-3 border-t border-white/5 flex-shrink-0">
         <motion.div
           animate={{
@@ -310,23 +304,15 @@ function DesktopSidebar({
           </AnimatePresence>
         </motion.div>
 
-        <motion.button
+        {/* Instant Logout Button - No loading state */}
+        <button
           onClick={onLogout}
-          disabled={isLoggingOut}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.95 }}
-          className={`w-full mt-2 flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
-            isLoggingOut
-              ? "text-white/30 cursor-not-allowed"
-              : "text-white/50 hover:text-red-200 hover:bg-red-500/20"
-          } ${collapsed ? "justify-center" : ""}`}
+          className={`w-full mt-2 flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group text-white/50 hover:text-red-200 hover:bg-red-500/20 ${
+            collapsed ? "justify-center" : ""
+          }`}
           aria-label="Logout"
         >
-          {isLoggingOut ? (
-            <Loader2 className="h-5 w-5 flex-shrink-0 animate-spin" />
-          ) : (
-            <LogOut className="h-5 w-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-          )}
+          <LogOut className="h-5 w-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
           <AnimatePresence mode="wait">
             {!collapsed && (
               <motion.span
@@ -337,11 +323,11 @@ function DesktopSidebar({
                 transition={{ duration: 0.2 }}
                 className="text-sm font-medium overflow-hidden whitespace-nowrap"
               >
-                {isLoggingOut ? "Logging out..." : "Logout"}
+                Logout
               </motion.span>
             )}
           </AnimatePresence>
-        </motion.button>
+        </button>
       </div>
     </motion.aside>
   );
@@ -357,7 +343,6 @@ function MobileSidebar({
   onLogout,
   profileName,
   profileEmail,
-  isLoggingOut,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -365,7 +350,6 @@ function MobileSidebar({
   onLogout: () => void;
   profileName: string;
   profileEmail: string;
-  isLoggingOut: boolean;
 }) {
   return (
     <>
@@ -454,7 +438,7 @@ function MobileSidebar({
             })}
           </nav>
 
-          {/* User Profile & Logout */}
+          {/* User Profile & Logout - Instant Logout */}
           <div className="p-3 border-t border-white/5 flex-shrink-0">
             <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors">
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg shadow-blue-500/20 flex-shrink-0">
@@ -468,150 +452,21 @@ function MobileSidebar({
               </div>
             </div>
 
+            {/* Instant Logout Button - No loading state */}
             <button
               onClick={() => {
                 onClose();
                 onLogout();
               }}
-              disabled={isLoggingOut}
-              className={`w-full mt-2 flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
-                isLoggingOut
-                  ? "text-white/30 cursor-not-allowed"
-                  : "text-white/50 hover:text-red-200 hover:bg-red-500/20"
-              }`}
+              className="w-full mt-2 flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group text-white/50 hover:text-red-200 hover:bg-red-500/20"
             >
-              {isLoggingOut ? (
-                <Loader2 className="h-5 w-5 flex-shrink-0 animate-spin" />
-              ) : (
-                <LogOut className="h-5 w-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-              )}
-              <span className="text-sm font-medium">
-                {isLoggingOut ? "Logging out..." : "Logout"}
-              </span>
+              <LogOut className="h-5 w-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium">Logout</span>
             </button>
           </div>
         </div>
       </motion.aside>
     </>
-  );
-}
-
-// ============================================
-// Logout Modal Component - PORTAL RENDERED
-// ============================================
-function LogoutModalContent({
-  onClose,
-  onConfirm,
-  isLoggingOut,
-}: {
-  onClose: () => void;
-  onConfirm: () => void;
-  isLoggingOut: boolean;
-}) {
-  return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-      />
-
-      <motion.div
-        variants={modalVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="logout-title"
-      >
-        <div className="p-6 text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-red-50 to-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/10">
-            {isLoggingOut ? (
-              <Loader2 className="h-7 w-7 animate-spin" />
-            ) : (
-              <LogOut className="h-7 w-7" />
-            )}
-          </div>
-
-          <h3
-            id="logout-title"
-            className="text-xl font-bold text-slate-800 mb-2"
-          >
-            {isLoggingOut ? "Logging out..." : "Logout?"}
-          </h3>
-          <p className="text-sm text-slate-500 leading-relaxed">
-            {isLoggingOut
-              ? "Please wait while we log you out..."
-              : "Are you sure you want to logout? You'll need to login again to access your dashboard."}
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-3 px-6 pb-6">
-          <button
-            onClick={onClose}
-            disabled={isLoggingOut}
-            className="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-medium text-sm hover:bg-slate-50 active:scale-95 transition-all focus:ring-2 focus:ring-slate-300 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            disabled={isLoggingOut}
-            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-red-500 text-white font-medium text-sm hover:shadow-lg hover:shadow-red-500/30 active:scale-95 transition-all focus:ring-2 focus:ring-red-400 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isLoggingOut ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Logging out...
-              </>
-            ) : (
-              "Logout"
-            )}
-          </button>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-function LogoutModal({
-  isOpen,
-  onClose,
-  onConfirm,
-  isLoggingOut,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  isLoggingOut: boolean;
-}) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
-
-  if (!mounted) return null;
-
-  return (
-    <AnimatePresence>
-      {isOpen &&
-        createPortal(
-          <LogoutModalContent
-            onClose={onClose}
-            onConfirm={onConfirm}
-            isLoggingOut={isLoggingOut}
-          />,
-          document.body,
-        )}
-    </AnimatePresence>
   );
 }
 
@@ -630,13 +485,11 @@ export default function DashboardLayout({
   const [isLoading, setIsLoading] = useState(true);
   const [profileName, setProfileName] = useState("User");
   const [profileEmail, setProfileEmail] = useState("");
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   // ============================================
-  // FIXED: Auth check with proper session validation
+  // Auth check with proper session validation
   // ============================================
   const checkAuth = useCallback(async () => {
     try {
@@ -663,11 +516,13 @@ export default function DashboardLayout({
   }, [router]);
 
   // ============================================
-  // FIXED: Auth state listener
+  // Auth state listener (Fixed)
   // ============================================
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    checkAuth();
+    // Use requestAnimationFrame to avoid synchronous setState
+    const rafId = requestAnimationFrame(() => {
+      checkAuth();
+    });
 
     const unsubscribe = onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") {
@@ -679,54 +534,50 @@ export default function DashboardLayout({
     });
 
     return () => {
+      cancelAnimationFrame(rafId);
       if (unsubscribe) unsubscribe();
     };
   }, [checkAuth, router]);
 
   // ============================================
-  // FIXED: Production-ready logout handler
+  // ULTRA FAST: Instant Logout Handler (No delays)
   // ============================================
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
+  const handleLogout = () => {
+    // Step 1: Clear local state immediately (instant UI feedback)
+    setProfileName("User");
+    setProfileEmail("");
+    setIsLoading(false);
 
-    try {
-      const result = await signOut();
-      void result; // signOut clears session; redirect is what matters
+    // Step 2: Navigate to login page instantly (no await, no refresh delay)
+    router.push("/login");
 
-      setShowLogoutConfirm(false);
-      setProfileName("User");
-      setProfileEmail("");
-
-      await router.replace("/login");
-      router.refresh();
-    } catch {
-      setShowLogoutConfirm(false);
-      router.replace("/login");
-      router.refresh();
-    } finally {
-      setIsLoggingOut(false);
-    }
+    // Step 3: Sign out in the background (doesn't block UI)
+    // Use void to explicitly ignore the promise
+    void signOut().catch(() => {
+      // Silent error handling - user is already redirected
+    });
   };
 
-  // Close mobile sidebar on route change
+  // Close mobile sidebar on route change (Fixed)
   useEffect(() => {
     if (isMobile) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setMobileSidebarOpen(false);
+      const rafId = requestAnimationFrame(() => {
+        setMobileSidebarOpen(false);
+      });
+      return () => cancelAnimationFrame(rafId);
     }
   }, [pathname, isMobile]);
 
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (showLogoutConfirm) setShowLogoutConfirm(false);
-        if (mobileSidebarOpen) setMobileSidebarOpen(false);
+      if (e.key === "Escape" && mobileSidebarOpen) {
+        setMobileSidebarOpen(false);
       }
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [showLogoutConfirm, mobileSidebarOpen]);
+  }, [mobileSidebarOpen]);
 
   // Get page title based on pathname
   const getPageTitle = () => {
@@ -777,7 +628,6 @@ export default function DashboardLayout({
         onLogout={handleLogout}
         profileName={profileName}
         profileEmail={profileEmail}
-        isLoggingOut={isLoggingOut}
       />
 
       {/* Mobile Sidebar */}
@@ -788,7 +638,6 @@ export default function DashboardLayout({
         onLogout={handleLogout}
         profileName={profileName}
         profileEmail={profileEmail}
-        isLoggingOut={isLoggingOut}
       />
 
       {/* Main Content */}
@@ -853,14 +702,6 @@ export default function DashboardLayout({
         {/* Page Content */}
         <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </motion.main>
-
-      {/* Logout Modal - Portal Rendered */}
-      <LogoutModal
-        isOpen={showLogoutConfirm}
-        onClose={() => setShowLogoutConfirm(false)}
-        onConfirm={handleLogout}
-        isLoggingOut={isLoggingOut}
-      />
     </div>
   );
 }
