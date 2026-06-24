@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Icon from "../Icon";
 
@@ -100,11 +101,17 @@ export default function Navbar({ darkMode, onToggleDarkMode }: NavbarProps) {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group z-50">
           <motion.div
-            whileHover={{ scale: 1.05, rotate: -5 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-primary text-white shadow-lg shadow-brand-primary/20 transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden"
           >
-            <Icon name="check" fill className="text-xl text-white" />
+            <Image
+              src="/logo.png"
+              alt="Kaamao Logo"
+              width={40}
+              height={40}
+              className="object-contain"
+            />
           </motion.div>
           <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight group-hover:text-brand-primary transition-colors">
             Kaamao
