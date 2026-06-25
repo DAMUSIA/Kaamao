@@ -120,11 +120,14 @@ function TeamMemberImage({
   }
 
   return (
-    <img
+    <Image
       src={src}
       alt={name}
+      width={400}
+      height={400}
       onError={() => setHasError(true)}
       className="w-full h-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-110"
+      unoptimized={src.startsWith("/assets/")}
     />
   );
 }
