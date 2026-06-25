@@ -1,8 +1,8 @@
-# Architecture — Kaamao
+# Architecture — GullyGig
 
 ## Overview
 
-Kaamao is a **Next.js 16 + Supabase** SaaS platform where service providers (tutors, freelancers, etc.) list their services, receive reviews, and accumulate likes. Built for deployment on Vercel.
+GullyGig is a **Next.js 16 + Supabase** SaaS platform where service providers (tutors, freelancers, etc.) list their services, receive reviews, and accumulate likes. Built for deployment on Vercel.
 
 ---
 
@@ -52,7 +52,7 @@ Supabase (Postgres)
 ## Folder Structure
 
 ```
-Kaamao/
+GullyGig/
 ├── app/
 │   ├── api/
 │   │   ├── auth/

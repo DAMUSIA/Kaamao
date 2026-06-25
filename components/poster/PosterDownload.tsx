@@ -107,7 +107,7 @@ export default function PosterDownload({
       ctx.fillStyle = "#ffffff";
       ctx.font = "bold 30px system-ui, sans-serif";
       ctx.textAlign = "left";
-      ctx.fillText("Kaamao Connect", 125, 94);
+      ctx.fillText("GullyGig Connect", 125, 94);
 
       // Category Tag Box on the Right
       ctx.fillStyle = "rgba(255, 255, 255, 0.07)";

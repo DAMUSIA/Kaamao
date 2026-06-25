@@ -65,7 +65,7 @@ export default function PortfolioQR({ portfolioUrl }: PortfolioQRProps) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={qrCodeUrl}
-          alt="Kaamao Service Portfolio QR Code"
+          alt="GullyGig Service Portfolio QR Code"
           width={120}
           height={120}
           className="rounded-lg bg-white block"

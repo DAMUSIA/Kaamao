@@ -22,12 +22,12 @@ export default function Footer({ onShowToast }: FooterProps) {
 
   const handleShare = async () => {
     const shareData = {
-      title: "Kaamao - Find Trusted Local Service Providers",
-      text: "Discover verified tutors, cooks, babysitters, and skilled professionals near you on Kaamao!",
+      title: "GullyGig - Find Trusted Local Service Providers",
+      text: "Discover verified tutors, cooks, babysitters, and skilled professionals near you on GullyGig!",
       url:
         typeof window !== "undefined"
           ? window.location.origin
-          : "https://kaamao.com",
+          : "https://gullygig.in",
     };
 
     if (navigator.share) {
@@ -60,14 +60,14 @@ export default function Footer({ onShowToast }: FooterProps) {
               <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
                 <Image
                   src="/logo.png"
-                  alt="Kaamao Logo"
+                  alt="GullyGig Logo"
                   width={32}
                   height={32}
                   className="object-contain"
                 />
               </div>
               <span className="text-lg font-bold text-slate-800 dark:text-white">
-                Kaamao
+                GullyGig
               </span>
             </Link>
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w mx-auto md:mx-0">
@@ -77,7 +77,7 @@ export default function Footer({ onShowToast }: FooterProps) {
               <button
                 onClick={handleShare}
                 className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-all hover:scale-105 active:scale-95 shadow-md shadow-blue-500/20 cursor-pointer flex-shrink-0"
-                aria-label="Share Kaamao"
+                aria-label="Share GullyGig"
               >
                 <Share2 className="h-4 w-4" />
               </button>
@@ -156,7 +156,7 @@ export default function Footer({ onShowToast }: FooterProps) {
         {/* Bottom Bar */}
         <div className="border-t border-slate-100 dark:border-slate-800 mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-slate-500 dark:text-slate-400 text-center md:text-left">
-            &copy; {currentYear} Kaamao • Mumbai, India
+            &copy; {currentYear} GullyGig • Mumbai, India
           </p>
           <div className="flex items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
             <Link

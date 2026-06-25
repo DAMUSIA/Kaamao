@@ -34,7 +34,7 @@ export default function TermsPage() {
                   <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-brand-primary group-hover:translate-x-1 transition-all" />
                 </div>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Read our terms and conditions for using the Kaamao platform
+                  Read our terms and conditions for using the GullyGig platform
                 </p>
               </div>
             </div>
@@ -75,10 +75,10 @@ export default function TermsPage() {
             please don&apos;t hesitate to contact us.
           </p>
           <Link
-            href="mailto:support@kaamao.com"
+            href="mailto:support@gullygig.in"
             className="inline-flex items-center gap-2 text-brand-primary hover:text-brand-primary-dark font-semibold hover:underline transition-colors"
           >
-            support@kaamao.com
+            support@gullygig.in
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

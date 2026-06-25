@@ -108,14 +108,14 @@ export default function Navbar({ darkMode, onToggleDarkMode }: NavbarProps) {
           >
             <Image
               src="/logo.png"
-              alt="Kaamao Logo"
+              alt="GullyGig Logo"
               width={40}
               height={40}
               className="object-contain"
             />
           </motion.div>
           <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight group-hover:text-brand-primary transition-colors">
-            Kaamao
+            GullyGig
           </span>
         </Link>
 

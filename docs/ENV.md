@@ -1,4 +1,4 @@
-# Environment Variables — Kaamao
+# Environment Variables — GullyGig
 
 Copy `.env.example` to `.env.local` and fill in all values before running locally.
 

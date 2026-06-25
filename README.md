@@ -1,6 +1,6 @@
-# Kaamao
+# GullyGig
 
-Kaamao Connect is a hyperlocal service marketplace that enables women, Customers, and skilled individuals to earn income by offering part-time services such as tutoring, sewing, cooking, home assistance, and other locals.
+GullyGig Connect is a hyperlocal service marketplace that enables women, Customers, and skilled individuals to earn income by offering part-time services such as tutoring, sewing, cooking, home assistance, and other locals.
 
 Customers can easily discover nearby service providers, view profiles, contact them, make secure payments, and leave ratings to build trust within the community.
 
@@ -10,7 +10,7 @@ Many skilled individuals, especially homemakers and Customers, struggle to find 
 
 At the same time, local customers often rely on word-of-mouth recommendations or WhatsApp groups to find trusted service providers.
 
-Kaamao Connect bridges this gap by creating a trusted platform for local-based services.
+GullyGig Connect bridges this gap by creating a trusted platform for local-based services.
 
 ## ✨ Features
 
@@ -71,7 +71,7 @@ Current alternatives include:
 - WhatsApp groups
 - Word-of-mouth referrals
 
-Kaamao Connect focuses on accessible, community-driven opportunities for everyday skilled individuals.
+GullyGig Connect focuses on accessible, community-driven opportunities for everyday skilled individuals.
 
 ## 🛠️ Tech Stack
 

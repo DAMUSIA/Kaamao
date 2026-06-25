@@ -164,14 +164,14 @@ function DesktopSidebar({
                 <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
                   <Image
                     src="/logo.png"
-                    alt="Kaamao Logo"
+                    alt="GullyGig Logo"
                     width={36}
                     height={36}
                     className="object-contain"
                   />
                 </div>
                 <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent whitespace-nowrap">
-                  Kaamao
+                  GullyGig
                 </span>
               </motion.div>
             ) : (
@@ -186,7 +186,7 @@ function DesktopSidebar({
                 <div className="w-9 h-9 rounded-xl overflow-hidden">
                   <Image
                     src="/logo.png"
-                    alt="Kaamao Logo"
+                    alt="GullyGig Logo"
                     width={36}
                     height={36}
                     className="object-contain"
@@ -380,14 +380,14 @@ function MobileSidebar({
               <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
                 <Image
                   src="/logo.png"
-                  alt="Kaamao Logo"
+                  alt="GullyGig Logo"
                   width={36}
                   height={36}
                   className="object-contain"
                 />
               </div>
               <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent whitespace-nowrap">
-                Kaamao
+                GullyGig
               </span>
             </div>
             <button

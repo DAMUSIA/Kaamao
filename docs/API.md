@@ -1,4 +1,4 @@
-# API Reference — Kaamao
+# API Reference — GullyGig
 
 All API routes are under `/api`. Server-side only — do not call directly from external clients without proper authentication.
 

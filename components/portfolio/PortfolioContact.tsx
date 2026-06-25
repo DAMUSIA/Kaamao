@@ -33,14 +33,14 @@ export default function PortfolioContact({
   const cleanNumber = (num: string) => num.replace(/\D/g, "");
 
   const handleShare = async () => {
-    const textMessage = `Check out my service on Kaamao\n\nService: ${serviceTitle}\nLocation: ${location}${
+    const textMessage = `Check out my service on GullyGig\n\nService: ${serviceTitle}\nLocation: ${location}${
       startingPrice ? `\nStarting at: ₹${startingPrice}` : ""
     }\n\nLink: ${portfolioUrl}`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Kaamao - ${serviceTitle}`,
+          title: `GullyGig - ${serviceTitle}`,
           text: textMessage,
           url: portfolioUrl,
         });

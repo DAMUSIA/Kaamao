@@ -393,7 +393,7 @@ export default function TeamPage() {
               <Icon name="check" fill className="text-sm text-white" />
             </div>
             <span className="font-extrabold text-slate-900 dark:text-white text-xl tracking-tight">
-              Kaamao
+              GullyGig
             </span>
           </Link>
 
@@ -440,7 +440,7 @@ export default function TeamPage() {
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
               Meet the Team <br /> behind{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 relative">
-                Kaamao
+                GullyGig
                 <svg
                   className="absolute w-full h-3 -bottom-1 left-0 text-blue-500/30 dark:text-blue-400/30"
                   viewBox="0 0 100 10"
@@ -512,9 +512,9 @@ export default function TeamPage() {
             Our Mission
           </h3>
           <p className="text-2xl sm:text-3xl md:text-4xl leading-snug font-medium italic max-w-4xl mx-auto text-slate-100 tracking-wide font-['Playfair_Display',serif]">
-            &ldquo;Kaamao transforms skills into opportunities and local talent
-            into sustainable income, bringing neighborhoods closer together
-            through trusted professional networks.&rdquo;
+            &ldquo;GullyGig transforms skills into opportunities and local
+            talent into sustainable income, bringing neighborhoods closer
+            together through trusted professional networks.&rdquo;
           </p>
         </motion.div>
       </main>

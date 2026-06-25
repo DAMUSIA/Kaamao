@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Kaamao Landing Page E2E Tests", () => {
+test.describe("GullyGig Landing Page E2E Tests", () => {
   test("should load the homepage and check main content", async ({ page }) => {
     // Navigate to homepage
     await page.goto("/");

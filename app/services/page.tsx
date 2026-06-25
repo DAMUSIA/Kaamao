@@ -380,12 +380,12 @@ export default function ServicesPage() {
     const url =
       typeof window !== "undefined"
         ? `${window.location.origin}/p/${serviceId}`
-        : `https://kaamao.com/p/${serviceId}`;
+        : `https://gullygig.in/p/${serviceId}`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Verify this Service Portfolio on Kaamao",
+          title: "Verify this Service Portfolio on GullyGig",
           url: url,
         });
       } catch {
@@ -424,7 +424,7 @@ export default function ServicesPage() {
               <Icon name="check" fill className="text-xl text-white" />
             </div>
             <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight group-hover:text-brand-primary transition-colors">
-              Kaamao
+              GullyGig
             </span>
           </Link>
 

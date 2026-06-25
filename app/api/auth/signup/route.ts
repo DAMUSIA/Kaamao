@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
     // Generate pseudo-email if none provided (Supabase requires email for auth)
     const phoneDigits = phoneNo.replace(/\D/g, "");
-    const finalEmail = email || `phone_${phoneDigits}@kaamao.com`;
+    const finalEmail = email || `phone_${phoneDigits}@gullygig.in`;
 
     const { data: authData, error: authError } =
       await supabaseAdmin.auth.admin.createUser({

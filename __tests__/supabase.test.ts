@@ -98,7 +98,7 @@ describe("signUp", () => {
     });
 
     // Make 3 attempts to exhaust the in-memory rate limit window
-    const email = `ratelimit_test_${Date.now()}@kaamao.com`;
+    const email = `ratelimit_test_${Date.now()}@gullygig.in`;
     for (let i = 0; i < 3; i++) {
       await signUp({
         fullName: "Test",

@@ -313,7 +313,7 @@ export default function PosterGeneratorPage() {
   const currentHost =
     typeof window !== "undefined"
       ? window.location.origin
-      : "https://kaamao.com";
+      : "https://gullygig.in";
   const portfolioUrl = `${currentHost}/p/${service.id}`;
   const locationStr = [service.area, service.city].filter(Boolean).join(", ");
   const contacts = service.contact_numbers || [];

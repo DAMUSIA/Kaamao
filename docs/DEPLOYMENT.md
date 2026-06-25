@@ -1,8 +1,8 @@
-# Deployment — Kaamao
+# Deployment — GullyGig
 
 ## Production Deployment (Vercel)
 
-Kaamao is designed to deploy on **Vercel** with zero configuration beyond environment variables.
+GullyGig is designed to deploy on **Vercel** with zero configuration beyond environment variables.
 
 ---
 
@@ -85,7 +85,7 @@ PRs to `main` must pass all checks before merging.
 
 ## Database Migrations
 
-Kaamao does not use an ORM. Schema changes are written as raw SQL in `supabase_schema.sql`.
+GullyGig does not use an ORM. Schema changes are written as raw SQL in `supabase_schema.sql`.
 
 To apply migrations:
 

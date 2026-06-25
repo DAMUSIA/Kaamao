@@ -17,7 +17,7 @@ if (
 ) {
   if (process.env.NODE_ENV !== "production") {
     console.warn(
-      "[Kaamao] Supabase env missing. Dynamic operations will run in degraded/direct-fail mode.",
+      "[GullyGig] Supabase env missing. Dynamic operations will run in degraded/direct-fail mode.",
     );
   }
 }
@@ -117,7 +117,7 @@ export async function signUp(
   }
 
   const cleanPhone = userData.phoneNo.replace(/\D/g, "");
-  const finalEmail = userData.email || `phone_${cleanPhone}@kaamao.com`;
+  const finalEmail = userData.email || `phone_${cleanPhone}@gullygig.in`;
 
   const rateLimit = checkRateLimit(finalEmail);
   if (!rateLimit.allowed) {

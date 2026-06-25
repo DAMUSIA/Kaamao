@@ -6,7 +6,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 if (!supabaseUrl || !supabaseServiceKey) {
   if (process.env.NODE_ENV !== "production") {
     console.warn(
-      "[Kaamao] Supabase admin env vars missing — server-side DB calls will fail.",
+      "[GullyGig] Supabase admin env vars missing — server-side DB calls will fail.",
     );
   }
 }

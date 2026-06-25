@@ -1,8 +1,8 @@
-# Security — Kaamao
+# Security — GullyGig
 
 ## Overview
 
-This document describes the security controls in place for Kaamao's production deployment.
+This document describes the security controls in place for GullyGig's production deployment.
 
 ---
 

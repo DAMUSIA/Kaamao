@@ -75,7 +75,7 @@ export default function HowItWorks() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-[clamp(1.8rem,3.5vw,2.4rem)] font-extrabold mb-4 text-white">
-              How Kaamao Works
+              How GullyGig Works
             </h2>
             <p className="text-blue-100 text-sm leading-relaxed max-w-[500px] mx-auto">
               Bridging the gap between neighbors. Whether you want to showcase a

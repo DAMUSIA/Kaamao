@@ -246,7 +246,7 @@ export default function PortfolioPageClient({
 🔗 View Full Portfolio:
 ${fullPortfolioUrl}
 ━━━━━━━━━━━━━━━━━━━━━━
-#${initialService.category.replace(/\s/g, "")} #Kaamao #LocalServices ${initialService.city ? `#${initialService.city.replace(/\s/g, "")}` : ""}`;
+#${initialService.category.replace(/\s/g, "")} #GullyGig #LocalServices ${initialService.city ? `#${initialService.city.replace(/\s/g, "")}` : ""}`;
 
     setShareText(text);
   }, [initialService, portfolioUrl, portfolioId]);
@@ -512,7 +512,7 @@ ${fullPortfolioUrl}
       ctx.fillStyle = "#0f172a";
       ctx.font = "bold 13px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Scan to View Portfolio on Kaamao", 140, 295);
+      ctx.fillText("Scan to View Portfolio on GullyGig", 140, 295);
 
       const link = document.createElement("a");
       link.download = `${initialService.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-qr.png`;
@@ -535,7 +535,7 @@ ${fullPortfolioUrl}
       {/* Theme Switcher */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 flex justify-end gap-3 items-center">
         <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3.5 py-1.5 rounded-full shadow-xs">
-          Kaamao Service Hub
+          GullyGig Service Hub
         </span>
         <button
           onClick={toggleTheme}
@@ -753,7 +753,7 @@ ${fullPortfolioUrl}
 
                           <a
                             href={`https://wa.me/${cleaned}?text=${encodeURIComponent(
-                              `Hello! I saw your service "${initialService.title}" on Kaamao and want to enquire.`,
+                              `Hello! I saw your service "${initialService.title}" on GullyGig and want to enquire.`,
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -1396,8 +1396,8 @@ ${fullPortfolioUrl}
             <div className="space-y-1.5">
               <h3 className="text-lg font-black">Authentication Required</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                You must login or register a Kaamao account to {authModalReason}
-                .
+                You must login or register a GullyGig account to{" "}
+                {authModalReason}.
               </p>
             </div>
 

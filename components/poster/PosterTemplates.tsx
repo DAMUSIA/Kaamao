@@ -78,7 +78,7 @@ export default function PosterTemplate({
                 <Sparkles className="w-3.5 h-3.5 text-white" />
               </div>
               <span className="font-extrabold text-xs uppercase tracking-wider">
-                Kaamao Connect
+                GullyGig Connect
               </span>
             </div>
             <span className="text-[9px] font-bold uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded border border-white/10">

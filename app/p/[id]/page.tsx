@@ -75,7 +75,7 @@ export async function generateMetadata({
 
   if (!data || !data.service) {
     return {
-      title: "Portfolio Not Found | Kaamao",
+      title: "Portfolio Not Found | GullyGig",
       description:
         "This service listing could not be found or has been deactivated.",
     };
@@ -88,7 +88,7 @@ export async function generateMetadata({
     ? ` starting at ₹${service.starting_price}/${service.price_unit || "hour"}`
     : "";
 
-  const title = `${service.title} by ${providerName} - Kaamao`;
+  const title = `${service.title} by ${providerName} - GullyGig`;
   const description = `${service.category} service in ${location}${priceStr}. ${service.description.substring(
     0,
     150,
@@ -109,7 +109,7 @@ export async function generateMetadata({
       title,
       description,
       url: pageUrl,
-      siteName: "Kaamao Connect",
+      siteName: "GullyGig Connect",
       locale: "en_IN",
       type: "profile",
       images: [

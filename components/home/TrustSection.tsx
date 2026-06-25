@@ -40,7 +40,7 @@ export default function TrustSection({
               <div className="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center backdrop-blur-sm">
                 <Icon name="check" className="text-[10px]" fill />
               </div>
-              <span>Kaamao</span>
+              <span>GullyGig</span>
             </div>
           </div>
 

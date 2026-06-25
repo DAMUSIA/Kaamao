@@ -103,7 +103,7 @@ export default function Home() {
               </h2>
               <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-10 max-w-[500px] mx-auto opacity-90">
                 Join thousands of neighbors already growing their skills and
-                simplifying their lives with Kaamao.
+                simplifying their lives with GullyGig.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">

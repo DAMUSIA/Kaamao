@@ -9,7 +9,7 @@ export default function RootLoading() {
           <div className="absolute inset-0 border-4 border-transparent border-t-indigo-600 dark:border-t-indigo-500 rounded-full animate-pulse"></div>
         </div>
         <p className="text-sm font-extrabold text-slate-600 dark:text-slate-400 animate-pulse tracking-wide">
-          Connecting to Kaamao...
+          Connecting to GullyGig...
         </p>
       </div>
     </div>

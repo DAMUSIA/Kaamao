@@ -63,7 +63,7 @@ export default function ProfileSidebar({
     },
     {
       label: "Email Verification",
-      verified: !!profile.email && !profile.email.endsWith("@kaamao.com"),
+      verified: !!profile.email && !profile.email.endsWith("@gullygig.in"),
       description: "Email address confirmed",
     },
   ];

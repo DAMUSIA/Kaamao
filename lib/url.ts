@@ -24,7 +24,7 @@ export function getBaseUrl(): string {
   console.warn(
     "No base URL found, using fallback. This may cause issues in production.",
   );
-  return "https://kaamao.com";
+  return "https://gullygig.in";
 }
 
 /**

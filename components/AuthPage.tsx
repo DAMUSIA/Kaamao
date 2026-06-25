@@ -207,7 +207,7 @@ export default function AuthPage({
 
       setIsLoading(true);
       try {
-        const loginEmail = `phone_${cleanPhone}@kaamao.com`;
+        const loginEmail = `phone_${cleanPhone}@gullygig.in`;
         const result = await signIn({ email: loginEmail, password });
 
         if (result.success) {
@@ -298,7 +298,7 @@ export default function AuthPage({
             <div className="w-12 h-12 bg-white/20 rounded-xl backdrop-blur-sm border border-white/30 flex items-center justify-center mb-8 overflow-hidden p-1">
               <Image
                 src="/logo.png"
-                alt="Kaamao Logo"
+                alt="GullyGig Logo"
                 width={40}
                 height={40}
                 className="object-contain"
@@ -306,7 +306,7 @@ export default function AuthPage({
             </div>
 
             <h2 className="font-serif text-3xl md:text-4xl text-white leading-tight">
-              Kaamao
+              GullyGig
               <br />
               <em className="italic text-white/80">Connect</em>
             </h2>
