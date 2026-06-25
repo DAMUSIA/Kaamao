@@ -13,7 +13,6 @@ interface FooterProps {
 const SOCIAL_LINKS = {
   instagram: "#",
   twitter: "#",
-  youtube: "#",
   linkedin: "#",
 };
 
@@ -119,7 +118,7 @@ export default function Footer({ onShowToast }: FooterProps) {
             <ul className="space-y-2.5 text-center md:text-right">
               <li>
                 <Link
-                  href="/terms/privacy_policy"
+                  href="/terms"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Privacy Policy
@@ -127,18 +126,10 @@ export default function Footer({ onShowToast }: FooterProps) {
               </li>
               <li>
                 <Link
-                  href="/terms/terms_service"
-                  className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/terms"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  Legal
+                  Terms of Service
                 </Link>
               </li>
               <li>
@@ -160,14 +151,14 @@ export default function Footer({ onShowToast }: FooterProps) {
           </p>
           <div className="flex items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
             <Link
-              href="/terms/privacy_policy"
+              href="/terms"
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               Privacy
             </Link>
             <span>•</span>
             <Link
-              href="/terms/terms_service"
+              href="/terms"
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               Terms

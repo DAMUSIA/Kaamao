@@ -120,11 +120,14 @@ function TeamMemberImage({
   }
 
   return (
-    <img
+    <Image
       src={src}
       alt={name}
+      width={400}
+      height={400}
       onError={() => setHasError(true)}
       className="w-full h-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-110"
+      unoptimized={src.startsWith("/assets/")}
     />
   );
 }
@@ -447,7 +450,14 @@ export default function TeamPage() {
             </span>
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
               Meet the Team <br /> behind{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 relative">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 relative inline-flex items-center gap-2">
+                <Image
+                  src="/logo.png"
+                  alt="GullyGig Logo"
+                  width={48}
+                  height={48}
+                  className="inline-block object-contain w-12 h-12 md:w-16 md:h-16 align-middle"
+                />
                 GullyGig
                 <svg
                   className="absolute w-full h-3 -bottom-1 left-0 text-blue-500/30 dark:text-blue-400/30"
@@ -520,9 +530,12 @@ export default function TeamPage() {
             Our Mission
           </h3>
           <p className="text-2xl sm:text-3xl md:text-4xl leading-snug font-medium italic max-w-4xl mx-auto text-slate-100 tracking-wide font-['Playfair_Display',serif]">
-            &ldquo;GullyGig transforms skills into opportunities and local
-            talent into sustainable income, bringing neighborhoods closer
-            together through trusted professional networks.&rdquo;
+            GullyGig is dedicated to building a community-centric ecosystem. Our
+            core mission is threefold: to deliver essential products and
+            services directly to nearby customers, to empower individuals by
+            creating sustainable streams of extra income, and to provide a
+            vibrant platform where local talent can be recognized and
+            celebrated.
           </p>
         </motion.div>
       </main>
