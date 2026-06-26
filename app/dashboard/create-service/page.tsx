@@ -120,7 +120,7 @@ export default function CreateServicePage() {
       try {
         const result = await getCurrentUser();
         if (!result.user) {
-          router.push("/login");
+          router.push("/Auth");
           return;
         }
         const currentUser = result.user as ServiceUser;
@@ -136,7 +136,7 @@ export default function CreateServicePage() {
         }
       } catch (err) {
         console.error("Auth check error:", err);
-        router.push("/login");
+        router.push("/Auth");
       } finally {
         setAuthLoading(false);
       }
@@ -372,7 +372,7 @@ export default function CreateServicePage() {
             Quick Tutor Launch
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight font-sans">
-            Create Teaching Service
+            Create Service
           </h1>
           <p className="text-slate-500 mt-1.5 text-sm sm:text-base">
             Tell Customers what you teach and start receiving enquiries. Simple,

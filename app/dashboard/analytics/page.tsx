@@ -122,7 +122,7 @@ export default function AnalyticsPage() {
           user: { id: string } | null;
         };
         if (!user) {
-          router.push("/login");
+          router.push("/Auth");
           return;
         }
 

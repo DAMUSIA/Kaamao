@@ -109,7 +109,7 @@ export default function Navbar({ darkMode, onToggleDarkMode }: NavbarProps) {
                - Desktop size is set by classes `sm:h-16 sm:w-16` (64px)
                To make the logo larger or smaller, adjust these Tailwind classes.
             */
-            className="flex h-12 w-26 sm:h-28 sm:w-28 items-center justify-center rounded-xl overflow-hidden"
+            className="flex h-30 w-34 sm:h-28 sm:w-28 items-center justify-center rounded-xl overflow-hidden"
           >
             <Image
               src={darkMode ? "/logo_light.png" : "/logo_dark.png"}

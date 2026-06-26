@@ -97,8 +97,8 @@ export default function LocationSelector({
           } else if (data.locality !== undefined) {
             cityName = data.city || data.locality || "";
             const informative = data.localityInfo?.informative || [];
-            const areaItem = informative.find((i: any) =>
-              ["suburb", "neighbourhood", "subdistrict", "locality"].includes(i.description?.toLowerCase())
+            const areaItem = informative.find((i: { name: string; description?: string }) =>
+              ["suburb", "neighbourhood", "subdistrict", "locality"].includes(i.description?.toLowerCase() || "")
             );
             areaName = areaItem?.name || data.locality || "";
           }

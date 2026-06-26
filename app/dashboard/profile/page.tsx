@@ -45,7 +45,7 @@ export default function ProfilePage() {
           } | null;
         };
         if (!user) {
-          router.push("/login");
+          router.push("/Auth");
           return;
         }
 
@@ -169,8 +169,8 @@ export default function ProfilePage() {
             } else if (data.locality !== undefined) {
               city = data.city || data.locality || "";
               const informative = data.localityInfo?.informative || [];
-              const areaItem = informative.find((i: any) =>
-                ["suburb", "neighbourhood", "subdistrict", "locality"].includes(i.description?.toLowerCase())
+              const areaItem = informative.find((i: { name: string; description?: string }) =>
+                ["suburb", "neighbourhood", "subdistrict", "locality"].includes(i.description?.toLowerCase() || "")
               );
               neighborhood = areaItem?.name || data.locality || "";
               postcode = data.postcode || "";

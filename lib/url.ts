@@ -30,7 +30,16 @@ export function getBaseUrl(): string {
 /**
  * Get the full portfolio URL for a service
  */
-export function getPortfolioUrl(serviceId: string): string {
+export function getPortfolioUrl(serviceId: string, title?: string): string {
+  if (title) {
+    const slugified = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    const prefix = serviceId.substring(0, 8);
+    const slug = slugified ? `${slugified}-${prefix}` : prefix;
+    return `${getBaseUrl()}/p/${slug}`;
+  }
   return `${getBaseUrl()}/p/${serviceId}`;
 }
 

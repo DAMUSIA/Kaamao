@@ -24,15 +24,48 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
 });
 
 // Fetch function to load portfolio data
-async function getPortfolioData(id: string) {
+async function getPortfolioData(idOrSlug: string) {
   try {
+    let resolvedId = idOrSlug;
+
+    // Check if idOrSlug is a valid UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(idOrSlug)) {
+      // It's a slug, e.g. "guitar-lessons-38fcd598"
+      const parts = idOrSlug.split("-");
+      const suffix = parts[parts.length - 1];
+      const suffixRegex = /^[0-9a-f]{8}$/i;
+      if (suffixRegex.test(suffix)) {
+        // Fetch all service IDs to resolve the suffix
+        const { data: services, error: listError } = await supabaseAdmin
+          .from("services")
+          .select("id");
+        
+        if (listError) {
+          console.error("Error listing services for slug resolution:", listError);
+          return null;
+        }
+
+        const matchedService = services?.find(s => s.id.startsWith(suffix.toLowerCase()));
+        if (matchedService) {
+          resolvedId = matchedService.id;
+        } else {
+          console.error(`No service found starting with suffix: ${suffix}`);
+          return null;
+        }
+      } else {
+        console.error(`Invalid slug format: ${idOrSlug}`);
+        return null;
+      }
+    }
+
     // 1. Fetch service detail with user profile and analytics
     const { data: serviceData, error: serviceError } = await supabaseAdmin
       .from("services")
       .select(
         "*, users:user_id(full_name, location, about, phone_no, created_at, social_links), service_analytics(*)",
       )
-      .eq("id", id)
+      .eq("id", resolvedId)
       .single();
 
     if (serviceError || !serviceData) {
@@ -50,7 +83,7 @@ async function getPortfolioData(id: string) {
     const { data: reviewsData } = await supabaseAdmin
       .from("service_ratings")
       .select("*, users:user_id(full_name)")
-      .eq("service_id", id)
+      .eq("service_id", resolvedId)
       .order("created_at", { ascending: false });
 
     return {

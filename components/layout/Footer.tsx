@@ -107,7 +107,7 @@ export default function Footer({ onShowToast }: FooterProps) {
               href="/"
               className="flex items-center justify-center md:justify-start mb-4"
             >
-              <div className="relative h-12 w-26 sm:h-28 sm:w-28 overflow-hidden flex-shrink-0">
+              <div className="relative h-32 w-34 sm:h-28 sm:w-28 overflow-hidden flex-shrink-0">
                 {/* Light theme logo */}
                 <Image
                   src="/logo_dark.png"

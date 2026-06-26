@@ -488,7 +488,7 @@ export default function DashboardLayout({
       const { user, session } = await getCurrentUser();
 
       if (!user || !session) {
-        router.replace("/login");
+        router.replace("/Auth");
         return;
       }
 
@@ -503,7 +503,7 @@ export default function DashboardLayout({
       setProfileEmail(email);
       setIsLoading(false);
     } catch {
-      router.replace("/login");
+      router.replace("/Auth");
     }
   }, [router]);
 
@@ -519,7 +519,7 @@ export default function DashboardLayout({
     const unsubscribe = onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") {
         setIsLoading(false);
-        router.replace("/login");
+        router.replace("/Auth");
       } else if (event === "SIGNED_IN") {
         checkAuth();
       }
@@ -541,7 +541,7 @@ export default function DashboardLayout({
     setIsLoading(false);
 
     // Step 2: Navigate to login page instantly (no await, no refresh delay)
-    router.push("/login");
+    router.push("/Auth");
 
     // Step 3: Sign out in the background (doesn't block UI)
     // Use void to explicitly ignore the promise

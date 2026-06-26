@@ -29,7 +29,7 @@ export async function upsertServiceAnalytics(
 
   const { data: existingRow } = await supabaseAdmin
     .from("service_analytics")
-    .select("id")
+    .select("service_id")
     .eq("service_id", serviceId)
     .maybeSingle();
 

@@ -12,7 +12,6 @@ import {
   Database,
   Clock,
   Mail,
-  MapPin,
   Users,
   Cookie,
   FileText,
@@ -325,7 +324,7 @@ export default function LegalClientPage({
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex h-8 w-28 sm:h-10 sm:w-36 items-center justify-start rounded-xl overflow-hidden relative"
+              className="flex h-30 w-32 sm:h-30 sm:w-36 items-center justify-start rounded-xl overflow-hidden relative"
             >
               <Image
                 src="/logo_dark.png"
@@ -428,7 +427,7 @@ export default function LegalClientPage({
                 href="/"
                 className="flex items-center justify-center md:justify-start mb-4"
               >
-                <div className="relative h-7 w-24 sm:h-9 sm:w-32 overflow-hidden flex-shrink-0">
+                <div className="relative h-30 w-32 sm:h-30 sm:w-32 overflow-hidden flex-shrink-0">
                   <Image
                     src="/logo_dark.png"
                     alt="GullyGig Logo"

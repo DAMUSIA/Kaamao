@@ -125,7 +125,7 @@ export default function PosterGeneratorPage() {
           user: { id: string } | null;
         };
         if (!user) {
-          router.push("/login");
+          router.push("/Auth");
           return;
         }
 

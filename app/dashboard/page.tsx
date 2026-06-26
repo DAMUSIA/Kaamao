@@ -95,7 +95,7 @@ export default function DashboardPage() {
           user: ServiceUser | null;
         };
         if (!currentUser) {
-          router.push("/login");
+          router.push("/Auth");
           return;
         }
         setUser(currentUser);

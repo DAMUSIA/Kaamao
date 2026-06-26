@@ -63,7 +63,7 @@ export default function SettingsPage() {
           } | null;
         };
         if (!user) {
-          router.push("/login");
+          router.push("/Auth");
           return;
         }
 
@@ -164,7 +164,7 @@ export default function SettingsPage() {
         sessionStorage.clear();
       }
 
-      router.push("/login");
+      router.push("/Auth");
       router.refresh();
     } catch (err: unknown) {
       console.error("Failed to logout:", err);
