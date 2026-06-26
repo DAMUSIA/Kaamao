@@ -454,20 +454,22 @@ export default function ServicesPage() {
     >
       <header className="fixed inset-x-0 top-0 z-50 bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 transition-all duration-300 py-1">
         <div className="mx-auto flex h-[72px] max-w-[1140px] items-center justify-between px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-3 group z-50">
-            {/* Logo Image */}
-            <div className="relative w-10 h-10 flex-shrink-0">
+          <Link href="/" className="flex items-center group z-50">
+            {/* 
+               LOGO SIZE CONFIGURATION (Mobile Responsive):
+               - Mobile: h-8 w-28 (32px height, 112px width)
+               - Tablet/Desktop (sm and up): h-10 w-36 (40px height, 144px width)
+               You can adjust these classes (e.g. h-8, w-28, sm:h-10, sm:w-36) to fit your logo's dimensions.
+            */}
+            <div className="relative h-8 w-28 sm:h-10 sm:w-36 flex-shrink-0">
               <Image
-                src="/logo.png"
-                alt="Kaamao Logo"
+                src={isDark ? "/logo_light.png" : "/logo_dark.png"}
+                alt="Logo"
                 fill
-                className="object-contain"
+                className="object-contain object-left"
                 priority
               />
             </div>
-            <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight group-hover:text-brand-primary transition-colors">
-              GullyGig
-            </span>
           </Link>
 
           <div className="flex items-center gap-3 md:gap-4 z-50">

@@ -20,12 +20,25 @@ export default function PublishStickyBar({
       <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
         {/* Help Tip with Logo */}
         <div className="hidden md:flex items-center gap-3 text-left">
-          <div className="relative w-8 h-8 flex-shrink-0">
+          {/* 
+             LOGO SIZE CONFIGURATION:
+             - Size: h-8 w-28 (32px height, 112px width)
+             You can adjust these classes (e.g. h-8, w-28) to fit your logo's dimensions.
+          */}
+          <div className="relative h-8 w-28 flex-shrink-0">
+            {/* Light theme logo: Shown by default, hidden when dark class is on parent */}
             <Image
-              src="/logo.png"
-              alt="Kaamao Logo"
+              src="/logo_dark.png"
+              alt="Logo"
               fill
-              className="object-contain"
+              className="object-contain object-left dark:hidden"
+            />
+            {/* Dark theme logo: Hidden by default, shown when dark class is on parent */}
+            <Image
+              src="/logo_light.png"
+              alt="Logo"
+              fill
+              className="object-contain object-left hidden dark:block"
             />
           </div>
           <div>

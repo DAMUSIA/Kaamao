@@ -304,21 +304,21 @@ export default function AuthPage({
           </div>
 
           <div className="relative z-10">
-            <div className="w-12 h-12 bg-white/20 rounded-xl backdrop-blur-sm border border-white/30 flex items-center justify-center mb-8 overflow-hidden p-1">
+            {/* 
+               LOGO SIZE CONFIGURATION (Mobile Responsive):
+               - Mobile: h-12 w-40 (48px height, 160px width)
+               - Tablet/Desktop (sm and up): h-14 w-48 (56px height, 192px width)
+               You can adjust these classes (e.g. h-12, w-40, sm:h-14, sm:w-48) to fit your logo's dimensions.
+            */}
+            <div className="relative h-12 w-40 sm:h-14 sm:w-48 overflow-hidden mb-8">
               <Image
-                src="/logo.png"
-                alt="GullyGig Logo"
-                width={40}
-                height={40}
-                className="object-contain"
+                src="/logo_light.png"
+                alt="Logo"
+                fill
+                className="object-contain object-left"
               />
             </div>
 
-            <h2 className="font-serif text-3xl md:text-4xl text-white leading-tight">
-              GullyGig
-              <br />
-              <em className="italic text-white/80">Connect</em>
-            </h2>
             <p className="text-white/70 text-sm mt-3 leading-relaxed">
               Bridge the gap between local talent and community needs
             </p>

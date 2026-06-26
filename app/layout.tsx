@@ -7,14 +7,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   ),
-  title: "GullyGig | Empower Your Skills, Connect Locally",
+  title: "GullyGig | Opportunity Starts Here.",
   description:
     "Connect with your neighbors and turn your everyday expertise into local opportunities. GullyGig is the hyperlocal service discovery platform for your community.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/GullyGig_icon.svg",
   },
   openGraph: {
-    title: "GullyGig | Empower Your Skills, Connect Locally",
+    title: "GullyGig | Opportunity Starts Here.",
     description:
       "Connect with your neighbors. Turn your skills into local opportunities. Find services near you or offer your expertise.",
     images: [{ url: "/og-image.png" }],

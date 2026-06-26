@@ -99,23 +99,27 @@ export default function Navbar({ darkMode, onToggleDarkMode }: NavbarProps) {
     >
       <nav className="mx-auto flex h-[72px] max-w-container-max items-center justify-between px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group z-50">
+        <Link href="/" className="flex items-center group z-50">
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden"
+            /* 
+               LOGO SIZE CONFIGURATION (Mobile Responsive):
+               - Mobile size is set by classes `h-12 w-12` (48px)
+               - Desktop size is set by classes `sm:h-16 sm:w-16` (64px)
+               To make the logo larger or smaller, adjust these Tailwind classes.
+            */
+            className="flex h-12 w-26 sm:h-28 sm:w-28 items-center justify-center rounded-xl overflow-hidden"
           >
             <Image
-              src="/logo.png"
-              alt="GullyGig Logo"
-              width={40}
-              height={40}
-              className="object-contain"
+              src={darkMode ? "/logo_light.png" : "/logo_dark.png"}
+              alt="Logo"
+              width={64}
+              height={64}
+              className="object-contain w-full h-full"
+              priority
             />
           </motion.div>
-          <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight group-hover:text-brand-primary transition-colors">
-            GullyGig
-          </span>
         </Link>
 
         {/* Nav links (Desktop) - ScrollSpy + Underline Hover */}

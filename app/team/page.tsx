@@ -405,20 +405,22 @@ export default function TeamPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/70 dark:bg-[#0B1120]/70 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-500">
         <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-3 group">
-            {/* Logo Image */}
-            <div className="relative w-10 h-10 flex-shrink-0">
+          <Link href="/" className="flex items-center group">
+            {/* 
+               LOGO SIZE CONFIGURATION (Mobile Responsive):
+               - Mobile: h-8 w-28 (32px height, 112px width)
+               - Tablet/Desktop (sm and up): h-10 w-36 (40px height, 144px width)
+               You can adjust these classes (e.g. h-8, w-28, sm:h-10, sm:w-36) to fit your logo's dimensions.
+            */}
+            <div className="relative h-22 w-36 sm:h-28 sm:w-28 flex-shrink-0">
               <Image
-                src="/logo.png"
-                alt="Kaamao Logo"
+                src={isDark ? "/logo_light.png" : "/logo_dark.png"}
+                alt="Logo"
                 fill
-                className="object-contain"
+                className="object-contain object-left"
                 priority
               />
             </div>
-            <span className="font-extrabold text-slate-900 dark:text-white text-xl tracking-tight">
-              GullyGig
-            </span>
           </Link>
 
           <div className="flex items-center gap-4 sm:gap-6">
@@ -463,15 +465,18 @@ export default function TeamPage() {
             </span>
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
               Meet the Team <br /> behind{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 relative inline-flex items-center gap-2">
+              <span className="relative inline-flex h-16 w-16 sm:h-24 sm:w-24 md:h-28 md:w-28 align-middle">
+                {/* 
+                   LOGO SIZE CONFIGURATION (Heading):
+                   - Size: Mobile (h-16 w-16), Tablet (sm:h-24 sm:w-24), Desktop (md:h-28 md:w-28)
+                   Use standard Tailwind spacing classes (e.g. h-16, h-20, h-24, h-28, h-32).
+                */}
                 <Image
-                  src="/logo.png"
-                  alt="GullyGig Logo"
-                  width={48}
-                  height={48}
-                  className="inline-block object-contain w-12 h-12 md:w-16 md:h-16 align-middle"
+                  src={isDark ? "/logo_light.png" : "/logo_dark.png"}
+                  alt="Logo"
+                  fill
+                  className="object-contain object-left align-middle"
                 />
-                GullyGig
                 <svg
                   className="absolute w-full h-3 -bottom-1 left-0 text-blue-500/30 dark:text-blue-400/30"
                   viewBox="0 0 100 10"
