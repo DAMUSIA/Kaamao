@@ -227,10 +227,7 @@ export default function AnalyticsPage() {
   if (services.length === 0) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center py-10 px-4">
-        <div className="text-center max-w-md">
-          <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/30 rotate-6 hover:rotate-0 transition-transform duration-500">
-            <BarChart3 className="h-12 w-12 text-white" />
-          </div>
+        <div className="text-center max-w-none">
           <h2 className="text-2xl font-extrabold text-slate-800 mt-6">
             No Services Found
           </h2>
