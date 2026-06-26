@@ -159,20 +159,22 @@ function DesktopSidebar({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center gap-2.5 flex-shrink-0"
+                className="flex items-center flex-shrink-0"
               >
-                <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
+                {/* 
+                   LOGO SIZE CONFIGURATION (Desktop Sidebar Expanded):
+                   - Size: h-9 w-32 (36px height, 128px width)
+                   You can adjust these classes (e.g. h-9, w-32) to fit your logo's dimensions.
+                */}
+                <div className="relative h-9 w-32 overflow-hidden flex-shrink-0">
                   <Image
-                    src="/logo.png"
-                    alt="GullyGig Logo"
-                    width={36}
-                    height={36}
-                    className="object-contain"
+                    src="/logo_light.png"
+                    alt="Logo"
+                    fill
+                    className="object-contain object-left"
+                    priority
                   />
                 </div>
-                <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent whitespace-nowrap">
-                  GullyGig
-                </span>
               </motion.div>
             ) : (
               <motion.div
@@ -183,13 +185,17 @@ function DesktopSidebar({
                 transition={{ duration: 0.2 }}
                 className="flex-shrink-0 mx-auto"
               >
-                <div className="w-9 h-9 rounded-xl overflow-hidden">
+                {/* 
+                   LOGO SIZE CONFIGURATION (Desktop Sidebar Collapsed):
+                   - Size: h-9 w-9 (36px height, 36px width)
+                   You can adjust these classes (e.g. h-9, w-9) to fit your collapsed logo icon.
+                */}
+                <div className="relative w-9 h-9 overflow-hidden">
                   <Image
-                    src="/logo.png"
-                    alt="GullyGig Logo"
-                    width={36}
-                    height={36}
-                    className="object-contain"
+                    src="/logo_light.png"
+                    alt="Logo"
+                    fill
+                    className="object-contain object-center"
                   />
                 </div>
               </motion.div>
@@ -376,19 +382,20 @@ function MobileSidebar({
         <div className="flex flex-col h-full w-[280px]">
           {/* Logo Area */}
           <div className="flex items-center h-20 px-4 border-b border-white/5 flex-shrink-0">
-            <div className="flex items-center gap-2.5 flex-1">
-              <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
+            <div className="flex items-center flex-1">
+              {/* 
+                 LOGO SIZE CONFIGURATION (Mobile Sidebar):
+                 - Size: h-9 w-32 (36px height, 128px width)
+                 You can adjust these classes (e.g. h-9, w-32) to fit your logo's dimensions.
+              */}
+              <div className="relative h-9 w-32 overflow-hidden flex-shrink-0">
                 <Image
-                  src="/logo.png"
-                  alt="GullyGig Logo"
-                  width={36}
-                  height={36}
-                  className="object-contain"
+                  src="/logo_light.png"
+                  alt="Logo"
+                  fill
+                  className="object-contain object-left"
                 />
               </div>
-              <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent whitespace-nowrap">
-                GullyGig
-              </span>
             </div>
             <button
               onClick={onClose}

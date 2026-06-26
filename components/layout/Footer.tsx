@@ -54,20 +54,30 @@ export default function Footer({ onShowToast }: FooterProps) {
           <div className="text-center md:text-left">
             <Link
               href="/"
-              className="flex items-center justify-center md:justify-start gap-2 mb-4"
+              className="flex items-center justify-center md:justify-start mb-4"
             >
-              <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+              {/* 
+                 LOGO SIZE CONFIGURATION (Mobile Responsive):
+                 - Mobile: h-7 w-24 (28px height, 96px width)
+                 - Tablet/Desktop (sm and up): h-8 sm:h-9 w-28 sm:w-32 (32px/36px height)
+                 You can adjust these classes (e.g. h-7, w-24, sm:h-8, sm:w-28) to fit your logo's dimensions.
+              */}
+              <div className="relative h-12 w-26 sm:h-28 sm:w-28 overflow-hidden flex-shrink-0">
+                {/* Light theme logo: Shown by default, hidden when dark class is on parent */}
                 <Image
-                  src="/logo.png"
-                  alt="GullyGig Logo"
-                  width={32}
-                  height={32}
-                  className="object-contain"
+                  src="/logo_dark.png"
+                  alt="Logo"
+                  fill
+                  className="object-contain object-center md:object-left dark:hidden"
+                />
+                {/* Dark theme logo: Hidden by default, shown when dark class is on parent */}
+                <Image
+                  src="/logo_light.png"
+                  alt="Logo"
+                  fill
+                  className="object-contain object-center md:object-left hidden dark:block"
                 />
               </div>
-              <span className="text-lg font-bold text-slate-800 dark:text-white">
-                GullyGig
-              </span>
             </Link>
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w mx-auto md:mx-0">
               Discover trusted local professionals and skilled workers near you.

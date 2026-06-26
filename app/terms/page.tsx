@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -14,7 +14,6 @@ import {
   DollarSign,
   Clock,
   Mail,
-  Phone,
   MapPin,
   AlertCircle,
   CheckCircle,
@@ -28,6 +27,20 @@ import { FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 
 export default function TermsPage() {
   const [activeTab, setActiveTab] = useState<"terms" | "privacy">("terms");
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsDark(document.documentElement.classList.contains("dark"));
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <main className="min-h-screen bg-white dark:bg-slate-950">
@@ -35,23 +48,26 @@ export default function TermsPage() {
       <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/50 dark:border-slate-800/50 bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl shadow-sm">
         <nav className="mx-auto flex h-[72px] max-w-container-max items-center justify-between px-6 lg:px-8">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center group">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden"
+              /* 
+                 LOGO SIZE CONFIGURATION (Mobile Responsive):
+                 - Mobile: h-8 w-28 (32px height, 112px width)
+                 - Tablet/Desktop (sm and up): h-10 w-36 (40px height, 144px width)
+                 You can adjust these classes (e.g. h-8, w-28, sm:h-10, sm:w-36) to fit your logo's dimensions.
+              */
+              className="flex h-8 w-28 sm:h-10 sm:w-36 items-center justify-start rounded-xl overflow-hidden relative"
             >
               <Image
-                src="/logo.png"
-                alt="GullyGig Logo"
-                width={40}
-                height={40}
-                className="object-contain"
+                src={isDark ? "/logo_light.png" : "/logo_dark.png"}
+                alt="Logo"
+                fill
+                className="object-contain object-left"
+                priority
               />
             </motion.div>
-            <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight group-hover:text-blue-600 transition-colors">
-              GullyGig
-            </span>
           </Link>
 
           {/* Nav links - Desktop */}
@@ -1432,20 +1448,22 @@ export default function TermsPage() {
             <div className="text-center md:text-left">
               <Link
                 href="/"
-                className="flex items-center justify-center md:justify-start gap-2 mb-4"
+                className="flex items-center justify-center md:justify-start mb-4"
               >
-                <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+                {/* 
+                   LOGO SIZE CONFIGURATION (Mobile Responsive):
+                   - Mobile: h-7 w-24 (28px height, 96px width)
+                   - Tablet/Desktop (sm and up): h-9 w-32 (36px height, 128px width)
+                   You can adjust these classes (e.g. h-7, w-24, sm:h-9, sm:w-32) to fit your logo's dimensions.
+                */}
+                <div className="relative h-7 w-24 sm:h-9 sm:w-32 overflow-hidden flex-shrink-0">
                   <Image
-                    src="/logo.png"
-                    alt="GullyGig Logo"
-                    width={32}
-                    height={32}
-                    className="object-contain"
+                    src={isDark ? "/logo_light.png" : "/logo_dark.png"}
+                    alt="Logo"
+                    fill
+                    className="object-contain object-center md:object-left"
                   />
                 </div>
-                <span className="text-lg font-bold text-slate-800 dark:text-white">
-                  GullyGig
-                </span>
               </Link>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w mx-auto md:mx-0">
                 Discover trusted local professionals and skilled workers near
