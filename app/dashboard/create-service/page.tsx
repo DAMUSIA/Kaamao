@@ -405,10 +405,13 @@ export default function CreateServicePage() {
       case 2:
         return formData.title.trim().length >= 3;
       case 8: {
-        const cleanContacts = (formData.contact_numbers || [])
-          .map((n) => n.replace(/\D/g, ""))
-          .filter((n) => n.length === 10);
-        return cleanContacts.length > 0;
+        const contacts = formData.contact_numbers || [];
+        if (contacts.length === 0) return false;
+        // All non-empty contacts must be exactly 10 digits
+        return contacts.every((n) => {
+          const clean = n.replace(/\D/g, "");
+          return clean.length === 0 || clean.length === 10;
+        }) && contacts.some((n) => n.replace(/\D/g, "").length === 10);
       }
       default:
         return true;

@@ -37,31 +37,16 @@ async function getPortfolioData(idOrSlug: string) {
     const uuidRegex =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(idOrSlug)) {
-      // It's a slug, e.g. "guitar-lessons-38fcd598"
+      // It's a slug, e.g. "guitar-lessons-uuid-here"
+      // Extract the UUID from the end
       const parts = idOrSlug.split("-");
-      const suffix = parts[parts.length - 1];
-      const suffixRegex = /^[0-9a-f]{8}$/i;
-      if (suffixRegex.test(suffix)) {
-        // Fetch all service IDs to resolve the suffix
-        const { data: services, error: listError } = await supabaseAdmin
-          .from("services")
-          .select("id");
-
-        if (listError) {
-          console.error(
-            "Error listing services for slug resolution:",
-            listError,
-          );
-          return null;
-        }
-
-        const matchedService = services?.find((s) =>
-          s.id.startsWith(suffix.toLowerCase()),
-        );
-        if (matchedService) {
-          resolvedId = matchedService.id;
+      // The last 5 parts should be the UUID (8-4-4-4-12 hex segments)
+      if (parts.length >= 5) {
+        const possibleUuid = parts.slice(-5).join("-");
+        if (uuidRegex.test(possibleUuid)) {
+          resolvedId = possibleUuid;
         } else {
-          console.error(`No service found starting with suffix: ${suffix}`);
+          console.error(`Invalid UUID in slug: ${idOrSlug}`);
           return null;
         }
       } else {

@@ -31,6 +31,7 @@ export interface PostReviewResult {
   averageRating?: number;
   totalReviews?: number;
   error?: string;
+  errorCode?: "NOT_FOUND" | "CLIENT_ERROR" | "SERVER_ERROR";
 }
 
 /**
@@ -97,17 +98,19 @@ export async function postReview(
     return {
       success: false,
       error: "Failed to submit review. Please try again later.",
+      errorCode: "SERVER_ERROR",
     };
   }
 
   if (!service) {
-    return { success: false, error: "Service listing not found." };
+    return { success: false, error: "Service listing not found.", errorCode: "NOT_FOUND" };
   }
 
   if (service.user_id === userId) {
     return {
       success: false,
       error: "You cannot review your own service listing.",
+      errorCode: "CLIENT_ERROR",
     };
   }
 
@@ -123,6 +126,7 @@ export async function postReview(
     return {
       success: false,
       error: "You have already submitted a review for this tutor/service.",
+      errorCode: "CLIENT_ERROR",
     };
   }
 
@@ -140,7 +144,7 @@ export async function postReview(
     });
 
   if (insertError) {
-    return { success: false, error: insertError.message };
+    return { success: false, error: insertError.message, errorCode: "SERVER_ERROR" };
   }
 
   // Recalculate stats
@@ -150,7 +154,7 @@ export async function postReview(
     .eq("service_id", serviceId);
 
   if (ratingsFetchError) {
-    return { success: false, error: ratingsFetchError.message };
+    return { success: false, error: ratingsFetchError.message, errorCode: "SERVER_ERROR" };
   }
 
   const totalReviews = allRatings?.length ?? 0;

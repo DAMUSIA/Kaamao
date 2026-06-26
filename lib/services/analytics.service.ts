@@ -27,11 +27,16 @@ export async function upsertServiceAnalytics(
 
   const { serviceId, totalLikes, totalReviews, averageRating } = update;
 
-  const { data: existingRow } = await supabaseAdmin
+  const { data: existingRow, error: lookupError } = await supabaseAdmin
     .from("service_analytics")
     .select("service_id")
     .eq("service_id", serviceId)
     .maybeSingle();
+
+  if (lookupError) {
+    console.error("Analytics lookup error:", lookupError);
+    throw new Error("Failed to lookup analytics record");
+  }
 
   const now = new Date().toISOString();
 
@@ -41,12 +46,17 @@ export async function upsertServiceAnalytics(
     if (totalReviews !== undefined) patch.total_reviews = totalReviews;
     if (averageRating !== undefined) patch.average_rating = averageRating;
 
-    await supabaseAdmin
+    const { error: updateError } = await supabaseAdmin
       .from("service_analytics")
       .update(patch)
       .eq("service_id", serviceId);
+
+    if (updateError) {
+      console.error("Analytics update error:", updateError);
+      throw new Error("Failed to update analytics record");
+    }
   } else {
-    await supabaseAdmin.from("service_analytics").insert({
+    const { error: insertError } = await supabaseAdmin.from("service_analytics").insert({
       service_id: serviceId,
       total_likes: totalLikes ?? 0,
       total_views: 0,
@@ -57,5 +67,10 @@ export async function upsertServiceAnalytics(
       portfolio_views: 0,
       updated_at: now,
     });
+
+    if (insertError) {
+      console.error("Analytics insert error:", insertError);
+      throw new Error("Failed to insert analytics record");
+    }
   }
 }

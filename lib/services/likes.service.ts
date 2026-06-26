@@ -16,6 +16,7 @@ export interface LikeResult {
   alreadyUnliked?: boolean;
   message?: string;
   error?: string;
+  errorCode?: "CLIENT_ERROR" | "SERVER_ERROR";
 }
 
 /**
@@ -67,7 +68,7 @@ export async function toggleLike(
   action: "like" | "unlike",
 ): Promise<LikeResult> {
   if (!supabaseAdmin) {
-    return { success: false, error: "Service unavailable" };
+    return { success: false, error: "Service unavailable", errorCode: "SERVER_ERROR" };
   }
 
   // Prevent self-like
@@ -81,6 +82,7 @@ export async function toggleLike(
     return {
       success: false,
       error: "You cannot like your own service listing.",
+      errorCode: "CLIENT_ERROR",
     };
   }
 
@@ -139,6 +141,7 @@ export async function toggleLike(
       return {
         success: false,
         error: "Failed to like this service. Please try again.",
+        errorCode: "SERVER_ERROR",
       };
     }
   } else {
@@ -156,6 +159,7 @@ export async function toggleLike(
       return {
         success: false,
         error: "Failed to unlike this service. Please try again.",
+        errorCode: "SERVER_ERROR",
       };
     }
   }
