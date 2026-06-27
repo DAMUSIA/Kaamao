@@ -170,7 +170,9 @@ export default function AnalyticsPage() {
 
         const { data: reviewsData, error: reviewsError } = await supabase
           .from("service_ratings")
-          .select("*, services!inner(title, user_id), users:user_id(full_name)")
+          .select(
+            "*, services!inner(title, user_id), users:user_id(full_name)",
+          )
           .eq("services.user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(5);
