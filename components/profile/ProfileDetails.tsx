@@ -41,6 +41,7 @@ export default function ProfileDetails({
               value={formData.about}
               onChange={(e) => onInputChange("about", e.target.value)}
               rows={6}
+              maxLength={500} // ← ADD THIS LINE
               className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-gray-900 resize-none text-sm"
               placeholder="Share your teaching experience, qualifications, teaching style..."
             />
