@@ -85,10 +85,7 @@ export async function POST(request: Request) {
       let statusCode = 400;
       if (result.errorCode === "NOT_FOUND") statusCode = 404;
       else if (result.errorCode === "SERVER_ERROR") statusCode = 500;
-      return NextResponse.json(
-        { error: result.error },
-        { status: statusCode },
-      );
+      return NextResponse.json({ error: result.error }, { status: statusCode });
     }
 
     return NextResponse.json(result, { headers: limitResult.headers });

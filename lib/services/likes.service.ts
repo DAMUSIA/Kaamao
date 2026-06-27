@@ -68,7 +68,11 @@ export async function toggleLike(
   action: "like" | "unlike",
 ): Promise<LikeResult> {
   if (!supabaseAdmin) {
-    return { success: false, error: "Service unavailable", errorCode: "SERVER_ERROR" };
+    return {
+      success: false,
+      error: "Service unavailable",
+      errorCode: "SERVER_ERROR",
+    };
   }
 
   // Prevent self-like

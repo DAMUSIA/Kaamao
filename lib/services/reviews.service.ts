@@ -103,7 +103,11 @@ export async function postReview(
   }
 
   if (!service) {
-    return { success: false, error: "Service listing not found.", errorCode: "NOT_FOUND" };
+    return {
+      success: false,
+      error: "Service listing not found.",
+      errorCode: "NOT_FOUND",
+    };
   }
 
   if (service.user_id === userId) {
@@ -144,7 +148,11 @@ export async function postReview(
     });
 
   if (insertError) {
-    return { success: false, error: insertError.message, errorCode: "SERVER_ERROR" };
+    return {
+      success: false,
+      error: insertError.message,
+      errorCode: "SERVER_ERROR",
+    };
   }
 
   // Recalculate stats
@@ -154,7 +162,11 @@ export async function postReview(
     .eq("service_id", serviceId);
 
   if (ratingsFetchError) {
-    return { success: false, error: ratingsFetchError.message, errorCode: "SERVER_ERROR" };
+    return {
+      success: false,
+      error: ratingsFetchError.message,
+      errorCode: "SERVER_ERROR",
+    };
   }
 
   const totalReviews = allRatings?.length ?? 0;

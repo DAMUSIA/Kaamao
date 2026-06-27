@@ -56,17 +56,19 @@ export async function upsertServiceAnalytics(
       throw new Error("Failed to update analytics record");
     }
   } else {
-    const { error: insertError } = await supabaseAdmin.from("service_analytics").insert({
-      service_id: serviceId,
-      total_likes: totalLikes ?? 0,
-      total_views: 0,
-      unique_visitors: 0,
-      total_contacts: 0,
-      total_reviews: totalReviews ?? 0,
-      average_rating: averageRating ?? 0,
-      portfolio_views: 0,
-      updated_at: now,
-    });
+    const { error: insertError } = await supabaseAdmin
+      .from("service_analytics")
+      .insert({
+        service_id: serviceId,
+        total_likes: totalLikes ?? 0,
+        total_views: 0,
+        unique_visitors: 0,
+        total_contacts: 0,
+        total_reviews: totalReviews ?? 0,
+        average_rating: averageRating ?? 0,
+        portfolio_views: 0,
+        updated_at: now,
+      });
 
     if (insertError) {
       console.error("Analytics insert error:", insertError);

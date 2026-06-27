@@ -16,7 +16,12 @@ vi.mock("next/script", () => ({
     id?: string;
     strategy?: string;
   }) => (
-    <script data-testid="next-script" data-src={src} id={id} data-strategy={strategy}>
+    <script
+      data-testid="next-script"
+      data-src={src}
+      id={id}
+      data-strategy={strategy}
+    >
       {children}
     </script>
   ),
@@ -48,8 +53,8 @@ describe("GoogleAnalytics Component", () => {
     const scripts = screen.getAllByTestId("next-script");
 
     // Verify both scripts: loader and inline config
-    const loaderScript = scripts.find(
-      (s) => s.getAttribute("data-src")?.includes("googletagmanager.com/gtag/js"),
+    const loaderScript = scripts.find((s) =>
+      s.getAttribute("data-src")?.includes("googletagmanager.com/gtag/js"),
     );
     const inlineScript = scripts.find(
       (s) => s.getAttribute("id") === "google-analytics",
