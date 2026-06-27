@@ -199,7 +199,7 @@ describe("POST /api/auth/sync-profile", () => {
     );
   });
 
-  it("stores real email for @kaamao.com emails (no longer treated as pseudo)", async () => {
+  it("stores null for @kaamao.com emails (treated as legacy pseudo)", async () => {
     mockGetUser.mockResolvedValueOnce(mockAuthUser());
     mockMaybeSingle.mockResolvedValueOnce({ data: null });
     mockInsert.mockResolvedValueOnce({ error: null });
@@ -210,26 +210,26 @@ describe("POST /api/auth/sync-profile", () => {
     });
     await POST(req);
 
-    // @kaamao.com is NOT a pseudo-email anymore — should be stored as-is
+    // @kaamao.com is a legacy pseudo-email — should be stored as null
     expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({ email: "phone_9876543210@kaamao.com" }),
+      expect.objectContaining({ email: null }),
     );
   });
 
-  it("stores null for email when phone_ prefix without @gullygig.in domain (e.g. @kaamao.com not pseudo)", async () => {
+  it("stores real email for phone_ prefix with a non-pseudo domain (e.g. @example.com)", async () => {
     mockGetUser.mockResolvedValueOnce(mockAuthUser());
     mockMaybeSingle.mockResolvedValueOnce({ data: null });
     mockInsert.mockResolvedValueOnce({ error: null });
 
     const req = makeRequest({
       ...validBody,
-      email: "phone_1234567890@kaamao.com",
+      email: "phone_1234567890@example.com",
     });
     await POST(req);
 
-    // kaamao.com emails are NOT pseudo-emails in the new logic; real email stored
+    // Should be stored as-is since it is not a pseudo-email domain
     expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({ email: "phone_1234567890@kaamao.com" }),
+      expect.objectContaining({ email: "phone_1234567890@example.com" }),
     );
   });
 
