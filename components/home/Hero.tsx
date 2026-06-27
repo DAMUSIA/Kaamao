@@ -191,16 +191,12 @@ export default function Hero(props: HeroProps = {}) {
             >
               Become a Provider
             </Link>
-            <button
-              onClick={() => {
-                const element = document.getElementById("skills");
-                element?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="px-6 py-3.5 rounded-xl bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-semibold text-[15px] border-2 border-slate-200 dark:border-slate-800 hover:border-brand-primary/50 dark:hover:border-brand-primary/50 hover:bg-slate-50 dark:hover:bg-slate-800 hover:-translate-y-0.5 transition-all duration-200 active:scale-95 text-center cursor-pointer"
-              suppressHydrationWarning
+            <Link
+              href="/services"
+              className="px-6 py-3.5 rounded-xl bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-semibold text-[15px] border-2 border-slate-200 dark:border-slate-800 hover:border-brand-primary/50 dark:hover:border-brand-primary/50 hover:bg-slate-50 dark:hover:bg-slate-800 hover:-translate-y-0.5 transition-all duration-200 active:scale-95 text-center"
             >
               Find Services
-            </button>
+            </Link>
           </motion.div>
 
           {/* Stats */}
