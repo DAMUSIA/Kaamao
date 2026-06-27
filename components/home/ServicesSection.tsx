@@ -83,9 +83,9 @@ export default function ServicesSection() {
                 Looking for something specific?
               </h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base leading-relaxed">
-                Explore our comprehensive service search directory.
-                Find local expertise, view full portfolios, and contact
-                providers directly with zero middlemen fees.
+                Explore our comprehensive service search directory. Find local
+                expertise, view full portfolios, and contact providers directly
+                with zero middlemen fees.
               </p>
             </div>
 
