@@ -40,8 +40,7 @@ export function getPortfolioUrl(serviceId: string, title?: string): string {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
-    const prefix = serviceId.substring(0, 8);
-    const slug = slugified ? `${slugified}-${prefix}` : prefix;
+    const slug = slugified ? `${slugified}-${serviceId}` : serviceId;
     return `${getBaseUrl()}/p/${slug}`;
   }
   return `${getBaseUrl()}/p/${serviceId}`;

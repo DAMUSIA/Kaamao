@@ -196,7 +196,12 @@ export async function signUp(
     });
 
     if (profileError) {
-      console.error("Client-side signup profile error:", profileError);
+      // Sanitize error before logging to avoid leaking PII in browser console
+      const sanitizedError = {
+        code: profileError.code,
+        message: profileError.message,
+      };
+      console.error("Client-side signup profile error:", sanitizedError);
       return {
         success: false,
         error:

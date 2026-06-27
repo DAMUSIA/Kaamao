@@ -221,7 +221,7 @@ export default function AuthPage({
 
         // Fallback to legacy domain if initial login fails
         if (!result.success) {
-          const legacyEmail = `${cleanPhone}`;
+          const legacyEmail = `phone_${cleanPhone}@kaamao.com`;
           const legacyResult = await signIn({ email: legacyEmail, password });
           if (legacyResult.success) {
             result = legacyResult;

@@ -99,7 +99,13 @@ export async function POST(request: Request) {
     });
 
     if (insertError) {
-      console.error("Signup profile insert error:", insertError);
+      // Sanitize error before logging to avoid leaking PII
+      const sanitizedError = {
+        code: insertError.code,
+        message: insertError.message,
+        hint: insertError.hint,
+      };
+      console.error("Signup profile insert error:", sanitizedError);
       // Roll back the created auth user to avoid orphan accounts
       try {
         await supabaseAdmin.auth.admin.deleteUser(authData.user.id);

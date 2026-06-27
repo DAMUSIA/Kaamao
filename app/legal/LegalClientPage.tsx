@@ -222,14 +222,19 @@ export default function LegalClientPage({
 
     const flushList = () => {
       if (currentList.length > 0) {
-        elements.push(
+        const listElement = (
           <ul
             key={`ul-${listKey++}`}
             className="space-y-2 text-sm text-slate-600 mt-2 list-none pl-1"
           >
             {currentList}
-          </ul>,
+          </ul>
         );
+        if (sectionTitle) {
+          sectionContent.push(listElement);
+        } else {
+          elements.push(listElement);
+        }
         currentList = [];
       }
     };

@@ -9,13 +9,14 @@ vi.mock("next/script", () => ({
     src,
     children,
     id,
+    strategy,
   }: {
     src?: string;
     children?: React.ReactNode;
     id?: string;
-    [key: string]: unknown;
+    strategy?: string;
   }) => (
-    <script data-testid="next-script" data-src={src} id={id}>
+    <script data-testid="next-script" data-src={src} id={id} data-strategy={strategy}>
       {children}
     </script>
   ),
@@ -34,7 +35,11 @@ describe("GoogleAnalytics Component", () => {
   });
 
   afterEach(() => {
-    process.env.NEXT_PUBLIC_GA_ID = originalEnv;
+    if (originalEnv === undefined) {
+      delete process.env.NEXT_PUBLIC_GA_ID;
+    } else {
+      process.env.NEXT_PUBLIC_GA_ID = originalEnv;
+    }
   });
 
   it("renders GA scripts correctly", () => {
@@ -42,12 +47,16 @@ describe("GoogleAnalytics Component", () => {
 
     const scripts = screen.getAllByTestId("next-script");
 
-    expect(scripts.length).toBeGreaterThanOrEqual(1);
-
-    const trackingScript = scripts.find(
+    // Verify both scripts: loader and inline config
+    const loaderScript = scripts.find(
+      (s) => s.getAttribute("data-src")?.includes("googletagmanager.com/gtag/js"),
+    );
+    const inlineScript = scripts.find(
       (s) => s.getAttribute("id") === "google-analytics",
     );
 
-    expect(trackingScript).toBeDefined();
+    expect(loaderScript).toBeDefined();
+    expect(inlineScript).toBeDefined();
+    expect(scripts.length).toBe(2);
   });
 });
