@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import Icon from "../Icon";
 
 const SKILLS = [
@@ -33,6 +34,7 @@ export default function PopularSkills({
 }: {
   onShowToast: (msg: string) => void;
 }) {
+  const router = useRouter();
   return (
     <section
       id="skills"
@@ -52,7 +54,7 @@ export default function PopularSkills({
             </p>
           </div>
           <button
-            onClick={() => onShowToast("Categories directory coming soon...")}
+            onClick={() => router.push("/services")}
             className="flex items-center gap-1.5 text-sm font-bold text-brand-primary dark:text-blue-400 hover:opacity-85 transition-opacity whitespace-nowrap shrink-0 cursor-pointer text-left"
             suppressHydrationWarning
           >
@@ -66,7 +68,7 @@ export default function PopularSkills({
           {SKILLS.map((s, idx) => (
             <motion.button
               key={s.title}
-              onClick={() => onShowToast("Skill listings coming soon...")}
+              onClick={() => router.push("/services")}
               suppressHydrationWarning
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
