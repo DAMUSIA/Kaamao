@@ -8,7 +8,10 @@ interface ServiceCardProps {
   onShowToast: (message: string) => void;
 }
 
-export default function ServiceCard({ service, onShowToast }: ServiceCardProps) {
+export default function ServiceCard({
+  service,
+  onShowToast,
+}: ServiceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const contacts = service.contact_numbers || [];
   const phoneFallback = service.users?.phone_no;
@@ -54,7 +57,6 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:shadow-xl dark:hover:shadow-blue-900/10 transition-all duration-300 flex flex-col gap-4 group relative min-w-0 w-full overflow-hidden">
-      
       {/* 1. Top Header: Provider Info & Ratings */}
       <div className="flex flex-wrap sm:flex-nowrap items-start justify-between gap-3 min-w-0">
         <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -62,8 +64,8 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
             {getInitials(service.users?.full_name)}
           </div>
           <div className="flex flex-col min-w-0 flex-1">
-            <h4 
-              className="text-sm font-semibold text-slate-900 dark:text-white truncate w-full" 
+            <h4
+              className="text-sm font-semibold text-slate-900 dark:text-white truncate w-full"
               title={service.users?.full_name}
             >
               {service.users?.full_name || "Verified Provider"}
@@ -79,9 +81,13 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
           <div className="flex items-center gap-1">
             <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400 shrink-0" />
             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
-              {service.rating_average ? Number(service.rating_average).toFixed(1) : "0.0"}
+              {service.rating_average
+                ? Number(service.rating_average).toFixed(1)
+                : "0.0"}
             </span>
-            <span className="text-[10px] text-slate-400 font-medium shrink-0">({service.reviews_count || 0})</span>
+            <span className="text-[10px] text-slate-400 font-medium shrink-0">
+              ({service.reviews_count || 0})
+            </span>
           </div>
           <div className="w-[1px] h-3 bg-slate-300 dark:bg-slate-600 shrink-0" />
           <div className="flex items-center gap-1">
@@ -96,7 +102,7 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
       {/* 2. Middle Content: Title, Collapsible Description & Badges */}
       <div className="flex flex-col gap-2.5 min-w-0 w-full">
         {/* Title updated with break-words and line-clamp to prevent horizontal overflow */}
-        <h3 
+        <h3
           className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors break-words line-clamp-2 w-full overflow-hidden"
           title={service.title}
         >
@@ -108,9 +114,10 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
           const descriptionThreshold = 150;
           const fullDesc = service.description || "";
           const isLongDescription = fullDesc.length > descriptionThreshold;
-          const displayDescription = isLongDescription && !isExpanded
-            ? `${fullDesc.slice(0, descriptionThreshold)}...`
-            : fullDesc;
+          const displayDescription =
+            isLongDescription && !isExpanded
+              ? `${fullDesc.slice(0, descriptionThreshold)}...`
+              : fullDesc;
 
           return (
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line break-words w-full overflow-hidden">
@@ -132,22 +139,35 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-1 min-w-0 w-full">
           <div className="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 min-w-0 max-w-full">
             <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-            <span className="truncate max-w-full" title={[service.area, service.city].filter(Boolean).join(", ")}>
+            <span
+              className="truncate max-w-full"
+              title={[service.area, service.city].filter(Boolean).join(", ")}
+            >
               {[service.area, service.city].filter(Boolean).join(", ")}
             </span>
           </div>
 
           {service.service_modes && service.service_modes.length > 0 && (
             <div className="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 min-w-0 max-w-full">
-              <Icon name="home" className="text-[14px] text-slate-400 shrink-0" />
-              <span className="truncate max-w-full">{service.service_modes.join(", ")}</span>
+              <Icon
+                name="home"
+                className="text-[14px] text-slate-400 shrink-0"
+              />
+              <span className="truncate max-w-full">
+                {service.service_modes.join(", ")}
+              </span>
             </div>
           )}
 
           {service.languages && service.languages.length > 0 && (
             <div className="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 min-w-0 max-w-full">
-              <Icon name="language" className="text-[14px] text-slate-400 shrink-0" />
-              <span className="truncate max-w-full">{service.languages.join(", ")}</span>
+              <Icon
+                name="language"
+                className="text-[14px] text-slate-400 shrink-0"
+              />
+              <span className="truncate max-w-full">
+                {service.languages.join(", ")}
+              </span>
             </div>
           )}
         </div>
@@ -155,17 +175,21 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
 
       {/* 3. Bottom Footer: Pricing, Contact & Actions */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 mt-1 min-w-0 w-full">
-        
         {/* Left side: Price & Phone */}
         <div className="flex flex-col gap-1.5 min-w-0 flex-1 w-full">
           {service.starting_price ? (
             <div className="flex items-baseline gap-1 flex-wrap">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">Starts at</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
+                Starts at
+              </span>
               <span className="text-xl font-bold text-slate-900 dark:text-white break-words">
                 ₹{service.starting_price}
               </span>
               <span className="text-xs text-slate-500 dark:text-slate-400 shrink-0">
-                /{service.price_unit ? service.price_unit.toLowerCase().replace("per ", "") : "hr"}
+                /
+                {service.price_unit
+                  ? service.price_unit.toLowerCase().replace("per ", "")
+                  : "hr"}
               </span>
             </div>
           ) : (
@@ -177,19 +201,27 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
           {/* Contact Numbers */}
           {hasContacts ? (
             <div className="flex flex-wrap gap-3 min-w-0 w-full">
-              {(contacts.length > 0 ? contacts : [phoneFallback]).map((num, i) => (
-                <a
-                  key={i}
-                  href={`tel:${num}`}
-                  className="flex items-center gap-1.5 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group/phone focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-sm min-w-0 max-w-full"
-                >
-                  <Icon name="call" className="text-xs text-emerald-500 group-hover/phone:text-blue-500 transition-colors shrink-0" fill />
-                  <span className="truncate">{num}</span>
-                </a>
-              ))}
+              {(contacts.length > 0 ? contacts : [phoneFallback]).map(
+                (num, i) => (
+                  <a
+                    key={i}
+                    href={`tel:${num}`}
+                    className="flex items-center gap-1.5 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group/phone focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-sm min-w-0 max-w-full"
+                  >
+                    <Icon
+                      name="call"
+                      className="text-xs text-emerald-500 group-hover/phone:text-blue-500 transition-colors shrink-0"
+                      fill
+                    />
+                    <span className="truncate">{num}</span>
+                  </a>
+                ),
+              )}
             </div>
           ) : (
-            <span className="text-xs text-slate-400 italic truncate w-full">No direct contact numbers</span>
+            <span className="text-xs text-slate-400 italic truncate w-full">
+              No direct contact numbers
+            </span>
           )}
         </div>
 
@@ -214,7 +246,6 @@ export default function ServiceCard({ service, onShowToast }: ServiceCardProps) 
           )}
         </div>
       </div>
-      
     </div>
   );
 }
