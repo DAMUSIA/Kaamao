@@ -1,168 +1,165 @@
-# Terms and Conditions
+Terms and Conditions
+GullyGig | Effective Date: July 1, 2026 | Last Updated: June 28, 2026
+Please read these Terms and Conditions ("Terms") carefully before using the GullyGig platform at gullygig.in. By registering, accessing, or using the Platform, you agree to be legally bound by these Terms and our Privacy Policy. If you do not agree, do not use the Platform.
 
-GullyGig Connect | Effective Date: July 1, 2025 | Last Updated: June 22, 2025
+1. About GullyGig
+GullyGig (formerly Kaamao Connect) is a hyperlocal service marketplace operating under Indian law that connects skilled individuals ('Service Providers') with local customers ('Service Seekers') for part-time services including tutoring, tailoring, home cooking, and home assistance. The Platform is accessible at gullygig.in and is based in Mumbai, Maharashtra, India.
 
-Please read these Terms and Conditions carefully before using the GullyGig Connect platform. By registering, accessing, or using our platform, you agree to be bound by these Terms. If you do not agree, do not use the Platform.
+2. Eligibility
+•	You must be at least 18 years of age to use the Platform.
+•	You must be a resident of India.
+•	You must have the legal capacity to enter into a binding agreement under Indian law.
+•	You must provide accurate, complete, and up-to-date registration information.
 
-## 1. About GullyGig Connect
+Under Section 9 of the Digital Personal Data Protection Act, 2023, processing of personal data of children (persons under 18) requires verifiable parental consent. GullyGig does not currently have a technical age verification mechanism. By registering, you confirm you are 18 or above. If we discover a user is under 18, their account will be terminated immediately and their data deleted.
 
-GullyGig Connect (a startup registered under Indian law) operates the GullyGig Connect platform — a hyperlocal service marketplace that connects skilled individuals (referred to as "Service Providers") with customers who need local services (referred to as "Service Seekers" or "Customers"). The Platform is accessible via our website and mobile application.
+3. User Accounts
+3.1 Registration Methods: You may register using your phone number and password, or via Google Sign-In (Google OAuth). By using Google Sign-In, you also agree to Google's Terms of Service.
 
-## 2. Eligibility
+3.2 Phone Number as Identifier: Your 10-digit Indian mobile phone number is your primary identifier. An internal synthetic identifier (phone_XXXXXXXXXX@gullygig.in) is created for authentication purposes only and is never visible to you or other users.
 
-To use the Platform, you must:
+3.3 Password Security: Passwords are encrypted and stored securely. You are responsible for maintaining the confidentiality of your credentials. Notify us immediately at support@gullygig.in if you suspect unauthorised access to your account.
 
-- [check] Be at least 18 years of age
-- [check] Be a resident of India
-- [check] Have the legal capacity to enter into a binding agreement
-- [check] Provide accurate and complete registration information
+3.4 Account Accuracy: You agree to provide truthful and accurate information and to keep it updated at all times.
 
-By using the Platform, you confirm that you meet all of the above eligibility criteria.
+3.5 One Account Per User: Each individual may hold only one account. Creating multiple accounts is prohibited and may result in permanent suspension of all associated accounts.
 
-## 3. User Accounts
+4. Service Providers
+If you list services on the Platform as a Service Provider:
+•	You represent and warrant that you have the skills, qualifications, and legal right to offer the services you list.
+•	You are solely responsible for the quality, safety, legality, and timely delivery of your services.
+•	You are an independent service provider and not an employee, agent, or partner of GullyGig.
+•	You must not misrepresent your skills, qualifications, experience, or identity.
+•	You are responsible for all taxes on income earned, including Goods and Services Tax (GST) where applicable under the Central Goods and Services Tax Act, 2017 and the Integrated Goods and Services Tax Act, 2017.
+•	Your contact phone numbers listed on services are publicly visible to all visitors, including unauthenticated users.
+•	If you used the GPS feature, your GPS coordinates (latitude and longitude) are publicly visible on your service listing.
+•	You must not list any service that is illegal, immoral, or prohibited under any applicable Indian law including the Indian Penal Code, 1860 (as amended by the Bharatiya Nyaya Sanhita, 2023) or any other central or state legislation.
 
-### 3.1 Registration
+5. Service Seekers
+If you use the Platform to find services:
+•	You agree to treat Service Providers with respect and professionalism at all times.
+•	You understand that all contact with Service Providers happens entirely off-platform via phone or WhatsApp. GullyGig does not facilitate, monitor, or record these communications.
+•	All financial transactions for services occur entirely offline and directly between you and the Service Provider. GullyGig does not process, hold, or guarantee any payment.
+•	You understand that GullyGig does not verify the qualifications, identity, or background of Service Providers (verification features are planned but not yet available).
+•	You assume full responsibility for evaluating Service Providers before engaging their services.
 
-You must create an account to access most features of the Platform. You agree to provide true, accurate, and up-to-date information during registration and to keep this information updated.
+6. Platform Role and Disclaimer
+GullyGig is a technology platform and online marketplace only. We do not:
+•	Employ, control, or direct Service Providers in any way
+•	Process, hold, or facilitate any payment between users
+•	Verify the skills, qualifications, credentials, or identity of any user
+•	Monitor, record, or store any communications between users (all contact is off-platform)
+•	Guarantee the accuracy of any information provided by users on the Platform
+•	Guarantee the availability, quality, safety, or outcome of any service
 
-### 3.2 Account Security
+GullyGig is not a party to any agreement, contract, or transaction between Service Providers and Service Seekers. Any disputes arising from services must be resolved directly between the parties. GullyGig may assist in dispute resolution at its sole discretion but is under no legal obligation to do so.
 
-You are responsible for maintaining the confidentiality of your login credentials. You must notify us immediately at support@gullygig.in if you suspect any unauthorized use of your account.
+7. Payments
+GullyGig does not currently process any payments. The Platform is free to use for both Service Providers and Service Seekers. All financial transactions for services occur entirely offline between users. GullyGig bears no responsibility for any payment dispute, non-payment, delayed payment, or financial fraud occurring off-platform.
 
-### 3.3 One Account Per User
+GullyGig reserves the right to introduce a commission, service fee, or subscription model in the future. Users will be notified at least 30 days in advance of any such change.
 
-Each individual may register only one account. Creating multiple accounts is prohibited and may result in all accounts being permanently suspended.
+8. GPS and Location Data
+When creating a service listing, you may optionally use the 'Use Current Location' GPS button. By doing so, you expressly consent to the following:
+•	Your GPS coordinates (latitude and longitude) being sent to OpenStreetMap Nominatim and/or BigDataCloud for reverse geocoding into a readable address.
+•	Your GPS coordinates being stored in our database and made publicly visible on your service listing to all visitors of the Platform.
+You may enter your location manually as free text at any time to avoid sharing GPS coordinates. You can edit or remove your GPS coordinates by updating your service listing.
 
-## 4. Service Providers
+9. Analytics and Cookie Consent
+We use Google Analytics 4 (GA4) and PostHog for product analytics. Both tools are disabled by default and are activated only when you explicitly accept cookies via our cookie consent banner. If you decline, no analytics data is collected about you. You may withdraw your cookie consent at any time by clearing your browser cookies and localStorage. Full details are in our Privacy Policy.
 
-If you register as a Service Provider on the Platform:
+10. User-Generated Content
+You are solely responsible for any content you post on the Platform, including service titles, descriptions, contact numbers, profile bios, social links, and reviews. By posting content, you:
+•	Confirm you have the right to post such content and that it does not infringe any third-party intellectual property rights
+•	Grant GullyGig a non-exclusive, royalty-free, worldwide licence to display and use the content on the Platform for the purposes of operating the service
+•	Confirm the content is accurate, not misleading, and not in violation of any applicable Indian law
+•	Agree that GullyGig may remove any content that violates these Terms
 
-- You represent that you have the skills, qualifications, and legal right to offer the services you list.
-- You are solely responsible for the quality, legality, and safety of the services you provide.
-- You agree to provide services in a professional, timely, and honest manner.
-- You understand that GullyGig Connect is a marketplace only and is not your employer. You are an independent service provider.
-- You must not misrepresent your skills, qualifications, or identity.
-- You are responsible for your own taxes, including GST where applicable, arising from your income earned through the Platform.
+11. Prohibited Conduct
+You agree NOT to use the Platform for any of the following:
+•	Providing false, misleading, or fraudulent information, or impersonating any person or entity
+•	Offering services that are illegal or prohibited under any applicable Indian law
+•	Harassing, threatening, abusing, or discriminating against any user on any basis including caste, religion, gender, or disability
+•	Posting defamatory, obscene, or sexually explicit content
+•	Fabricating, incentivising, or manipulating reviews or ratings
+•	Attempting to bypass, disable, or interfere with any security feature of the Platform
+•	Scraping, crawling, or reproducing Platform content without our prior written permission
+•	Uploading viruses, malware, or any harmful code
+•	Using the Platform for any purpose that violates the IT Act, 2000, the Indian Contract Act, 1872, the Consumer Protection Act, 2019, or any other applicable law
 
-## 5. Service Seekers (Customers)
+Violation of any of the above may result in immediate suspension or permanent termination of your account without prior notice and without any refund or compensation.
 
-If you use the Platform to find and hire services:
+12. Ratings and Reviews
+Users may leave honest ratings (1 to 5 stars) and text reviews. Reviews must be:
+•	Based on genuine, first-hand experience with the Service Provider
+•	Free from abusive, defamatory, threatening, or discriminatory language
+•	Not incentivised, fabricated, or submitted by the Service Provider themselves
 
-- You agree to treat Service Providers with respect and professionalism.
-- You agree to make payments in full and on time as agreed with the Service Provider.
-- You agree to provide accurate information about the service you require.
-- You understand that GullyGig Connect does not guarantee the quality or outcome of any service arranged through the Platform.
+Reviews and the identity of the reviewer are publicly visible. GullyGig reserves the right to remove any review that violates these guidelines without prior notice.
 
-## 6. Platform Role and Disclaimer
+13. Intellectual Property
+All content on the Platform, including the GullyGig name, logo, design, software, and text, is the intellectual property of GullyGig and is protected under the Copyright Act, 1957 and the Trade Marks Act, 1999 of India. You may not reproduce, distribute, modify, or create derivative works without our prior written consent.
 
-GullyGig Connect is a technology platform and marketplace only. We do not employ Service Providers, and we are not a party to any agreement between Service Providers and Service Seekers.
+By posting content on the Platform, you grant GullyGig a non-exclusive, royalty-free licence to display and use that content for Platform purposes. You retain ownership of your content.
 
-We do not guarantee:
+14. Consumer Protection
+GullyGig acknowledges its obligations under the Consumer Protection Act, 2019 and the Consumer Protection (E-Commerce) Rules, 2020. In compliance with these:
+•	We provide a grievance redressal mechanism (see Section 16 below and our Privacy Policy Section 2)
+•	We display accurate and non-misleading information about how the Platform operates
+•	We do not engage in unfair trade practices or misleading advertisements
+•	Users who believe they have been misled or treated unfairly may lodge a complaint with our Grievance Officer or with the National Consumer Disputes Redressal Commission (NCDRC) or the appropriate State Consumer Disputes Redressal Commission in Maharashtra
 
-- The availability, quality, or reliability of any service listed on the Platform
-- The accuracy of any information provided by users
-- That Service Providers hold any specific licence or certification (unless verified by us)
+15. Account Suspension and Termination
+GullyGig reserves the right to suspend or permanently terminate your account without prior notice if you:
+•	Violate any provision of these Terms
+•	Engage in fraudulent, abusive, or illegal activity on or off the Platform
+•	Receive repeated credible complaints from other users
+•	Pose a risk to the safety or reputation of the Platform or other users
 
-Any disputes arising from services must be resolved between the Service Provider and Service Seeker directly. GullyGig Connect may assist in dispute resolution at its discretion but is not obligated to do so.
+You may request account deletion by emailing support@gullygig.in. Note: a self-serve account deletion feature is not currently available in the Platform interface. We will process deletion requests within 30 days. Termination does not relieve you of any obligation incurred before the date of termination.
 
-## 7. Payments and Commission
+16. Grievance Redressal
+In compliance with Rule 5(9) of the SPDI Rules, 2011, the Consumer Protection (E-Commerce) Rules, 2020, and the DPDP Act, 2023, we have designated a Grievance Officer:
 
-### 7.1 Payment Processing
+Grievance Officer: Akshat (CEO, GullyGig) Email: support@gullygig.in Address: Mumbai, Maharashtra, India Response Time: Within 30 days of receipt of complaint
 
-All payments on the Platform are processed securely through Razorpay. By making a payment, you also agree to Razorpay's terms of service.
+If your grievance is not resolved satisfactorily within 30 days, you may escalate to:
+•	The Data Protection Board of India (DPBI) for data-related complaints under the DPDP Act
+•	The National Consumer Disputes Redressal Commission (NCDRC) or State Commission in Maharashtra for consumer complaints
+•	The appropriate court of law in Mumbai, Maharashtra
 
-### 7.2 Commission
+17. Limitation of Liability
+To the maximum extent permitted by Indian law, GullyGig shall not be liable for:
+•	Any harm, injury, loss, or damage arising from services arranged through the Platform
+•	Any financial dispute, non-payment, or fraud between users occurring off-platform
+•	Any indirect, special, incidental, or consequential damages
+•	Loss of data, revenue, profit, or business opportunity
+•	Platform downtime, errors, or technical interruptions
 
-GullyGig Connect charges a commission of approximately 10% on each completed transaction. This fee is deducted before the payout is made to the Service Provider. The exact commission percentage will be communicated on the Platform and may change with prior notice.
+Our total aggregate liability to any user for any claim shall not exceed INR 1,000 (Rupees One Thousand Only). Nothing in these Terms limits liability for death or personal injury caused by negligence, or for fraud or fraudulent misrepresentation.
 
-### 7.3 Refunds
+18. Indemnification
+You agree to indemnify, defend, and hold harmless GullyGig, its founders, team members, and partners from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable legal fees) arising out of or in connection with: (a) your use of the Platform, (b) your violation of these Terms, (c) any services you provide or receive through the Platform, (d) any content you post on the Platform, or (e) your violation of any applicable Indian law.
 
-Refund requests must be raised within 48 hours of the service completion. Refunds are handled on a case-by-case basis. GullyGig Connect reserves the right to approve or reject refund requests.
-
-### 7.4 Taxes
-
-All amounts displayed may be exclusive of applicable taxes such as GST. Users are responsible for their own tax obligations.
-
-## 8. Prohibited Conduct
-
-You agree NOT to use the Platform to:
-
-- Provide false information or impersonate any person or entity
-- Offer illegal services or services that violate Indian law
-- Harass, threaten, abuse, or discriminate against any user
-- Post misleading, defamatory, or fraudulent reviews
-- Circumvent the Platform's payment system to deal directly with users found on the Platform (payment circumvention)
-- Upload viruses, malware, or any harmful code
-- Scrape, copy, or reproduce Platform content without permission
-- Use the Platform for any unlawful purpose
-
-Violation of any of the above may result in immediate suspension or permanent termination of your account without refund.
-
-## 9. Ratings and Reviews
-
-**Users may leave honest ratings and reviews after a completed transaction. Reviews must be:**
-
-- [check] Based on genuine, first-hand experience
-- [check] Free from abusive, defamatory, or discriminatory language
-- [check] Not incentivized or manipulated
-
-GullyGig Connect reserves the right to remove reviews that violate these guidelines.
-
-## 10. Intellectual Property
-
-All content on the Platform, including the GullyGig Connect name, logo, design, software, and text, is the intellectual property of GullyGig Connect and is protected under Indian copyright and trademark law. You may not reproduce, distribute, or create derivative works without our prior written consent.
-
-By uploading content to the Platform (such as profile photos or service descriptions), you grant GullyGig Connect a non-exclusive, royalty-free licence to display and use that content on the Platform.
-
-## 11. Suspension and Termination
-
-GullyGig Connect reserves the right to suspend or terminate your account at any time if:
-
-- You violate these Terms
-- You engage in fraudulent or illegal activity
-- Your conduct harms other users or the Platform
-- We receive repeated credible complaints about you
-
-You may also close your account at any time by contacting us at support@gullygig.in. Termination does not relieve you of obligations incurred prior to termination.
-
-## 12. Limitation of Liability
-
-To the maximum extent permitted by Indian law, GullyGig Connect shall not be liable for:
-
-- Any indirect, incidental, or consequential damages arising from use of the Platform
-- Loss of data, revenue, or profits
-- Any harm caused by services arranged through the Platform
-- Any disruption, downtime, or errors on the Platform
-
-Our total liability to any user, in any circumstance, shall not exceed the total commission earned from that user in the 3 months preceding the claim.
-
-## 13. Indemnification
-
-You agree to indemnify and hold harmless GullyGig Connect, its founders, employees, and partners from any claims, losses, damages, or expenses (including legal fees) arising out of: (a) your use of the Platform, (b) your violation of these Terms, or (c) any services you provide or receive through the Platform.
-
-## 14. Governing Law and Dispute Resolution
-
-These Terms are governed by the laws of India. Any disputes arising from or related to these Terms or the Platform shall be subject to the exclusive jurisdiction of the courts in Mumbai, Maharashtra.
+19. Governing Law and Jurisdiction
+These Terms are governed by and construed in accordance with the laws of India, including but not limited to the Indian Contract Act, 1872, the IT Act, 2000, the Consumer Protection Act, 2019, and the DPDP Act, 2023. Any dispute, claim, or controversy arising out of or relating to these Terms shall be subject to the exclusive jurisdiction of the competent courts in Mumbai, Maharashtra, India.
 
 We encourage users to first attempt to resolve disputes amicably by contacting us at support@gullygig.in before initiating any legal proceedings.
 
-## 15. Changes to These Terms
+20. Force Majeure
+GullyGig shall not be liable for any failure or delay in performance of its obligations under these Terms due to circumstances beyond its reasonable control, including but not limited to acts of God, natural disasters, pandemic, government actions, internet service disruptions, or power failures.
 
-We may update these Terms from time to time. We will notify you of any material changes via email or a notice on the Platform at least 7 days before the changes take effect. Continued use of the Platform after the effective date constitutes your acceptance of the revised Terms.
+21. Severability
+If any provision of these Terms is held to be invalid, illegal, or unenforceable by a court of competent jurisdiction, that provision shall be modified to the minimum extent necessary to make it enforceable. The validity and enforceability of the remaining provisions shall not be affected.
 
-## 16. Severability
+22. Waiver
+No failure or delay by GullyGig in exercising any right under these Terms shall operate as a waiver of that right. A waiver on one occasion shall not constitute a waiver on any subsequent occasion.
 
-If any provision of these Terms is found to be invalid or unenforceable by a court of law, the remaining provisions shall continue in full force and effect.
+23. Entire Agreement
+These Terms, together with our Privacy Policy, constitute the entire agreement between you and GullyGig with respect to your use of the Platform and supersede all prior agreements, representations, or understandings, whether written or oral.
 
-## 17. Entire Agreement
+24. Changes to These Terms
+We may update these Terms from time to time. Material changes will be communicated via a prominent notice on the Platform at least 7 days before they take effect. Your continued use of the Platform after the effective date constitutes your acceptance of the updated Terms.
 
-These Terms, together with our Privacy Policy, constitute the entire agreement between you and GullyGig Connect regarding your use of the Platform and supersede all prior agreements or understandings.
-
-## 18. Contact Us
-
-For any questions or concerns regarding these Terms, please contact:
-
-- **Company:** GullyGig Connect
-- **Address:** Mumbai, Maharashtra, India
-- **Email:** support@gullygig.in
-- **Phone:** +91 7559302315
+25. Contact Us
+GullyGig — Grievance Officer Email: support@gullygig.in Website: gullygig.in Mumbai, Maharashtra, India
