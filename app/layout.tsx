@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import PostHogProvider from "../components/PostHogProvider";
+import CookieConsent from "../components/layout/CookieConsent";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -52,6 +53,7 @@ export default function RootLayout({
         <PostHogProvider>
           {children}
           <GoogleAnalytics />
+          <CookieConsent />
         </PostHogProvider>
       </body>
     </html>

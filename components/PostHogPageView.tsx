@@ -10,12 +10,24 @@ export default function PostHogPageView() {
   const posthog = usePostHog();
 
   useEffect(() => {
-    if (pathname && posthog) {
-      let url = window.origin + pathname;
-      const search = searchParams.toString();
-      if (search) url += `?${search}`;
-      posthog.capture("$pageview", { $current_url: url });
-    }
+    const trackPageView = () => {
+      if (pathname && posthog) {
+        const consent = localStorage.getItem("cookie-consent");
+        if (consent === "accepted") {
+          let url = window.origin + pathname;
+          const search = searchParams.toString();
+          if (search) url += `?${search}`;
+          posthog.capture("$pageview", { $current_url: url });
+        }
+      }
+    };
+
+    trackPageView();
+
+    window.addEventListener("cookie-consent-changed", trackPageView);
+    return () => {
+      window.removeEventListener("cookie-consent-changed", trackPageView);
+    };
   }, [pathname, searchParams, posthog]);
 
   return null;
