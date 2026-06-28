@@ -29,11 +29,7 @@ const SKILLS = [
   },
 ];
 
-export default function PopularSkills({
-  onShowToast,
-}: {
-  onShowToast: (msg: string) => void;
-}) {
+export default function PopularSkills() {
   const router = useRouter();
   return (
     <section

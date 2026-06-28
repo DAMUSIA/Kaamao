@@ -114,7 +114,8 @@ describe("POST /api/auth/sync-profile", () => {
   // ── Required Field Validation ──────────────────────────────────────────────
 
   it("returns 400 when id is missing", async () => {
-    const { id: _id, ...bodyWithoutId } = validBody;
+    const { id, ...bodyWithoutId } = validBody;
+    expect(id).toBeDefined();
     const req = makeRequest(bodyWithoutId);
     const res = await POST(req);
     expect(res.status).toBe(400);
@@ -123,7 +124,8 @@ describe("POST /api/auth/sync-profile", () => {
   });
 
   it("returns 400 when fullName is missing", async () => {
-    const { fullName: _fullName, ...bodyWithoutName } = validBody;
+    const { fullName, ...bodyWithoutName } = validBody;
+    expect(fullName).toBeDefined();
     const req = makeRequest(bodyWithoutName);
     const res = await POST(req);
     expect(res.status).toBe(400);
@@ -238,7 +240,8 @@ describe("POST /api/auth/sync-profile", () => {
     mockMaybeSingle.mockResolvedValueOnce({ data: null });
     mockInsert.mockResolvedValueOnce({ error: null });
 
-    const { email: _email, ...bodyWithoutEmail } = validBody;
+    const { email, ...bodyWithoutEmail } = validBody;
+    expect(email).toBeDefined();
     const req = makeRequest(bodyWithoutEmail);
     await POST(req);
 

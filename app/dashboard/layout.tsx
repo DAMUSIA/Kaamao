@@ -12,7 +12,6 @@ import {
   BarChart3,
   User,
   Settings as SettingsIcon,
-  Bell,
   ChevronLeft,
   LogOut,
   Menu,

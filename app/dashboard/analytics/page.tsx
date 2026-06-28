@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  BarChart3,
   Eye,
   Heart,
   Star,
@@ -999,7 +998,7 @@ export default function AnalyticsPage() {
           <div className="h-60 sm:h-72 lg:h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={monthlyGrowthData}
+                data={monthlyGrowthData.slice(0, new Date().getMonth() + 1)}
                 margin={{ top: 5, right: 5, left: -10, bottom: 5 }}
               >
                 <CartesianGrid
