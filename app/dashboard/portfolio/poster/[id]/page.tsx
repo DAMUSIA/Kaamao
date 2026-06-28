@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { getCurrentUser, supabase } from "@/lib/supabase";
 import PosterTemplate from "@/components/poster/PosterTemplates";
+import { motion, AnimatePresence } from "framer-motion";
 
 const templates = [
   {
@@ -116,6 +117,22 @@ export default function PosterGeneratorPage() {
   const [exportSuccess, setExportSuccess] = useState(false);
   const [exportMessage, setExportMessage] = useState("");
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Preview generation simulation loading state
+  const [isPreviewGenerating, setIsPreviewGenerating] = useState(false);
+  const isFirstSettingsRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstSettingsRender.current) {
+      isFirstSettingsRender.current = false;
+      return;
+    }
+    setIsPreviewGenerating(true);
+    const timer = setTimeout(() => {
+      setIsPreviewGenerating(false);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, [selectedTemplate, orientation, typography, ctaText]);
 
   // Load service
   useEffect(() => {
@@ -279,12 +296,24 @@ export default function PosterGeneratorPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-600 mx-auto" />
-          <p className="text-sm font-semibold text-slate-500 mt-3">
-            Loading poster generator...
-          </p>
+      <div className="min-h-[60vh] flex items-center justify-center font-[Manrope,sans-serif]">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 p-8 rounded-3xl shadow-xl flex flex-col items-center gap-5 max-w-none w-full text-center relative overflow-hidden">
+          {/* Scanning line indicator */}
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-pulse" />
+
+          <div className="w-14 h-14 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center shadow-inner relative">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
+
+          <div className="space-y-1.5">
+            <h3 className="text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">
+              Initializing
+            </h3>
+            <p className="text-xs text-slate-450 dark:text-slate-400 leading-relaxed font-medium">
+              Preparing premium poster assets & layouts for your service
+              portfolio...
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -487,7 +516,7 @@ export default function PosterGeneratorPage() {
               Live Mockup Preview
             </span>
 
-            <div className="shadow-2xl rounded-2xl overflow-hidden scale-90 sm:scale-100 transition-all duration-350">
+            <div className="shadow-2xl rounded-2xl overflow-hidden scale-90 sm:scale-100 transition-all duration-350 relative">
               <div
                 ref={previewRef}
                 id="poster-canvas-target"
@@ -510,6 +539,38 @@ export default function PosterGeneratorPage() {
                   ctaText={ctaText}
                 />
               </div>
+
+              {/* Shimmer/Scanning rendering overlay */}
+              <AnimatePresence>
+                {isPreviewGenerating && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-slate-900/10 dark:bg-slate-950/20 backdrop-blur-xs flex flex-col items-center justify-center z-40 select-none pointer-events-none"
+                  >
+                    {/* Laser line scanning effect */}
+                    <motion.div
+                      initial={{ y: "-100%" }}
+                      animate={{ y: "100%" }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        duration: 1.2,
+                        ease: "easeInOut",
+                      }}
+                      className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent shadow-[0_0_10px_#3b82f6] opacity-80"
+                    />
+
+                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/80 px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-650 dark:text-blue-400" />
+                      <span className="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest">
+                        Generating Poster...
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 

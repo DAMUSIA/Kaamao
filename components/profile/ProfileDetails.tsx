@@ -52,7 +52,7 @@ export default function ProfileDetails({
         ) : (
           <div className="relative">
             <Quote className="absolute -top-1 -left-1 w-5 h-5 sm:w-6 sm:h-6 text-blue-100" />
-            <p className="text-gray-600 leading-relaxed pl-5 text-sm sm:text-base">
+            <p className="text-gray-600 leading-relaxed pl-5 text-sm sm:text-base whitespace-pre-line break-words">
               {profile.about ||
                 "Passionate educator dedicated to making learning enjoyable and effective. Specializing in making complex concepts simple through real-world examples."}
             </p>

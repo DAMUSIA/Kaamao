@@ -24,58 +24,62 @@ interface PosterTemplateProps {
 const LogoWithTagline = ({
   dark = false,
   size = "small",
-  showTagline = true,
   align = "left",
 }: {
   dark?: boolean;
-  size?: "small" | "medium" | "large";
+  size?: "small" | "medium" | "large" | "xl";
   showTagline?: boolean;
   align?: "left" | "center" | "right";
 }) => {
+  const logoSrc = dark ? "/logo_light.png" : "/logo_dark.png";
+
+  // Custom sizes that look proportional and prevent vertical layout overflow
   const sizeClasses = {
-    small: "w-6 h-6",
-    medium: "w-8 h-8",
-    large: "w-10 h-10",
+    small: "w-32 h-12 sm:w-36 sm:h-14",
+    medium: "w-36 h-14 sm:w-40 sm:h-16",
+    large: "w-40 h-16 sm:w-48 sm:h-20",
+    xl: "w-48 h-20 sm:w-56 sm:h-24",
   };
 
-  const textSize = {
-    small: "text-[8px]",
-    medium: "text-[10px]",
-    large: "text-xs",
-  };
-
-  const taglineColor = dark ? "text-gray-400" : "text-blue-600";
-  const nameColor = dark ? "text-white" : "text-gray-800";
-
-  const alignClass =
+  // Logo positioning overlay: Change "top-4 left-4" to adjust distance from the top-left corner
+  const positionClass =
     align === "center"
-      ? "items-center"
+      ? "absolute top-4 left-1/2 -translate-x-1/2"
       : align === "right"
-        ? "items-end"
-        : "items-start";
+        ? "absolute top-4 right-4"
+        : "absolute top-4 left-4";
 
   return (
-    <div className={`flex ${alignClass} gap-2`}>
-      <div className={`relative ${sizeClasses[size]} shrink-0`}>
+    <div className={`${positionClass} shrink-0 z-20`}>
+      <div className={`relative ${sizeClasses[size]}`}>
         <Image
-          src="/logo.png"
+          src={logoSrc}
           alt="GullyGig Logo"
           fill
           className="object-contain"
+          priority
         />
       </div>
-      <div>
-        <span className={`font-extrabold ${textSize[size]} ${nameColor} block`}>
-          GullyGig
-        </span>
-        {showTagline && (
-          <p
-            className={`${textSize[size]} ${taglineColor} font-medium leading-tight`}
-          >
-            Opportunity Starts Here
-          </p>
-        )}
-      </div>
+    </div>
+  );
+};
+
+const GullyGigPlatformFooter = ({ dark = false }: { dark?: boolean }) => {
+  const textColor = dark ? "text-slate-400" : "text-slate-500";
+  const borderColor = dark ? "border-white/10" : "border-slate-200/60";
+
+  return (
+    <div
+      className={`mt-1.5 pt-1 border-t ${borderColor} flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[6.5px] font-bold ${textColor} shrink-0 z-10 relative`}
+    >
+      <span className="font-extrabold text-brand-primary dark:text-blue-400">
+        GullyGig:
+      </span>
+      <span>www.gullygig.in</span>
+      <span>•</span>
+      <span>support@gullygig.in</span>
+      <span>•</span>
+      <span>Insta: @gully.gig</span>
     </div>
   );
 };
@@ -88,17 +92,23 @@ export default function PosterTemplate({
   priceUnit,
   location,
   contactNumbers,
-  portfolioUrl,
   providerName,
   ratingAverage,
   templateId,
   typography,
   ctaText,
 }: PosterTemplateProps) {
+  // Sanitize data inputs to remove folder/profile names like 'Damusia' and use standard fallback names
+  const cleanProviderName = providerName.replace(
+    /damusia/gi,
+    "Verified Provider",
+  );
+  const cleanTitle = title.replace(/damusia/gi, "GullyGig");
+  const cleanDescription = description.replace(/damusia/gi, "GullyGig");
+
   // Setup QR Code Url
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-    portfolioUrl,
-  )}`;
+  const qrCodeUrl =
+    "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fwww.gullygig.in";
 
   // Typography selector
   const getFontClass = () => {
@@ -128,13 +138,13 @@ export default function PosterTemplate({
     case "business":
       return (
         <div
-          className={`w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white p-6 flex flex-col justify-between relative overflow-hidden ${getFontClass()}`}
+          className={`w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white p-8 flex flex-col justify-between relative overflow-hidden ${getFontClass()}`}
         >
           <div className="absolute -top-16 -left-16 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl" />
 
+          <LogoWithTagline dark={true} size="medium" />
           {/* Header with Logo and Tagline */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-3 z-10 shrink-0">
-            <LogoWithTagline dark={true} size="small" showTagline={true} />
+          <div className="flex items-center justify-end border-b border-white/10 pb-3 z-10 shrink-0 min-h-[44px]">
             <span className="text-[9px] font-bold uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded border border-white/10">
               {category}
             </span>
@@ -146,10 +156,10 @@ export default function PosterTemplate({
               Premium Service
             </span>
             <h2 className="text-xl sm:text-2xl font-black leading-tight line-clamp-2">
-              {title}
+              {cleanTitle}
             </h2>
             <p className="text-[11px] text-slate-300 line-clamp-3 font-medium max-w-none mx-auto leading-relaxed">
-              {description}
+              {cleanDescription}
             </p>
 
             {/* Price Badge */}
@@ -206,6 +216,7 @@ export default function PosterTemplate({
               {ctaText}
             </span>
           </div>
+          <GullyGigPlatformFooter dark={true} />
         </div>
       );
 
@@ -215,15 +226,15 @@ export default function PosterTemplate({
     case "local":
       return (
         <div
-          className={`w-full h-full bg-gradient-to-br from-emerald-50 to-teal-50 text-slate-800 p-6 flex flex-col justify-between border-2 border-emerald-200 relative overflow-hidden ${getFontClass()}`}
+          className={`w-full h-full bg-gradient-to-br from-emerald-50 to-teal-50 text-slate-800 p-8 flex flex-col justify-between border-2 border-emerald-200 relative overflow-hidden ${getFontClass()}`}
         >
           {/* Decorative elements */}
           <div className="absolute -top-20 -right-20 w-48 h-48 bg-emerald-200/30 rounded-full blur-2xl" />
           <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-teal-200/30 rounded-full blur-2xl" />
 
+          <LogoWithTagline dark={false} size="medium" />
           {/* Header with Logo and Tagline */}
-          <div className="flex items-center justify-between border-b-2 border-emerald-200/50 pb-3 shrink-0 relative z-10">
-            <LogoWithTagline dark={false} size="small" showTagline={true} />
+          <div className="flex items-center justify-end border-b-2 border-emerald-200/50 pb-3 shrink-0 relative z-10 min-h-[44px]">
             <span className="text-[9px] font-extrabold uppercase tracking-wider bg-emerald-600 text-white px-3 py-1 rounded-full shadow-sm">
               {category}
             </span>
@@ -239,7 +250,7 @@ export default function PosterTemplate({
                 Verified Professional
               </span>
               <h3 className="text-sm font-extrabold text-slate-900 leading-tight">
-                {providerName}
+                {cleanProviderName}
               </h3>
             </div>
           </div>
@@ -247,7 +258,7 @@ export default function PosterTemplate({
           {/* Main Content */}
           <div className="my-auto py-3 space-y-4 relative z-10">
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
-              {title}
+              {cleanTitle}
             </h2>
 
             <div className="flex items-center gap-2 text-xs font-bold text-slate-600 bg-white/60 backdrop-blur-sm px-3 py-1.5 rounded-full border border-emerald-200/50 shadow-sm">
@@ -260,7 +271,7 @@ export default function PosterTemplate({
             </div>
 
             <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed font-medium bg-white/60 backdrop-blur-sm p-3 rounded-xl border border-emerald-200/50">
-              {description}
+              {cleanDescription}
             </p>
 
             {startingPrice && (
@@ -323,6 +334,7 @@ export default function PosterTemplate({
           <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-center py-2.5 mt-2 rounded-xl text-[10px] font-black tracking-widest uppercase shadow-md shadow-emerald-600/20 shrink-0 relative z-10">
             {ctaText} • AVAILABLE NOW
           </div>
+          <GullyGigPlatformFooter dark={false} />
         </div>
       );
 
@@ -332,16 +344,16 @@ export default function PosterTemplate({
     case "tutor":
       return (
         <div
-          className={`w-full h-full bg-amber-50 text-slate-800 p-6 flex flex-col justify-between border-2 border-amber-200 relative overflow-hidden ${getFontClass()}`}
+          className={`w-full h-full bg-amber-50 text-slate-800 p-8 flex flex-col justify-between border-2 border-amber-200 relative overflow-hidden ${getFontClass()}`}
         >
           {/* Top category ribbon */}
           <div className="absolute top-0 right-0 bg-amber-500 text-white font-black text-[9px] uppercase px-4 py-1.5 rounded-bl-xl shadow-sm tracking-widest shrink-0 z-10">
             {category}
           </div>
 
+          <LogoWithTagline dark={false} size="medium" />
           {/* Header with Logo and Tagline */}
-          <div className="flex items-center justify-between shrink-0 relative z-10">
-            <LogoWithTagline dark={false} size="small" showTagline={true} />
+          <div className="flex items-center justify-end shrink-0 relative z-10 min-h-[44px]">
             <span className="text-[9px] font-extrabold text-amber-600 tracking-wider">
               LEARN WITH THE BEST
             </span>
@@ -349,16 +361,16 @@ export default function PosterTemplate({
 
           <div className="space-y-1 text-left shrink-0 mt-1 relative z-10">
             <h4 className="text-base font-extrabold text-slate-900 leading-snug">
-              {providerName}
+              {cleanProviderName}
             </h4>
           </div>
 
           <div className="my-auto py-2 space-y-3 relative z-10">
             <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-tight">
-              {title}
+              {cleanTitle}
             </h2>
             <p className="text-[11px] text-slate-600 line-clamp-3 leading-relaxed font-medium bg-amber-100/50 border border-amber-200/40 p-2.5 rounded-xl">
-              {description}
+              {cleanDescription}
             </p>
 
             <div className="flex flex-wrap gap-1.5 text-[10px] font-bold text-slate-500">
@@ -410,6 +422,7 @@ export default function PosterTemplate({
           <div className="text-center text-[9px] text-amber-600 font-extrabold tracking-widest uppercase shrink-0 pt-1 relative z-10">
             {ctaText} • BOOK A DEMO CLASS
           </div>
+          <GullyGigPlatformFooter dark={false} />
         </div>
       );
 
@@ -419,14 +432,14 @@ export default function PosterTemplate({
     case "freelancer":
       return (
         <div
-          className={`w-full h-full bg-slate-950 text-white p-6 flex flex-col justify-between relative border border-slate-800 overflow-hidden ${getFontClass()}`}
+          className={`w-full h-full bg-slate-950 text-white p-8 flex flex-col justify-between relative border border-slate-800 overflow-hidden ${getFontClass()}`}
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-600/10 rounded-full blur-2xl" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-600/10 rounded-full blur-2xl" />
 
+          <LogoWithTagline dark={true} size="small" />
           {/* Header with Logo and Tagline */}
-          <div className="flex items-center justify-between shrink-0 relative z-10">
-            <LogoWithTagline dark={true} size="small" showTagline={true} />
+          <div className="flex items-center justify-end shrink-0 relative z-10 min-h-[40px]">
             <span className="text-[9px] font-extrabold text-cyan-400 bg-cyan-950/40 border border-cyan-800/40 px-2 py-0.5 rounded">
               {category}
             </span>
@@ -434,15 +447,15 @@ export default function PosterTemplate({
 
           <div className="my-auto py-2 space-y-4 relative z-10">
             <h2 className="text-lg sm:text-xl font-extrabold tracking-tight leading-snug bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent">
-              {title}
+              {cleanTitle}
             </h2>
             <p className="text-[11px] text-slate-400 line-clamp-3 leading-relaxed font-medium">
-              {description}
+              {cleanDescription}
             </p>
 
             <div className="flex items-center gap-1.5 text-xs text-slate-300">
               <span className="text-cyan-400 font-extrabold">
-                By {providerName}
+                By {cleanProviderName}
               </span>
               <span className="text-slate-600">•</span>
               <span>📍 {location}</span>
@@ -479,6 +492,7 @@ export default function PosterTemplate({
               />
             </div>
           </div>
+          <GullyGigPlatformFooter dark={true} />
         </div>
       );
 
@@ -488,15 +502,15 @@ export default function PosterTemplate({
     case "dark":
       return (
         <div
-          className={`w-full h-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white p-6 flex flex-col justify-between border border-amber-500/20 relative overflow-hidden ${getFontClass()}`}
+          className={`w-full h-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white p-8 flex flex-col justify-between border border-amber-500/20 relative overflow-hidden ${getFontClass()}`}
         >
           {/* Glowing borders */}
           <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
           <div className="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/5 rounded-full blur-3xl" />
 
+          <LogoWithTagline dark={true} size="small" />
           {/* Header with Logo and Tagline */}
-          <div className="flex items-center justify-between border-b border-white/5 pb-3 shrink-0 relative z-10">
-            <LogoWithTagline dark={true} size="small" showTagline={true} />
+          <div className="flex items-center justify-end border-b border-white/5 pb-3 shrink-0 relative z-10 min-h-[40px]">
             <span className="text-[9px] font-bold text-slate-400 border border-slate-800 px-2 py-0.5 rounded bg-slate-900/40">
               {category}
             </span>
@@ -504,7 +518,7 @@ export default function PosterTemplate({
 
           <div className="my-auto py-2 space-y-4 text-center relative z-10">
             <h2 className="text-xl font-bold tracking-tight leading-snug">
-              {title}
+              {cleanTitle}
             </h2>
 
             {startingPrice && (
@@ -525,7 +539,7 @@ export default function PosterTemplate({
             )}
 
             <p className="text-[11px] text-slate-300 line-clamp-3 leading-relaxed font-medium max-w-none mx-auto">
-              {description}
+              {cleanDescription}
             </p>
           </div>
 
@@ -536,7 +550,7 @@ export default function PosterTemplate({
                 Verified Instructor
               </span>
               <span className="block text-xs font-black text-white">
-                {providerName}
+                {cleanProviderName}
               </span>
               <span className="block text-xs text-amber-500 font-extrabold">
                 {mainContact}
@@ -560,6 +574,7 @@ export default function PosterTemplate({
           <div className="text-center text-[9px] text-amber-500/80 font-bold tracking-wider uppercase shrink-0 pt-1 relative z-10">
             {ctaText} • PREMIUM EXPERIENCE
           </div>
+          <GullyGigPlatformFooter dark={true} />
         </div>
       );
 
@@ -569,19 +584,12 @@ export default function PosterTemplate({
     case "whatsapp":
       return (
         <div
-          className={`w-full h-full bg-gradient-to-br from-teal-900 via-slate-900 to-slate-950 text-white p-6 flex flex-col justify-between text-center relative overflow-hidden ${getFontClass()}`}
+          className={`w-full h-full bg-gradient-to-br from-teal-900 via-slate-900 to-slate-950 text-white p-8 flex flex-col justify-between text-center relative overflow-hidden ${getFontClass()}`}
         >
           <div className="absolute -top-20 -right-20 w-44 h-44 bg-teal-500/10 rounded-full blur-3xl" />
 
-          <div className="space-y-2 shrink-0 relative z-10">
-            <div className="flex justify-center">
-              <LogoWithTagline
-                dark={true}
-                size="medium"
-                showTagline={true}
-                align="center"
-              />
-            </div>
+          <LogoWithTagline dark={true} size="large" align="center" />
+          <div className="space-y-2 shrink-0 relative z-10 mt-14">
             <span className="inline-block px-3 py-1 bg-teal-500/20 text-teal-300 text-[10px] font-extrabold uppercase tracking-widest rounded-full border border-teal-500/30">
               {category}
             </span>
@@ -592,10 +600,10 @@ export default function PosterTemplate({
 
           <div className="my-auto py-3 space-y-3 relative z-10">
             <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
-              {title}
+              {cleanTitle}
             </h2>
             <p className="text-xs text-slate-300 leading-relaxed max-w-none mx-auto line-clamp-3">
-              {description}
+              {cleanDescription}
             </p>
 
             {startingPrice && (
@@ -635,7 +643,7 @@ export default function PosterTemplate({
                 {mainContact}
               </span>
               <span className="block text-[10px] text-slate-500 font-medium">
-                📍 {location} • {providerName}
+                📍 {location} • {cleanProviderName}
               </span>
             </div>
 
@@ -643,6 +651,7 @@ export default function PosterTemplate({
               {ctaText} NOW
             </div>
           </div>
+          <GullyGigPlatformFooter dark={true} />
         </div>
       );
 
@@ -652,19 +661,12 @@ export default function PosterTemplate({
     case "instaStory":
       return (
         <div
-          className={`w-full h-full bg-gradient-to-tr from-indigo-950 via-slate-900 to-purple-950 text-white p-6 flex flex-col justify-between text-center relative overflow-hidden ${getFontClass()}`}
+          className={`w-full h-full bg-gradient-to-tr from-indigo-950 via-slate-900 to-purple-950 text-white p-8 flex flex-col justify-between text-center relative overflow-hidden ${getFontClass()}`}
         >
           <div className="absolute -bottom-24 -right-24 w-52 h-52 bg-purple-500/10 rounded-full blur-3xl" />
 
-          <div className="space-y-3 shrink-0 relative z-10">
-            <div className="flex justify-center">
-              <LogoWithTagline
-                dark={true}
-                size="medium"
-                showTagline={true}
-                align="center"
-              />
-            </div>
+          <LogoWithTagline dark={true} size="large" align="center" />
+          <div className="space-y-3 shrink-0 relative z-10 mt-14">
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-400 block">
               Professional Listing
             </span>
@@ -675,14 +677,14 @@ export default function PosterTemplate({
 
           <div className="my-auto py-3 space-y-3 relative z-10">
             <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-snug">
-              {title}
+              {cleanTitle}
             </h2>
             <p className="text-xs text-slate-300 leading-relaxed font-medium line-clamp-3 max-w-none mx-auto">
-              {description}
+              {cleanDescription}
             </p>
 
             <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-400">
-              <span>By {providerName}</span>
+              <span>By {cleanProviderName}</span>
               <span>•</span>
               <span>📍 {location}</span>
             </div>
@@ -719,6 +721,7 @@ export default function PosterTemplate({
               {ctaText} TODAY
             </div>
           </div>
+          <GullyGigPlatformFooter dark={true} />
         </div>
       );
 
@@ -728,13 +731,13 @@ export default function PosterTemplate({
     case "instaPost":
       return (
         <div
-          className={`w-full h-full bg-slate-900 text-white p-6 flex flex-col justify-between border-2 border-blue-500/30 relative overflow-hidden ${getFontClass()}`}
+          className={`w-full h-full bg-slate-900 text-white p-8 flex flex-col justify-between border-2 border-blue-500/30 relative overflow-hidden ${getFontClass()}`}
         >
           <div className="absolute top-0 right-0 w-36 h-36 bg-blue-600/10 rounded-full blur-3xl" />
 
+          <LogoWithTagline dark={true} size="medium" />
           {/* Header with Logo */}
-          <div className="flex items-center justify-between shrink-0 relative z-10">
-            <LogoWithTagline dark={true} size="small" showTagline={false} />
+          <div className="flex items-center justify-end shrink-0 relative z-10 min-h-[44px]">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 px-2.5 py-0.5 rounded border border-blue-500/30">
                 {category}
@@ -745,14 +748,14 @@ export default function PosterTemplate({
           {/* Center Content */}
           <div className="my-auto py-3 space-y-3.5 relative z-10">
             <h2 className="text-lg sm:text-xl font-black leading-tight tracking-tight text-white">
-              {title}
+              {cleanTitle}
             </h2>
             <p className="text-[11px] text-slate-350 line-clamp-3 leading-relaxed font-medium">
-              {description}
+              {cleanDescription}
             </p>
 
             <div className="flex flex-wrap items-center gap-3 text-[10px] font-bold text-slate-400">
-              <span>Tutor: {providerName}</span>
+              <span>Tutor: {cleanProviderName}</span>
               <span className="w-1 h-1 bg-slate-700 rounded-full" />
               <span>📍 {location}</span>
               <span className="w-1 h-1 bg-slate-700 rounded-full" />
@@ -805,6 +808,7 @@ export default function PosterTemplate({
               </div>
             </div>
           </div>
+          <GullyGigPlatformFooter dark={true} />
         </div>
       );
 
@@ -814,19 +818,12 @@ export default function PosterTemplate({
     case "flyer":
       return (
         <div
-          className={`w-full h-full bg-white text-slate-800 p-7 flex flex-col justify-between border-4 border-slate-900 relative ${getFontClass()}`}
+          className={`w-full h-full bg-white text-slate-800 p-8 flex flex-col justify-between border-4 border-slate-900 relative ${getFontClass()}`}
         >
           <div className="absolute top-4 left-4 right-4 h-1 bg-slate-950" />
 
-          <div className="text-center space-y-1 pt-2 shrink-0 relative z-10">
-            <div className="flex justify-center mb-2">
-              <LogoWithTagline
-                dark={false}
-                size="medium"
-                showTagline={true}
-                align="center"
-              />
-            </div>
+          <LogoWithTagline dark={false} size="xl" align="center" />
+          <div className="text-center space-y-1 pt-16 shrink-0 relative z-10">
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 block">
               PUBLIC ANNOUNCEMENT
             </span>
@@ -837,11 +834,11 @@ export default function PosterTemplate({
 
           <div className="my-auto py-3 space-y-4 relative z-10">
             <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-950 tracking-tighter uppercase leading-none text-center">
-              {title}
+              {cleanTitle}
             </h2>
             <div className="w-10 h-0.5 bg-slate-950 mx-auto" />
             <p className="text-[11px] text-slate-650 leading-relaxed font-medium text-center max-w-sm mx-auto">
-              {description}
+              {cleanDescription}
             </p>
 
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-center space-y-1">
@@ -866,7 +863,7 @@ export default function PosterTemplate({
                 CONTACT PROVIDER
               </span>
               <span className="block text-sm font-extrabold text-slate-950">
-                {providerName}
+                {cleanProviderName}
               </span>
               <span className="block text-base font-black text-blue-650">
                 {mainContact}
@@ -897,6 +894,7 @@ export default function PosterTemplate({
           <div className="bg-slate-950 text-white text-center py-2 -mx-7 -mb-7 text-[10px] font-black tracking-widest uppercase shrink-0 relative z-10">
             {ctaText} • BOOKING OPEN NOW
           </div>
+          <GullyGigPlatformFooter dark={false} />
         </div>
       );
 
@@ -907,10 +905,10 @@ export default function PosterTemplate({
     default:
       return (
         <div
-          className={`w-full h-full bg-white text-slate-800 p-6 flex flex-col justify-between border border-slate-200 ${getFontClass()}`}
+          className={`w-full h-full bg-white text-slate-800 p-8 flex flex-col justify-between border border-slate-200 ${getFontClass()}`}
         >
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
-            <LogoWithTagline dark={false} size="small" showTagline={true} />
+          <LogoWithTagline dark={false} size="medium" />
+          <div className="flex items-center justify-end border-b border-slate-100 pb-3 shrink-0 min-h-[44px]">
             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
               {category}
             </span>
@@ -918,10 +916,10 @@ export default function PosterTemplate({
 
           <div className="my-auto py-2 space-y-3">
             <h2 className="text-lg font-bold text-slate-900 tracking-tight leading-snug">
-              {title}
+              {cleanTitle}
             </h2>
             <p className="text-xs text-slate-500 line-clamp-4 leading-relaxed font-medium">
-              {description}
+              {cleanDescription}
             </p>
 
             <div className="text-[11px] text-slate-400 font-bold flex items-center gap-2">
@@ -961,6 +959,7 @@ export default function PosterTemplate({
           <div className="text-center text-[8px] text-slate-400 font-bold uppercase tracking-widest shrink-0 pt-2 border-t border-slate-50">
             {ctaText} • scan qr to view portfolio link online
           </div>
+          <GullyGigPlatformFooter dark={false} />
         </div>
       );
   }

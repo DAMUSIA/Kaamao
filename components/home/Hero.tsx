@@ -175,7 +175,7 @@ interface HeroProps {
  *
  * @param props - Reserved for hero configuration.
  */
-export default function Hero(props: HeroProps = {}) {
+export default function Hero({}: HeroProps = {}) {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [stats, setStats] = useState({
     users: 0,

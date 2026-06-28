@@ -382,7 +382,7 @@ export default function AuthPage({
                     className="overflow-visible"
                   >
                     <div className="space-y-1">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <label className="block text-sm font-medium text-gray-700">
                         Full name <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -391,7 +391,7 @@ export default function AuthPage({
                         onChange={(e) => setFullName(e.target.value)}
                         disabled={isLoading || isGoogleLoading}
                         maxLength={40}
-                        className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-all duration-200"
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
                         placeholder="Enter your full name"
                         required={mode === "register"}
                       />
