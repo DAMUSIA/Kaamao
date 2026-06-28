@@ -83,6 +83,89 @@ const useCountUp = (
   return count;
 };
 
+// --- ANIMATED BUTTON COMPONENT ---
+const AnimatedCTA = ({
+  href,
+  defaultText,
+  hoverText,
+  variant = "primary",
+}: {
+  href: string;
+  defaultText: string;
+  hoverText: string;
+  variant?: "primary" | "secondary";
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const isPrimary = variant === "primary";
+
+  return (
+    <Link
+      href={href}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`relative overflow-hidden w-full sm:w-[220px] h-[56px] rounded-full border flex items-center justify-center group transition-shadow ${
+        isPrimary
+          ? "bg-brand-primary border-brand-primary shadow-lg shadow-brand-primary/20"
+          : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-brand-primary/50 dark:hover:border-brand-primary/50"
+      }`}
+    >
+      {/* The Sliding Background */}
+      <motion.div
+        initial={{ x: "-100%" }}
+        animate={{ x: isHovered ? "0%" : "-100%" }}
+        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+        className={`absolute inset-0 z-0 rounded-full ${
+          isPrimary ? "bg-white" : "bg-brand-primary"
+        }`}
+      />
+
+      {/* Button Content Wrapper */}
+      <div className="relative z-10 flex items-center justify-center w-full h-full overflow-hidden">
+        {/* Default State (Fades out and moves down) */}
+        <motion.div
+          initial={false}
+          animate={{
+            y: isHovered ? 30 : 0,
+            opacity: isHovered ? 0 : 1,
+          }}
+          transition={{ duration: 0.3 }}
+          className={`absolute flex items-center gap-2 text-[15px] font-bold tracking-wide ${
+            isPrimary ? "text-white" : "text-slate-700 dark:text-slate-200"
+          }`}
+        >
+          <span>{defaultText}</span>
+        </motion.div>
+
+        {/* Hover State (Fades in and moves up from bottom) */}
+        <motion.div
+          initial={false}
+          animate={{
+            y: isHovered ? 0 : -30,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{ duration: 0.3 }}
+          className={`absolute flex items-center gap-2 text-[15px] font-bold tracking-wide ${
+            isPrimary ? "text-brand-primary" : "text-white"
+          }`}
+        >
+          <motion.span
+            initial={{ x: -10, opacity: 0 }}
+            animate={{
+              x: isHovered ? 0 : -10,
+              opacity: isHovered ? 1 : 0,
+            }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="flex items-center"
+          >
+            <Icon name="arrow_forward" className="text-lg" />
+          </motion.span>
+          <span>{hoverText}</span>
+        </motion.div>
+      </div>
+    </Link>
+  );
+};
+
 interface HeroProps {
   onShowToast?: (message: string) => void;
 }
@@ -183,20 +266,20 @@ export default function Hero(props: HeroProps = {}) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
-            className="flex flex-wrap items-center gap-3.5 mb-8 lg:mb-10"
+            className="flex flex-col sm:flex-row items-center gap-3.5 mb-8 lg:mb-10 w-full sm:w-auto"
           >
-            <Link
+            <AnimatedCTA
               href="/Auth?mode=register"
-              className="px-6 py-3.5 rounded-xl bg-brand-primary text-white font-semibold text-[15px] shadow-lg shadow-brand-primary/25 hover:shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-0.5 transition-all duration-200 active:scale-95 text-center"
-            >
-              Become a Provider
-            </Link>
-            <Link
+              defaultText="Become a Provider"
+              hoverText="Join Now"
+              variant="primary"
+            />
+            <AnimatedCTA
               href="/services"
-              className="px-6 py-3.5 rounded-xl bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-semibold text-[15px] border-2 border-slate-200 dark:border-slate-800 hover:border-brand-primary/50 dark:hover:border-brand-primary/50 hover:bg-slate-50 dark:hover:bg-slate-800 hover:-translate-y-0.5 transition-all duration-200 active:scale-95 text-center"
-            >
-              Find Services
-            </Link>
+              defaultText="Find Services"
+              hoverText="Explore Directory"
+              variant="secondary"
+            />
           </motion.div>
 
           {/* Stats */}
@@ -246,14 +329,14 @@ export default function Hero(props: HeroProps = {}) {
           </motion.div>
         </motion.div>
 
-        {/* RIGHT COLUMN - Carousel (Increased size slightly) */}
+        {/* RIGHT COLUMN - Carousel */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
           className="relative flex items-center justify-center lg:justify-end mt-4 lg:mt-0"
         >
-          {/* Main Carousel Frame - Increased max-width and height */}
+          {/* Main Carousel Frame */}
           <div className="relative w-full max-w-[420px] xl:max-w-[480px] aspect-[4/4.8] sm:h-[480px] xl:h-[520px] rounded-[2rem] overflow-hidden shadow-2xl shadow-brand-primary/15 border-4 lg:border-[6px] border-white dark:border-slate-900 bg-slate-100 dark:bg-slate-800 transition-colors duration-300">
             <AnimatePresence mode="wait">
               <motion.div

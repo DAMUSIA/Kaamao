@@ -102,7 +102,7 @@ export default function Home() {
 
         {/* POPULAR LOCAL SKILLS */}
         <section id="skills">
-          <PopularSkills onShowToast={showToast} />
+          <PopularSkills />
         </section>
 
         {/* SERVICES SECTION */}

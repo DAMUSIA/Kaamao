@@ -20,7 +20,6 @@ import SearchableDropdown from "@/components/create-service/SearchableDropdown";
 import LocationSelector from "@/components/create-service/LocationSelector";
 import LanguageSelector from "@/components/create-service/LanguageSelector";
 import LivePreviewCard from "@/components/create-service/LivePreviewCard";
-import PublishStickyBar from "@/components/create-service/PublishStickyBar";
 
 // Constants
 const CATEGORIES = [

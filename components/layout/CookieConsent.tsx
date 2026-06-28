@@ -47,7 +47,9 @@ export default function CookieConsent() {
               <Cookie className="h-4.5 w-4.5" />
             </div>
             <p className="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 leading-normal max-w-3xl text-left">
-              We use cookies and analytics tools (PostHog & Google Analytics) to improve your experience on GullyGig. By accepting, you consent to our analytics tracking. Learn more in our{" "}
+              We use cookies and analytics tools to improve your experience on
+              GullyGig. By accepting, you consent to our analytics tracking.
+              Learn more in our{" "}
               <Link
                 href="/legal?tab=privacy"
                 className="text-brand-primary dark:text-blue-400 font-extrabold hover:underline"
@@ -72,7 +74,7 @@ export default function CookieConsent() {
             >
               Accept Cookies
             </button>
-            
+
             <button
               onClick={handleDecline}
               title="Close Banner"

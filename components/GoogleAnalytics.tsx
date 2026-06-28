@@ -9,8 +9,10 @@ export default function GoogleAnalytics() {
 
   useEffect(() => {
     // Check initial consent status
-    const consent = localStorage.getItem("cookie-consent");
-    setHasConsent(consent === "accepted");
+    Promise.resolve().then(() => {
+      const consent = localStorage.getItem("cookie-consent");
+      setHasConsent(consent === "accepted");
+    });
 
     // Listen for consent changes
     const handleConsentChange = () => {

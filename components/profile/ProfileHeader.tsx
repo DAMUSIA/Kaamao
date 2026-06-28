@@ -12,9 +12,6 @@ import {
   Save,
   X,
   Navigation,
-  Award,
-  Star,
-  Shield,
 } from "lucide-react";
 import { UserProfile } from "@/lib/supabase";
 

@@ -40,6 +40,7 @@ describe("GoogleAnalytics Component", () => {
   });
 
   afterEach(() => {
+    localStorage.removeItem("cookie-consent");
     if (originalEnv === undefined) {
       delete process.env.NEXT_PUBLIC_GA_ID;
     } else {
@@ -47,10 +48,11 @@ describe("GoogleAnalytics Component", () => {
     }
   });
 
-  it("renders GA scripts correctly", () => {
+  it("renders GA scripts correctly when consent is accepted", async () => {
+    localStorage.setItem("cookie-consent", "accepted");
     render(<GoogleAnalytics />);
 
-    const scripts = screen.getAllByTestId("next-script");
+    const scripts = await screen.findAllByTestId("next-script");
 
     // Verify both scripts: loader and inline config
     const loaderScript = scripts.find((s) =>
@@ -63,5 +65,13 @@ describe("GoogleAnalytics Component", () => {
     expect(loaderScript).toBeDefined();
     expect(inlineScript).toBeDefined();
     expect(scripts.length).toBe(2);
+  });
+
+  it("does not render GA scripts when consent is not accepted", () => {
+    localStorage.removeItem("cookie-consent");
+    render(<GoogleAnalytics />);
+
+    const scripts = screen.queryAllByTestId("next-script");
+    expect(scripts.length).toBe(0);
   });
 });
