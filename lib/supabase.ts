@@ -487,6 +487,25 @@ export async function updateUserProfile(
       .eq("id", userId);
 
     if (error) {
+      const isUniquePhoneViolation =
+        error.message?.includes("users_phone_no_key") ||
+        error.details?.includes("phone_no") ||
+        (error.code === "23505" && "phone_no" in profileData);
+
+      if (isUniquePhoneViolation) {
+        console.error("Profile update unique phone constraint violation:", {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+        });
+        return {
+          success: false,
+          error:
+            "This phone number is already associated with another account.",
+        };
+      }
+
       return { success: false, error: error.message };
     }
 
