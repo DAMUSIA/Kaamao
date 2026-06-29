@@ -6,7 +6,7 @@ import {
   getCurrentUser,
   getUserProfile,
   UserProfile,
-  supabase,
+  signOut,
 } from "@/lib/supabase";
 import {
   User,
@@ -17,6 +17,7 @@ import {
   Loader2,
   AlertTriangle,
 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa6";
 
 /**
  * Renders the settings page for the signed-in user.
@@ -33,6 +34,9 @@ export default function SettingsPage() {
 
   // Loading states
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // WhatsApp Community states
+  const [isWhatsAppJoined, setIsWhatsAppJoined] = useState(false);
 
   useEffect(() => {
     async function loadProfile() {
@@ -80,22 +84,23 @@ export default function SettingsPage() {
     loadProfile();
   }, [router]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const status = localStorage.getItem("gullygig_whatsapp_joined");
+      const rafId = requestAnimationFrame(() => {
+        setIsWhatsAppJoined(status === "true");
+      });
+      return () => cancelAnimationFrame(rafId);
+    }
+  }, []);
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      if (!supabase) {
-        throw new Error("Supabase client is not initialized");
-      }
+      const { success, error } = await signOut();
 
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        throw error;
-      }
-
-      if (typeof window !== "undefined") {
-        localStorage.clear();
-        sessionStorage.clear();
+      if (!success) {
+        throw new Error(error || "Failed to sign out");
       }
 
       router.push("/Auth");
@@ -216,6 +221,60 @@ export default function SettingsPage() {
                 <p className="text-gray-900 sm:ml-auto break-all">
                   {profile.phone_no || "Not set"}
                 </p>
+              </div>
+            </div>
+          </div>
+
+          {/* WhatsApp Community Section */}
+          <div className="p-4 sm:p-6 border-b border-gray-100 bg-emerald-50/15">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-start gap-3 min-w-0 flex-1">
+                <div className="p-2.5 bg-[#25D366] rounded-full text-white mt-0.5 flex-shrink-0 shadow-sm flex items-center justify-center">
+                  <FaWhatsapp className="w-5 h-5 text-white" />
+                </div>
+                <div className="min-w-0 flex-1 text-left">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      WhatsApp Community
+                    </h2>
+                    {isWhatsAppJoined && (
+                      <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 flex-shrink-0">
+                        <FaWhatsapp className="w-3.5 h-3.5 text-[#25D366]" />
+                        Joined
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-550 mt-1 leading-relaxed">
+                    {isWhatsAppJoined
+                      ? "You are part of our official WhatsApp community."
+                      : "Join our official community to get local job alerts, service orders and updates."}
+                  </p>
+                  <p className="text-xs text-gray-605 font-medium mt-2 bg-white/70 border border-emerald-100/50 p-2.5 rounded-xl leading-relaxed">
+                    Follow this link to join my WhatsApp community:{" "}
+                    <a
+                      href="https://chat.whatsapp.com/HG3U2hP7IEu0EHAiftscCq"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-blue-600 hover:text-blue-800 font-semibold break-all"
+                    >
+                      https://chat.whatsapp.com/HG3U2hP7IEu0EHAiftscCq
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div className="flex-shrink-0 w-full md:w-auto self-start md:self-center mt-2 md:mt-0">
+                <a
+                  href="https://chat.whatsapp.com/HG3U2hP7IEu0EHAiftscCq"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    localStorage.setItem("gullygig_whatsapp_joined", "true");
+                    setIsWhatsAppJoined(true);
+                  }}
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition-all shadow-xs hover:shadow-md cursor-pointer"
+                >
+                  {isWhatsAppJoined ? "Visit Community" : "Join Now"}
+                </a>
               </div>
             </div>
           </div>
