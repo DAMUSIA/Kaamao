@@ -6,7 +6,6 @@ import {
   getCurrentUser,
   getUserProfile,
   UserProfile,
-  supabase,
   signOut,
 } from "@/lib/supabase";
 import {
@@ -88,7 +87,10 @@ export default function SettingsPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const status = localStorage.getItem("gullygig_whatsapp_joined");
-      setIsWhatsAppJoined(status === "true");
+      const rafId = requestAnimationFrame(() => {
+        setIsWhatsAppJoined(status === "true");
+      });
+      return () => cancelAnimationFrame(rafId);
     }
   }, []);
 

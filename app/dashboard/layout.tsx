@@ -502,7 +502,6 @@ export default function DashboardLayout({
 
   // WhatsApp Community states
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
-  const [isWhatsAppJoined, setIsWhatsAppJoined] = useState(false);
 
   const isMobile = useMediaQuery("(max-width: 767px)");
 
@@ -568,8 +567,6 @@ export default function DashboardLayout({
         "gullygig_whatsapp_dismissed_session",
       );
 
-      setIsWhatsAppJoined(joined === "true");
-
       let shouldShow = false;
 
       if (joined !== "true" && sessionDismiss !== "true") {
@@ -593,7 +590,6 @@ export default function DashboardLayout({
 
   const handleJoinNow = () => {
     localStorage.setItem("gullygig_whatsapp_joined", "true");
-    setIsWhatsAppJoined(true);
     setShowWhatsAppModal(false);
     window.open(
       "https://chat.whatsapp.com/HG3U2hP7IEu0EHAiftscCq",
